@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "device": "mps",
+  "device_info": {
+    "cuda_available": false,
+    "mps_built": true,
+    "mps_available": true
+  },
+  "adapter_dir": "/Users/salmaheshamsalem/Desktop/genai_project/outputs/finetune/lora_adapter",
+  "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+  "train_examples": 32,
+  "validation_examples": 8,
+  "epochs": 1.0,
+  "max_length": 512
+}

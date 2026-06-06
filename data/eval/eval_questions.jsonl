@@ -1,0 +1,3 @@
+{"question": "What is RAG and why does it reduce hallucinations?", "expected_sources": ["LLM Lecture 6", "LLM Lecture 7"], "topic": "RAG"}
+{"question": "Explain LoRA and why it is useful for limited compute.", "expected_sources": ["LLM Lecture 4"], "topic": "PEFT/LoRA"}
+{"question": "What makes an agentic workflow different from a normal prompt?", "expected_sources": ["LLM Lecture 8", "LLM Lecture 9"], "topic": "Agentic AI"}

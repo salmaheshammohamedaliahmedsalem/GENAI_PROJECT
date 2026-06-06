@@ -1,0 +1,12 @@
+{
+  "approved_domains": [
+    "openai.com",
+    "docs.openai.com",
+    "huggingface.co",
+    "python.langchain.com",
+    "langchain-ai.github.io",
+    "arxiv.org",
+    "aclanthology.org",
+    "paperswithcode.com"
+  ]
+}

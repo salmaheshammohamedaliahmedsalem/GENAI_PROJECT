@@ -1,0 +1,12 @@
+question,system,answer,has_sources,has_tool_calls
+What is RAG and why does it reduce hallucinations?,final_system,"RAG means Retrieval-Augmented Generation: retrieve relevant chunks, add them to the prompt, then generate a grounded answer. [Source: LLM Lecture 7 (1).pdf, page 7, chunk lecture_7_p7_c1] [Source: LLM Lecture 4.pdf, page 55, chunk lecture_4_p55_c1]
+
+Next step: ask for a quiz on this topic.",True,False
+Explain LoRA from the course perspective.,final_system,"RAG means Retrieval-Augmented Generation: retrieve relevant chunks, add them to the prompt, then generate a grounded answer. [Source: LLM Lecture 8 (1).pdf, page 75, chunk lecture_8_p75_c1] [Source: LLM Lecture 9 (1).pdf, page 67, chunk lecture_9_p67_c1]
+
+Next step: ask for a quiz on this topic.",True,False
+"If 8 chunks are relevant out of 10 retrieved, calculate precision.",final_system,"The calculation is `8 / 10`.
+
+Result: **0.8**
+
+Precision = relevant retrieved / total retrieved = **0.80** or **80%**.",False,True

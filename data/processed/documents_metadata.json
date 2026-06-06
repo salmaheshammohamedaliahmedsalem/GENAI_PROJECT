@@ -1,0 +1,26 @@
+{
+  "num_chunks": 664,
+  "sources": {
+    "LLM Lecture 1.pdf": 62,
+    "LLM Lecture 2.pdf": 43,
+    "LLM Lecture 3.pdf": 81,
+    "LLM Lecture 4.pdf": 105,
+    "LLM Lecture 5 (1).pdf": 67,
+    "LLM Lecture 6 (1).pdf": 75,
+    "LLM Lecture 7 (1).pdf": 89,
+    "LLM Lecture 8 (1).pdf": 75,
+    "LLM Lecture 9 (1).pdf": 67
+  },
+  "topics": {
+    "Large Language Models Fundamentals": 189,
+    "Prompt Engineering & In-Context Learning": 84,
+    "LLM Pre-training & Training Objectives": 16,
+    "Transformer Architecture & Attention": 45,
+    "Tokenization & Vocabulary": 16,
+    "LLM Agents & Multi-Agent Systems": 63,
+    "Retrieval-Augmented Generation (RAG)": 132,
+    "Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)": 41,
+    "LLM Evaluation & Safety": 31,
+    "LLM Alignment (RLHF / DPO)": 47
+  }
+}

@@ -1,0 +1,665 @@
+chunk_id,lecture_id,page,word_count,topic_guess
+lecture_1_p1_c1,lecture_1,1,10,Large Language Models Fundamentals
+lecture_1_p2_c1,lecture_1,2,71,Large Language Models Fundamentals
+lecture_1_p3_c1,lecture_1,3,46,Prompt Engineering & In-Context Learning
+lecture_1_p4_c1,lecture_1,4,57,Large Language Models Fundamentals
+lecture_1_p5_c1,lecture_1,5,32,Large Language Models Fundamentals
+lecture_1_p6_c1,lecture_1,6,11,Large Language Models Fundamentals
+lecture_1_p7_c1,lecture_1,7,6,Large Language Models Fundamentals
+lecture_1_p8_c1,lecture_1,8,42,Large Language Models Fundamentals
+lecture_1_p9_c1,lecture_1,9,6,Large Language Models Fundamentals
+lecture_1_p10_c1,lecture_1,10,4,Large Language Models Fundamentals
+lecture_1_p11_c1,lecture_1,11,30,Large Language Models Fundamentals
+lecture_1_p12_c1,lecture_1,12,11,Large Language Models Fundamentals
+lecture_1_p13_c1,lecture_1,13,77,Large Language Models Fundamentals
+lecture_1_p14_c1,lecture_1,14,20,Large Language Models Fundamentals
+lecture_1_p15_c1,lecture_1,15,31,Large Language Models Fundamentals
+lecture_1_p16_c1,lecture_1,16,55,Large Language Models Fundamentals
+lecture_1_p17_c1,lecture_1,17,37,LLM Pre-training & Training Objectives
+lecture_1_p18_c1,lecture_1,18,21,Large Language Models Fundamentals
+lecture_1_p19_c1,lecture_1,19,21,Large Language Models Fundamentals
+lecture_1_p20_c1,lecture_1,20,21,Large Language Models Fundamentals
+lecture_1_p21_c1,lecture_1,21,75,Transformer Architecture & Attention
+lecture_1_p22_c1,lecture_1,22,29,Large Language Models Fundamentals
+lecture_1_p23_c1,lecture_1,23,63,Tokenization & Vocabulary
+lecture_1_p24_c1,lecture_1,24,73,Tokenization & Vocabulary
+lecture_1_p25_c1,lecture_1,25,34,Large Language Models Fundamentals
+lecture_1_p26_c1,lecture_1,26,4,Large Language Models Fundamentals
+lecture_1_p27_c1,lecture_1,27,28,Transformer Architecture & Attention
+lecture_1_p28_c1,lecture_1,28,25,Transformer Architecture & Attention
+lecture_1_p29_c1,lecture_1,29,3,Transformer Architecture & Attention
+lecture_1_p30_c1,lecture_1,30,34,Transformer Architecture & Attention
+lecture_1_p31_c1,lecture_1,31,31,Transformer Architecture & Attention
+lecture_1_p32_c1,lecture_1,32,30,Transformer Architecture & Attention
+lecture_1_p33_c1,lecture_1,33,37,Transformer Architecture & Attention
+lecture_1_p34_c1,lecture_1,34,56,Large Language Models Fundamentals
+lecture_1_p35_c1,lecture_1,35,74,Transformer Architecture & Attention
+lecture_1_p36_c1,lecture_1,36,2,Large Language Models Fundamentals
+lecture_1_p37_c1,lecture_1,37,73,Prompt Engineering & In-Context Learning
+lecture_1_p38_c1,lecture_1,38,72,Transformer Architecture & Attention
+lecture_1_p39_c1,lecture_1,39,5,Prompt Engineering & In-Context Learning
+lecture_1_p40_c1,lecture_1,40,46,Prompt Engineering & In-Context Learning
+lecture_1_p41_c1,lecture_1,41,25,Prompt Engineering & In-Context Learning
+lecture_1_p42_c1,lecture_1,42,28,Prompt Engineering & In-Context Learning
+lecture_1_p43_c1,lecture_1,43,45,Prompt Engineering & In-Context Learning
+lecture_1_p44_c1,lecture_1,44,61,Prompt Engineering & In-Context Learning
+lecture_1_p45_c1,lecture_1,45,77,Prompt Engineering & In-Context Learning
+lecture_1_p46_c1,lecture_1,46,6,Large Language Models Fundamentals
+lecture_1_p47_c1,lecture_1,47,24,Tokenization & Vocabulary
+lecture_1_p48_c1,lecture_1,48,15,Tokenization & Vocabulary
+lecture_1_p49_c1,lecture_1,49,70,Tokenization & Vocabulary
+lecture_1_p50_c1,lecture_1,50,70,Tokenization & Vocabulary
+lecture_1_p51_c1,lecture_1,51,25,Tokenization & Vocabulary
+lecture_1_p52_c1,lecture_1,52,32,Large Language Models Fundamentals
+lecture_1_p53_c1,lecture_1,53,41,Large Language Models Fundamentals
+lecture_1_p54_c1,lecture_1,54,22,Tokenization & Vocabulary
+lecture_1_p55_c1,lecture_1,55,45,Large Language Models Fundamentals
+lecture_1_p56_c1,lecture_1,56,3,Large Language Models Fundamentals
+lecture_1_p57_c1,lecture_1,57,2,Large Language Models Fundamentals
+lecture_1_p58_c1,lecture_1,58,2,Large Language Models Fundamentals
+lecture_1_p59_c1,lecture_1,59,21,LLM Agents & Multi-Agent Systems
+lecture_1_p60_c1,lecture_1,60,2,Large Language Models Fundamentals
+lecture_1_p61_c1,lecture_1,61,2,Large Language Models Fundamentals
+lecture_1_p62_c1,lecture_1,62,42,Large Language Models Fundamentals
+lecture_2_p1_c1,lecture_2,1,6,Transformer Architecture & Attention
+lecture_2_p2_c1,lecture_2,2,6,Large Language Models Fundamentals
+lecture_2_p3_c1,lecture_2,3,13,Large Language Models Fundamentals
+lecture_2_p4_c1,lecture_2,4,33,Retrieval-Augmented Generation (RAG)
+lecture_2_p5_c1,lecture_2,5,15,Retrieval-Augmented Generation (RAG)
+lecture_2_p6_c1,lecture_2,6,3,Retrieval-Augmented Generation (RAG)
+lecture_2_p7_c1,lecture_2,7,3,Retrieval-Augmented Generation (RAG)
+lecture_2_p8_c1,lecture_2,8,21,Retrieval-Augmented Generation (RAG)
+lecture_2_p9_c1,lecture_2,9,7,Large Language Models Fundamentals
+lecture_2_p10_c1,lecture_2,10,29,Retrieval-Augmented Generation (RAG)
+lecture_2_p11_c1,lecture_2,11,27,Transformer Architecture & Attention
+lecture_2_p12_c1,lecture_2,12,13,Transformer Architecture & Attention
+lecture_2_p13_c1,lecture_2,13,25,Transformer Architecture & Attention
+lecture_2_p14_c1,lecture_2,14,4,Transformer Architecture & Attention
+lecture_2_p15_c1,lecture_2,15,27,Transformer Architecture & Attention
+lecture_2_p16_c1,lecture_2,16,14,Transformer Architecture & Attention
+lecture_2_p17_c1,lecture_2,17,11,Transformer Architecture & Attention
+lecture_2_p18_c1,lecture_2,18,8,LLM Pre-training & Training Objectives
+lecture_2_p19_c1,lecture_2,19,3,Large Language Models Fundamentals
+lecture_2_p20_c1,lecture_2,20,3,Large Language Models Fundamentals
+lecture_2_p21_c1,lecture_2,21,3,Large Language Models Fundamentals
+lecture_2_p22_c1,lecture_2,22,3,Large Language Models Fundamentals
+lecture_2_p23_c1,lecture_2,23,5,Large Language Models Fundamentals
+lecture_2_p24_c1,lecture_2,24,2,Tokenization & Vocabulary
+lecture_2_p25_c1,lecture_2,25,7,Large Language Models Fundamentals
+lecture_2_p26_c1,lecture_2,26,3,Large Language Models Fundamentals
+lecture_2_p27_c1,lecture_2,27,3,Large Language Models Fundamentals
+lecture_2_p28_c1,lecture_2,28,2,Large Language Models Fundamentals
+lecture_2_p29_c1,lecture_2,29,3,Transformer Architecture & Attention
+lecture_2_p30_c1,lecture_2,30,6,Transformer Architecture & Attention
+lecture_2_p31_c1,lecture_2,31,3,Transformer Architecture & Attention
+lecture_2_p32_c1,lecture_2,32,3,Transformer Architecture & Attention
+lecture_2_p33_c1,lecture_2,33,30,Transformer Architecture & Attention
+lecture_2_p34_c1,lecture_2,34,3,Transformer Architecture & Attention
+lecture_2_p35_c1,lecture_2,35,6,Transformer Architecture & Attention
+lecture_2_p36_c1,lecture_2,36,6,Large Language Models Fundamentals
+lecture_2_p37_c1,lecture_2,37,5,Large Language Models Fundamentals
+lecture_2_p38_c1,lecture_2,38,3,Large Language Models Fundamentals
+lecture_2_p39_c1,lecture_2,39,4,Large Language Models Fundamentals
+lecture_2_p40_c1,lecture_2,40,5,Large Language Models Fundamentals
+lecture_2_p41_c1,lecture_2,41,5,Large Language Models Fundamentals
+lecture_2_p42_c1,lecture_2,42,10,Large Language Models Fundamentals
+lecture_2_p43_c1,lecture_2,43,21,Transformer Architecture & Attention
+lecture_3_p1_c1,lecture_3,1,8,LLM Pre-training & Training Objectives
+lecture_3_p2_c1,lecture_3,2,43,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_3_p3_c1,lecture_3,3,43,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_3_p4_c1,lecture_3,4,12,Large Language Models Fundamentals
+lecture_3_p5_c1,lecture_3,5,12,Large Language Models Fundamentals
+lecture_3_p6_c1,lecture_3,6,3,Large Language Models Fundamentals
+lecture_3_p7_c1,lecture_3,7,31,Tokenization & Vocabulary
+lecture_3_p8_c1,lecture_3,8,21,Transformer Architecture & Attention
+lecture_3_p9_c1,lecture_3,9,22,Transformer Architecture & Attention
+lecture_3_p10_c1,lecture_3,10,17,LLM Pre-training & Training Objectives
+lecture_3_p11_c1,lecture_3,11,16,LLM Pre-training & Training Objectives
+lecture_3_p12_c1,lecture_3,12,17,LLM Pre-training & Training Objectives
+lecture_3_p13_c1,lecture_3,13,10,Large Language Models Fundamentals
+lecture_3_p14_c1,lecture_3,14,15,Large Language Models Fundamentals
+lecture_3_p15_c1,lecture_3,15,47,Transformer Architecture & Attention
+lecture_3_p16_c1,lecture_3,16,7,LLM Pre-training & Training Objectives
+lecture_3_p17_c1,lecture_3,17,29,LLM Pre-training & Training Objectives
+lecture_3_p18_c1,lecture_3,18,15,LLM Pre-training & Training Objectives
+lecture_3_p19_c1,lecture_3,19,3,Large Language Models Fundamentals
+lecture_3_p20_c1,lecture_3,20,26,Transformer Architecture & Attention
+lecture_3_p21_c1,lecture_3,21,10,Transformer Architecture & Attention
+lecture_3_p22_c1,lecture_3,22,22,Large Language Models Fundamentals
+lecture_3_p23_c1,lecture_3,23,30,Large Language Models Fundamentals
+lecture_3_p24_c1,lecture_3,24,37,Large Language Models Fundamentals
+lecture_3_p25_c1,lecture_3,25,52,Large Language Models Fundamentals
+lecture_3_p26_c1,lecture_3,26,58,Large Language Models Fundamentals
+lecture_3_p27_c1,lecture_3,27,48,Large Language Models Fundamentals
+lecture_3_p28_c1,lecture_3,28,141,Large Language Models Fundamentals
+lecture_3_p29_c1,lecture_3,29,69,Large Language Models Fundamentals
+lecture_3_p30_c1,lecture_3,30,28,Transformer Architecture & Attention
+lecture_3_p31_c1,lecture_3,31,23,Large Language Models Fundamentals
+lecture_3_p32_c1,lecture_3,32,35,Large Language Models Fundamentals
+lecture_3_p33_c1,lecture_3,33,3,Large Language Models Fundamentals
+lecture_3_p34_c1,lecture_3,34,18,Large Language Models Fundamentals
+lecture_3_p35_c1,lecture_3,35,38,Large Language Models Fundamentals
+lecture_3_p36_c1,lecture_3,36,39,Large Language Models Fundamentals
+lecture_3_p37_c1,lecture_3,37,5,Transformer Architecture & Attention
+lecture_3_p38_c1,lecture_3,38,39,Large Language Models Fundamentals
+lecture_3_p39_c1,lecture_3,39,50,Large Language Models Fundamentals
+lecture_3_p40_c1,lecture_3,40,51,Large Language Models Fundamentals
+lecture_3_p41_c1,lecture_3,41,37,Large Language Models Fundamentals
+lecture_3_p42_c1,lecture_3,42,33,Large Language Models Fundamentals
+lecture_3_p43_c1,lecture_3,43,33,Large Language Models Fundamentals
+lecture_3_p44_c1,lecture_3,44,33,Large Language Models Fundamentals
+lecture_3_p45_c1,lecture_3,45,41,Large Language Models Fundamentals
+lecture_3_p46_c1,lecture_3,46,41,Large Language Models Fundamentals
+lecture_3_p47_c1,lecture_3,47,44,Large Language Models Fundamentals
+lecture_3_p48_c1,lecture_3,48,2,Large Language Models Fundamentals
+lecture_3_p49_c1,lecture_3,49,31,Tokenization & Vocabulary
+lecture_3_p50_c1,lecture_3,50,46,Large Language Models Fundamentals
+lecture_3_p51_c1,lecture_3,51,20,Large Language Models Fundamentals
+lecture_3_p52_c1,lecture_3,52,41,LLM Pre-training & Training Objectives
+lecture_3_p53_c1,lecture_3,53,19,Large Language Models Fundamentals
+lecture_3_p54_c1,lecture_3,54,31,Large Language Models Fundamentals
+lecture_3_p55_c1,lecture_3,55,22,Large Language Models Fundamentals
+lecture_3_p56_c1,lecture_3,56,6,Large Language Models Fundamentals
+lecture_3_p57_c1,lecture_3,57,39,Large Language Models Fundamentals
+lecture_3_p58_c1,lecture_3,58,43,Large Language Models Fundamentals
+lecture_3_p59_c1,lecture_3,59,20,LLM Pre-training & Training Objectives
+lecture_3_p60_c1,lecture_3,60,94,Tokenization & Vocabulary
+lecture_3_p61_c1,lecture_3,61,105,Transformer Architecture & Attention
+lecture_3_p62_c1,lecture_3,62,9,LLM Pre-training & Training Objectives
+lecture_3_p63_c1,lecture_3,63,44,Large Language Models Fundamentals
+lecture_3_p64_c1,lecture_3,64,11,Large Language Models Fundamentals
+lecture_3_p65_c1,lecture_3,65,6,Large Language Models Fundamentals
+lecture_3_p66_c1,lecture_3,66,5,Large Language Models Fundamentals
+lecture_3_p67_c1,lecture_3,67,6,Large Language Models Fundamentals
+lecture_3_p68_c1,lecture_3,68,86,Tokenization & Vocabulary
+lecture_3_p69_c1,lecture_3,69,82,Large Language Models Fundamentals
+lecture_3_p70_c1,lecture_3,70,5,Large Language Models Fundamentals
+lecture_3_p71_c1,lecture_3,71,4,Large Language Models Fundamentals
+lecture_3_p72_c1,lecture_3,72,19,Large Language Models Fundamentals
+lecture_3_p73_c1,lecture_3,73,4,Tokenization & Vocabulary
+lecture_3_p74_c1,lecture_3,74,52,Transformer Architecture & Attention
+lecture_3_p75_c1,lecture_3,75,60,Large Language Models Fundamentals
+lecture_3_p76_c1,lecture_3,76,57,Tokenization & Vocabulary
+lecture_3_p77_c1,lecture_3,77,11,Large Language Models Fundamentals
+lecture_3_p78_c1,lecture_3,78,102,Large Language Models Fundamentals
+lecture_3_p79_c1,lecture_3,79,6,Large Language Models Fundamentals
+lecture_3_p80_c1,lecture_3,80,22,Tokenization & Vocabulary
+lecture_3_p81_c1,lecture_3,81,48,Large Language Models Fundamentals
+lecture_4_p1_c1,lecture_4,1,9,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p2_c1,lecture_4,2,5,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p3_c1,lecture_4,3,38,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p4_c1,lecture_4,4,38,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p5_c1,lecture_4,5,7,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p6_c1,lecture_4,6,29,Prompt Engineering & In-Context Learning
+lecture_4_p7_c1,lecture_4,7,34,Prompt Engineering & In-Context Learning
+lecture_4_p8_c1,lecture_4,8,53,Prompt Engineering & In-Context Learning
+lecture_4_p9_c1,lecture_4,9,71,Prompt Engineering & In-Context Learning
+lecture_4_p10_c1,lecture_4,10,31,LLM Pre-training & Training Objectives
+lecture_4_p11_c1,lecture_4,11,41,Large Language Models Fundamentals
+lecture_4_p12_c1,lecture_4,12,45,Prompt Engineering & In-Context Learning
+lecture_4_p13_c1,lecture_4,13,45,Prompt Engineering & In-Context Learning
+lecture_4_p14_c1,lecture_4,14,44,Prompt Engineering & In-Context Learning
+lecture_4_p15_c1,lecture_4,15,35,Prompt Engineering & In-Context Learning
+lecture_4_p16_c1,lecture_4,16,15,Prompt Engineering & In-Context Learning
+lecture_4_p17_c1,lecture_4,17,30,Prompt Engineering & In-Context Learning
+lecture_4_p18_c1,lecture_4,18,42,Prompt Engineering & In-Context Learning
+lecture_4_p19_c1,lecture_4,19,44,Prompt Engineering & In-Context Learning
+lecture_4_p20_c1,lecture_4,20,31,Prompt Engineering & In-Context Learning
+lecture_4_p21_c1,lecture_4,21,31,Prompt Engineering & In-Context Learning
+lecture_4_p22_c1,lecture_4,22,10,Prompt Engineering & In-Context Learning
+lecture_4_p23_c1,lecture_4,23,6,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p24_c1,lecture_4,24,63,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p25_c1,lecture_4,25,45,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p26_c1,lecture_4,26,40,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p27_c1,lecture_4,27,51,Prompt Engineering & In-Context Learning
+lecture_4_p28_c1,lecture_4,28,54,Prompt Engineering & In-Context Learning
+lecture_4_p29_c1,lecture_4,29,30,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p30_c1,lecture_4,30,4,Large Language Models Fundamentals
+lecture_4_p31_c1,lecture_4,31,31,Large Language Models Fundamentals
+lecture_4_p32_c1,lecture_4,32,41,Prompt Engineering & In-Context Learning
+lecture_4_p33_c1,lecture_4,33,30,LLM Pre-training & Training Objectives
+lecture_4_p34_c1,lecture_4,34,30,Large Language Models Fundamentals
+lecture_4_p35_c1,lecture_4,35,126,Prompt Engineering & In-Context Learning
+lecture_4_p36_c1,lecture_4,36,19,Prompt Engineering & In-Context Learning
+lecture_4_p37_c1,lecture_4,37,77,Prompt Engineering & In-Context Learning
+lecture_4_p38_c1,lecture_4,38,77,Prompt Engineering & In-Context Learning
+lecture_4_p39_c1,lecture_4,39,44,Large Language Models Fundamentals
+lecture_4_p40_c1,lecture_4,40,52,LLM Agents & Multi-Agent Systems
+lecture_4_p41_c1,lecture_4,41,14,Large Language Models Fundamentals
+lecture_4_p42_c1,lecture_4,42,76,Prompt Engineering & In-Context Learning
+lecture_4_p43_c1,lecture_4,43,92,Prompt Engineering & In-Context Learning
+lecture_4_p44_c1,lecture_4,44,92,Prompt Engineering & In-Context Learning
+lecture_4_p45_c1,lecture_4,45,92,Prompt Engineering & In-Context Learning
+lecture_4_p46_c1,lecture_4,46,79,Prompt Engineering & In-Context Learning
+lecture_4_p47_c1,lecture_4,47,45,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p48_c1,lecture_4,48,4,LLM Evaluation & Safety
+lecture_4_p49_c1,lecture_4,49,11,LLM Evaluation & Safety
+lecture_4_p50_c1,lecture_4,50,25,LLM Evaluation & Safety
+lecture_4_p51_c1,lecture_4,51,33,LLM Evaluation & Safety
+lecture_4_p52_c1,lecture_4,52,23,LLM Evaluation & Safety
+lecture_4_p53_c1,lecture_4,53,62,LLM Evaluation & Safety
+lecture_4_p54_c1,lecture_4,54,62,LLM Evaluation & Safety
+lecture_4_p55_c1,lecture_4,55,34,LLM Evaluation & Safety
+lecture_4_p56_c1,lecture_4,56,76,LLM Evaluation & Safety
+lecture_4_p57_c1,lecture_4,57,29,LLM Evaluation & Safety
+lecture_4_p58_c1,lecture_4,58,62,LLM Evaluation & Safety
+lecture_4_p59_c1,lecture_4,59,66,LLM Evaluation & Safety
+lecture_4_p60_c1,lecture_4,60,20,LLM Evaluation & Safety
+lecture_4_p61_c1,lecture_4,61,65,LLM Evaluation & Safety
+lecture_4_p62_c1,lecture_4,62,33,LLM Evaluation & Safety
+lecture_4_p63_c1,lecture_4,63,100,LLM Evaluation & Safety
+lecture_4_p64_c1,lecture_4,64,33,LLM Evaluation & Safety
+lecture_4_p65_c1,lecture_4,65,2,LLM Evaluation & Safety
+lecture_4_p66_c1,lecture_4,66,3,LLM Evaluation & Safety
+lecture_4_p67_c1,lecture_4,67,24,LLM Evaluation & Safety
+lecture_4_p68_c1,lecture_4,68,22,LLM Evaluation & Safety
+lecture_4_p69_c1,lecture_4,69,18,LLM Evaluation & Safety
+lecture_4_p70_c1,lecture_4,70,19,LLM Evaluation & Safety
+lecture_4_p71_c1,lecture_4,71,38,LLM Evaluation & Safety
+lecture_4_p72_c1,lecture_4,72,22,LLM Evaluation & Safety
+lecture_4_p73_c1,lecture_4,73,18,LLM Evaluation & Safety
+lecture_4_p74_c1,lecture_4,74,3,Large Language Models Fundamentals
+lecture_4_p75_c1,lecture_4,75,25,Prompt Engineering & In-Context Learning
+lecture_4_p76_c1,lecture_4,76,25,Prompt Engineering & In-Context Learning
+lecture_4_p77_c1,lecture_4,77,42,Prompt Engineering & In-Context Learning
+lecture_4_p78_c1,lecture_4,78,5,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p79_c1,lecture_4,79,20,Large Language Models Fundamentals
+lecture_4_p80_c1,lecture_4,80,16,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p81_c1,lecture_4,81,26,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p82_c1,lecture_4,82,31,Large Language Models Fundamentals
+lecture_4_p83_c1,lecture_4,83,23,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p84_c1,lecture_4,84,13,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p85_c1,lecture_4,85,35,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p86_c1,lecture_4,86,49,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p87_c1,lecture_4,87,8,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p88_c1,lecture_4,88,17,Transformer Architecture & Attention
+lecture_4_p89_c1,lecture_4,89,22,Transformer Architecture & Attention
+lecture_4_p90_c1,lecture_4,90,23,Transformer Architecture & Attention
+lecture_4_p91_c1,lecture_4,91,43,Transformer Architecture & Attention
+lecture_4_p92_c1,lecture_4,92,62,Transformer Architecture & Attention
+lecture_4_p93_c1,lecture_4,93,67,Transformer Architecture & Attention
+lecture_4_p94_c1,lecture_4,94,83,Transformer Architecture & Attention
+lecture_4_p95_c1,lecture_4,95,34,Transformer Architecture & Attention
+lecture_4_p96_c1,lecture_4,96,40,Transformer Architecture & Attention
+lecture_4_p97_c1,lecture_4,97,40,Transformer Architecture & Attention
+lecture_4_p98_c1,lecture_4,98,54,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p99_c1,lecture_4,99,154,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p100_c1,lecture_4,100,36,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p101_c1,lecture_4,101,65,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p102_c1,lecture_4,102,15,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p103_c1,lecture_4,103,70,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p104_c1,lecture_4,104,35,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_4_p105_c1,lecture_4,105,15,Large Language Models Fundamentals
+lecture_5_p1_c1,lecture_5,1,10,LLM Alignment (RLHF / DPO)
+lecture_5_p2_c1,lecture_5,2,43,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_5_p3_c1,lecture_5,3,57,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_5_p4_c1,lecture_5,4,14,Large Language Models Fundamentals
+lecture_5_p5_c1,lecture_5,5,68,Prompt Engineering & In-Context Learning
+lecture_5_p6_c1,lecture_5,6,43,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_5_p7_c1,lecture_5,7,43,LLM Alignment (RLHF / DPO)
+lecture_5_p8_c1,lecture_5,8,35,LLM Alignment (RLHF / DPO)
+lecture_5_p9_c1,lecture_5,9,15,LLM Agents & Multi-Agent Systems
+lecture_5_p10_c1,lecture_5,10,15,LLM Agents & Multi-Agent Systems
+lecture_5_p11_c1,lecture_5,11,23,LLM Agents & Multi-Agent Systems
+lecture_5_p12_c1,lecture_5,12,33,LLM Agents & Multi-Agent Systems
+lecture_5_p13_c1,lecture_5,13,7,LLM Alignment (RLHF / DPO)
+lecture_5_p14_c1,lecture_5,14,19,Prompt Engineering & In-Context Learning
+lecture_5_p15_c1,lecture_5,15,86,LLM Alignment (RLHF / DPO)
+lecture_5_p16_c1,lecture_5,16,20,Large Language Models Fundamentals
+lecture_5_p17_c1,lecture_5,17,58,LLM Alignment (RLHF / DPO)
+lecture_5_p18_c1,lecture_5,18,9,LLM Alignment (RLHF / DPO)
+lecture_5_p19_c1,lecture_5,19,52,LLM Alignment (RLHF / DPO)
+lecture_5_p20_c1,lecture_5,20,53,LLM Alignment (RLHF / DPO)
+lecture_5_p21_c1,lecture_5,21,64,LLM Alignment (RLHF / DPO)
+lecture_5_p22_c1,lecture_5,22,7,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_5_p23_c1,lecture_5,23,40,LLM Alignment (RLHF / DPO)
+lecture_5_p24_c1,lecture_5,24,34,LLM Alignment (RLHF / DPO)
+lecture_5_p25_c1,lecture_5,25,34,LLM Alignment (RLHF / DPO)
+lecture_5_p26_c1,lecture_5,26,35,LLM Alignment (RLHF / DPO)
+lecture_5_p27_c1,lecture_5,27,36,LLM Alignment (RLHF / DPO)
+lecture_5_p28_c1,lecture_5,28,35,LLM Alignment (RLHF / DPO)
+lecture_5_p29_c1,lecture_5,29,38,LLM Alignment (RLHF / DPO)
+lecture_5_p30_c1,lecture_5,30,7,Large Language Models Fundamentals
+lecture_5_p31_c1,lecture_5,31,21,LLM Alignment (RLHF / DPO)
+lecture_5_p32_c1,lecture_5,32,21,Prompt Engineering & In-Context Learning
+lecture_5_p33_c1,lecture_5,33,53,Prompt Engineering & In-Context Learning
+lecture_5_p34_c1,lecture_5,34,33,LLM Alignment (RLHF / DPO)
+lecture_5_p35_c1,lecture_5,35,24,Prompt Engineering & In-Context Learning
+lecture_5_p36_c1,lecture_5,36,24,Prompt Engineering & In-Context Learning
+lecture_5_p37_c1,lecture_5,37,29,Prompt Engineering & In-Context Learning
+lecture_5_p38_c1,lecture_5,38,22,LLM Alignment (RLHF / DPO)
+lecture_5_p39_c1,lecture_5,39,13,LLM Alignment (RLHF / DPO)
+lecture_5_p40_c1,lecture_5,40,21,LLM Alignment (RLHF / DPO)
+lecture_5_p41_c1,lecture_5,41,33,LLM Alignment (RLHF / DPO)
+lecture_5_p42_c1,lecture_5,42,13,LLM Alignment (RLHF / DPO)
+lecture_5_p43_c1,lecture_5,43,24,LLM Alignment (RLHF / DPO)
+lecture_5_p44_c1,lecture_5,44,57,Prompt Engineering & In-Context Learning
+lecture_5_p45_c1,lecture_5,45,18,LLM Alignment (RLHF / DPO)
+lecture_5_p46_c1,lecture_5,46,23,Large Language Models Fundamentals
+lecture_5_p47_c1,lecture_5,47,22,Large Language Models Fundamentals
+lecture_5_p48_c1,lecture_5,48,24,LLM Alignment (RLHF / DPO)
+lecture_5_p49_c1,lecture_5,49,23,LLM Alignment (RLHF / DPO)
+lecture_5_p50_c1,lecture_5,50,26,LLM Alignment (RLHF / DPO)
+lecture_5_p51_c1,lecture_5,51,28,LLM Alignment (RLHF / DPO)
+lecture_5_p52_c1,lecture_5,52,28,LLM Alignment (RLHF / DPO)
+lecture_5_p53_c1,lecture_5,53,29,Prompt Engineering & In-Context Learning
+lecture_5_p54_c1,lecture_5,54,29,Prompt Engineering & In-Context Learning
+lecture_5_p55_c1,lecture_5,55,38,LLM Alignment (RLHF / DPO)
+lecture_5_p56_c1,lecture_5,56,40,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_5_p57_c1,lecture_5,57,42,LLM Alignment (RLHF / DPO)
+lecture_5_p58_c1,lecture_5,58,33,LLM Alignment (RLHF / DPO)
+lecture_5_p59_c1,lecture_5,59,7,LLM Alignment (RLHF / DPO)
+lecture_5_p60_c1,lecture_5,60,31,LLM Alignment (RLHF / DPO)
+lecture_5_p61_c1,lecture_5,61,25,Large Language Models Fundamentals
+lecture_5_p62_c1,lecture_5,62,93,LLM Alignment (RLHF / DPO)
+lecture_5_p63_c1,lecture_5,63,29,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_5_p64_c1,lecture_5,64,112,LLM Alignment (RLHF / DPO)
+lecture_5_p65_c1,lecture_5,65,55,LLM Alignment (RLHF / DPO)
+lecture_5_p66_c1,lecture_5,66,51,LLM Alignment (RLHF / DPO)
+lecture_5_p67_c1,lecture_5,67,15,Large Language Models Fundamentals
+lecture_6_p1_c1,lecture_6,1,10,Large Language Models Fundamentals
+lecture_6_p2_c1,lecture_6,2,39,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p3_c1,lecture_6,3,39,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p4_c1,lecture_6,4,39,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p5_c1,lecture_6,5,7,Large Language Models Fundamentals
+lecture_6_p6_c1,lecture_6,6,18,Large Language Models Fundamentals
+lecture_6_p7_c1,lecture_6,7,18,Large Language Models Fundamentals
+lecture_6_p8_c1,lecture_6,8,27,Large Language Models Fundamentals
+lecture_6_p9_c1,lecture_6,9,29,Large Language Models Fundamentals
+lecture_6_p10_c1,lecture_6,10,31,Large Language Models Fundamentals
+lecture_6_p11_c1,lecture_6,11,41,Large Language Models Fundamentals
+lecture_6_p12_c1,lecture_6,12,40,Large Language Models Fundamentals
+lecture_6_p13_c1,lecture_6,13,48,Large Language Models Fundamentals
+lecture_6_p14_c1,lecture_6,14,45,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p15_c1,lecture_6,15,139,LLM Alignment (RLHF / DPO)
+lecture_6_p16_c1,lecture_6,16,6,Large Language Models Fundamentals
+lecture_6_p17_c1,lecture_6,17,67,Prompt Engineering & In-Context Learning
+lecture_6_p18_c1,lecture_6,18,39,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p19_c1,lecture_6,19,7,Prompt Engineering & In-Context Learning
+lecture_6_p20_c1,lecture_6,20,16,Retrieval-Augmented Generation (RAG)
+lecture_6_p21_c1,lecture_6,21,5,Retrieval-Augmented Generation (RAG)
+lecture_6_p22_c1,lecture_6,22,31,Prompt Engineering & In-Context Learning
+lecture_6_p23_c1,lecture_6,23,16,Retrieval-Augmented Generation (RAG)
+lecture_6_p24_c1,lecture_6,24,22,Retrieval-Augmented Generation (RAG)
+lecture_6_p25_c1,lecture_6,25,65,Retrieval-Augmented Generation (RAG)
+lecture_6_p26_c1,lecture_6,26,35,Retrieval-Augmented Generation (RAG)
+lecture_6_p27_c1,lecture_6,27,33,Retrieval-Augmented Generation (RAG)
+lecture_6_p28_c1,lecture_6,28,43,Retrieval-Augmented Generation (RAG)
+lecture_6_p29_c1,lecture_6,29,57,Retrieval-Augmented Generation (RAG)
+lecture_6_p30_c1,lecture_6,30,69,Retrieval-Augmented Generation (RAG)
+lecture_6_p31_c1,lecture_6,31,35,Retrieval-Augmented Generation (RAG)
+lecture_6_p32_c1,lecture_6,32,6,Large Language Models Fundamentals
+lecture_6_p33_c1,lecture_6,33,48,Large Language Models Fundamentals
+lecture_6_p34_c1,lecture_6,34,58,Retrieval-Augmented Generation (RAG)
+lecture_6_p35_c1,lecture_6,35,45,Large Language Models Fundamentals
+lecture_6_p36_c1,lecture_6,36,21,Retrieval-Augmented Generation (RAG)
+lecture_6_p37_c1,lecture_6,37,66,LLM Agents & Multi-Agent Systems
+lecture_6_p38_c1,lecture_6,38,9,Large Language Models Fundamentals
+lecture_6_p39_c1,lecture_6,39,129,Prompt Engineering & In-Context Learning
+lecture_6_p40_c1,lecture_6,40,93,Prompt Engineering & In-Context Learning
+lecture_6_p41_c1,lecture_6,41,152,Prompt Engineering & In-Context Learning
+lecture_6_p42_c1,lecture_6,42,126,Prompt Engineering & In-Context Learning
+lecture_6_p43_c1,lecture_6,43,4,Large Language Models Fundamentals
+lecture_6_p44_c1,lecture_6,44,21,Prompt Engineering & In-Context Learning
+lecture_6_p45_c1,lecture_6,45,17,Large Language Models Fundamentals
+lecture_6_p46_c1,lecture_6,46,113,Prompt Engineering & In-Context Learning
+lecture_6_p47_c1,lecture_6,47,174,Prompt Engineering & In-Context Learning
+lecture_6_p48_c1,lecture_6,48,32,Prompt Engineering & In-Context Learning
+lecture_6_p49_c1,lecture_6,49,14,Large Language Models Fundamentals
+lecture_6_p50_c1,lecture_6,50,28,Large Language Models Fundamentals
+lecture_6_p51_c1,lecture_6,51,16,Retrieval-Augmented Generation (RAG)
+lecture_6_p52_c1,lecture_6,52,10,Large Language Models Fundamentals
+lecture_6_p53_c1,lecture_6,53,16,Retrieval-Augmented Generation (RAG)
+lecture_6_p54_c1,lecture_6,54,8,LLM Agents & Multi-Agent Systems
+lecture_6_p55_c1,lecture_6,55,32,LLM Agents & Multi-Agent Systems
+lecture_6_p56_c1,lecture_6,56,48,LLM Agents & Multi-Agent Systems
+lecture_6_p57_c1,lecture_6,57,48,LLM Agents & Multi-Agent Systems
+lecture_6_p58_c1,lecture_6,58,47,LLM Agents & Multi-Agent Systems
+lecture_6_p59_c1,lecture_6,59,36,LLM Agents & Multi-Agent Systems
+lecture_6_p60_c1,lecture_6,60,58,LLM Agents & Multi-Agent Systems
+lecture_6_p61_c1,lecture_6,61,53,LLM Agents & Multi-Agent Systems
+lecture_6_p62_c1,lecture_6,62,185,LLM Agents & Multi-Agent Systems
+lecture_6_p63_c1,lecture_6,63,28,LLM Agents & Multi-Agent Systems
+lecture_6_p64_c1,lecture_6,64,23,Retrieval-Augmented Generation (RAG)
+lecture_6_p65_c1,lecture_6,65,12,LLM Pre-training & Training Objectives
+lecture_6_p66_c1,lecture_6,66,5,Large Language Models Fundamentals
+lecture_6_p67_c1,lecture_6,67,10,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p68_c1,lecture_6,68,14,Fine-Tuning & PEFT (Parameter-Efficient Fine-Tuning)
+lecture_6_p69_c1,lecture_6,69,19,Retrieval-Augmented Generation (RAG)
+lecture_6_p70_c1,lecture_6,70,23,Retrieval-Augmented Generation (RAG)
+lecture_6_p71_c1,lecture_6,71,31,Retrieval-Augmented Generation (RAG)
+lecture_6_p72_c1,lecture_6,72,39,Retrieval-Augmented Generation (RAG)
+lecture_6_p73_c1,lecture_6,73,42,Retrieval-Augmented Generation (RAG)
+lecture_6_p74_c1,lecture_6,74,42,Retrieval-Augmented Generation (RAG)
+lecture_6_p75_c1,lecture_6,75,14,Large Language Models Fundamentals
+lecture_7_p1_c1,lecture_7,1,7,Retrieval-Augmented Generation (RAG)
+lecture_7_p2_c1,lecture_7,2,44,Retrieval-Augmented Generation (RAG)
+lecture_7_p3_c1,lecture_7,3,25,Prompt Engineering & In-Context Learning
+lecture_7_p4_c1,lecture_7,4,57,LLM Agents & Multi-Agent Systems
+lecture_7_p5_c1,lecture_7,5,51,Large Language Models Fundamentals
+lecture_7_p6_c1,lecture_7,6,25,Prompt Engineering & In-Context Learning
+lecture_7_p7_c1,lecture_7,7,37,Prompt Engineering & In-Context Learning
+lecture_7_p8_c1,lecture_7,8,27,Large Language Models Fundamentals
+lecture_7_p9_c1,lecture_7,9,4,Retrieval-Augmented Generation (RAG)
+lecture_7_p10_c1,lecture_7,10,4,Retrieval-Augmented Generation (RAG)
+lecture_7_p11_c1,lecture_7,11,14,Retrieval-Augmented Generation (RAG)
+lecture_7_p12_c1,lecture_7,12,37,Retrieval-Augmented Generation (RAG)
+lecture_7_p13_c1,lecture_7,13,41,Retrieval-Augmented Generation (RAG)
+lecture_7_p14_c1,lecture_7,14,81,Retrieval-Augmented Generation (RAG)
+lecture_7_p15_c1,lecture_7,15,46,Large Language Models Fundamentals
+lecture_7_p16_c1,lecture_7,16,17,Retrieval-Augmented Generation (RAG)
+lecture_7_p17_c1,lecture_7,17,40,Retrieval-Augmented Generation (RAG)
+lecture_7_p18_c1,lecture_7,18,44,Retrieval-Augmented Generation (RAG)
+lecture_7_p19_c1,lecture_7,19,57,Retrieval-Augmented Generation (RAG)
+lecture_7_p20_c1,lecture_7,20,4,Retrieval-Augmented Generation (RAG)
+lecture_7_p21_c1,lecture_7,21,24,Retrieval-Augmented Generation (RAG)
+lecture_7_p22_c1,lecture_7,22,28,Retrieval-Augmented Generation (RAG)
+lecture_7_p23_c1,lecture_7,23,90,Retrieval-Augmented Generation (RAG)
+lecture_7_p24_c1,lecture_7,24,45,Retrieval-Augmented Generation (RAG)
+lecture_7_p25_c1,lecture_7,25,59,Retrieval-Augmented Generation (RAG)
+lecture_7_p26_c1,lecture_7,26,44,Retrieval-Augmented Generation (RAG)
+lecture_7_p27_c1,lecture_7,27,11,Retrieval-Augmented Generation (RAG)
+lecture_7_p28_c1,lecture_7,28,31,Retrieval-Augmented Generation (RAG)
+lecture_7_p29_c1,lecture_7,29,46,Retrieval-Augmented Generation (RAG)
+lecture_7_p30_c1,lecture_7,30,35,Prompt Engineering & In-Context Learning
+lecture_7_p31_c1,lecture_7,31,59,Large Language Models Fundamentals
+lecture_7_p32_c1,lecture_7,32,54,Large Language Models Fundamentals
+lecture_7_p33_c1,lecture_7,33,65,Retrieval-Augmented Generation (RAG)
+lecture_7_p34_c1,lecture_7,34,32,Retrieval-Augmented Generation (RAG)
+lecture_7_p35_c1,lecture_7,35,37,Retrieval-Augmented Generation (RAG)
+lecture_7_p36_c1,lecture_7,36,15,Retrieval-Augmented Generation (RAG)
+lecture_7_p37_c1,lecture_7,37,26,Retrieval-Augmented Generation (RAG)
+lecture_7_p38_c1,lecture_7,38,46,Retrieval-Augmented Generation (RAG)
+lecture_7_p39_c1,lecture_7,39,65,Retrieval-Augmented Generation (RAG)
+lecture_7_p40_c1,lecture_7,40,26,Retrieval-Augmented Generation (RAG)
+lecture_7_p41_c1,lecture_7,41,32,Retrieval-Augmented Generation (RAG)
+lecture_7_p42_c1,lecture_7,42,35,Retrieval-Augmented Generation (RAG)
+lecture_7_p43_c1,lecture_7,43,8,Retrieval-Augmented Generation (RAG)
+lecture_7_p44_c1,lecture_7,44,4,Retrieval-Augmented Generation (RAG)
+lecture_7_p45_c1,lecture_7,45,30,Retrieval-Augmented Generation (RAG)
+lecture_7_p46_c1,lecture_7,46,40,Retrieval-Augmented Generation (RAG)
+lecture_7_p47_c1,lecture_7,47,43,Retrieval-Augmented Generation (RAG)
+lecture_7_p48_c1,lecture_7,48,29,Retrieval-Augmented Generation (RAG)
+lecture_7_p49_c1,lecture_7,49,31,Retrieval-Augmented Generation (RAG)
+lecture_7_p50_c1,lecture_7,50,24,Retrieval-Augmented Generation (RAG)
+lecture_7_p51_c1,lecture_7,51,26,Retrieval-Augmented Generation (RAG)
+lecture_7_p52_c1,lecture_7,52,31,Retrieval-Augmented Generation (RAG)
+lecture_7_p53_c1,lecture_7,53,39,Retrieval-Augmented Generation (RAG)
+lecture_7_p54_c1,lecture_7,54,25,Retrieval-Augmented Generation (RAG)
+lecture_7_p55_c1,lecture_7,55,29,Retrieval-Augmented Generation (RAG)
+lecture_7_p56_c1,lecture_7,56,17,Retrieval-Augmented Generation (RAG)
+lecture_7_p57_c1,lecture_7,57,34,Retrieval-Augmented Generation (RAG)
+lecture_7_p58_c1,lecture_7,58,6,Large Language Models Fundamentals
+lecture_7_p59_c1,lecture_7,59,29,Retrieval-Augmented Generation (RAG)
+lecture_7_p60_c1,lecture_7,60,33,Retrieval-Augmented Generation (RAG)
+lecture_7_p61_c1,lecture_7,61,37,Retrieval-Augmented Generation (RAG)
+lecture_7_p62_c1,lecture_7,62,26,Retrieval-Augmented Generation (RAG)
+lecture_7_p63_c1,lecture_7,63,42,Retrieval-Augmented Generation (RAG)
+lecture_7_p64_c1,lecture_7,64,7,Retrieval-Augmented Generation (RAG)
+lecture_7_p65_c1,lecture_7,65,5,Retrieval-Augmented Generation (RAG)
+lecture_7_p66_c1,lecture_7,66,5,Retrieval-Augmented Generation (RAG)
+lecture_7_p67_c1,lecture_7,67,5,Retrieval-Augmented Generation (RAG)
+lecture_7_p68_c1,lecture_7,68,5,Retrieval-Augmented Generation (RAG)
+lecture_7_p69_c1,lecture_7,69,5,Retrieval-Augmented Generation (RAG)
+lecture_7_p70_c1,lecture_7,70,5,Retrieval-Augmented Generation (RAG)
+lecture_7_p71_c1,lecture_7,71,8,Retrieval-Augmented Generation (RAG)
+lecture_7_p72_c1,lecture_7,72,28,Retrieval-Augmented Generation (RAG)
+lecture_7_p73_c1,lecture_7,73,54,Retrieval-Augmented Generation (RAG)
+lecture_7_p74_c1,lecture_7,74,74,Retrieval-Augmented Generation (RAG)
+lecture_7_p75_c1,lecture_7,75,3,Retrieval-Augmented Generation (RAG)
+lecture_7_p76_c1,lecture_7,76,64,Retrieval-Augmented Generation (RAG)
+lecture_7_p77_c1,lecture_7,77,36,Retrieval-Augmented Generation (RAG)
+lecture_7_p78_c1,lecture_7,78,14,Retrieval-Augmented Generation (RAG)
+lecture_7_p79_c1,lecture_7,79,13,Large Language Models Fundamentals
+lecture_7_p80_c1,lecture_7,80,16,Retrieval-Augmented Generation (RAG)
+lecture_7_p81_c1,lecture_7,81,8,Retrieval-Augmented Generation (RAG)
+lecture_7_p82_c1,lecture_7,82,16,Retrieval-Augmented Generation (RAG)
+lecture_7_p83_c1,lecture_7,83,9,Retrieval-Augmented Generation (RAG)
+lecture_7_p84_c1,lecture_7,84,11,Retrieval-Augmented Generation (RAG)
+lecture_7_p85_c1,lecture_7,85,5,Prompt Engineering & In-Context Learning
+lecture_7_p86_c1,lecture_7,86,65,Prompt Engineering & In-Context Learning
+lecture_7_p87_c1,lecture_7,87,69,Prompt Engineering & In-Context Learning
+lecture_7_p88_c1,lecture_7,88,116,Retrieval-Augmented Generation (RAG)
+lecture_7_p89_c1,lecture_7,89,13,Retrieval-Augmented Generation (RAG)
+lecture_8_p1_c1,lecture_8,1,6,Large Language Models Fundamentals
+lecture_8_p2_c1,lecture_8,2,9,Large Language Models Fundamentals
+lecture_8_p3_c1,lecture_8,3,60,Prompt Engineering & In-Context Learning
+lecture_8_p4_c1,lecture_8,4,62,Retrieval-Augmented Generation (RAG)
+lecture_8_p5_c1,lecture_8,5,42,LLM Agents & Multi-Agent Systems
+lecture_8_p6_c1,lecture_8,6,64,Retrieval-Augmented Generation (RAG)
+lecture_8_p7_c1,lecture_8,7,60,LLM Agents & Multi-Agent Systems
+lecture_8_p8_c1,lecture_8,8,44,LLM Agents & Multi-Agent Systems
+lecture_8_p9_c1,lecture_8,9,62,Retrieval-Augmented Generation (RAG)
+lecture_8_p10_c1,lecture_8,10,61,Retrieval-Augmented Generation (RAG)
+lecture_8_p11_c1,lecture_8,11,27,LLM Agents & Multi-Agent Systems
+lecture_8_p12_c1,lecture_8,12,8,Large Language Models Fundamentals
+lecture_8_p13_c1,lecture_8,13,35,Retrieval-Augmented Generation (RAG)
+lecture_8_p14_c1,lecture_8,14,79,Retrieval-Augmented Generation (RAG)
+lecture_8_p15_c1,lecture_8,15,74,Retrieval-Augmented Generation (RAG)
+lecture_8_p16_c1,lecture_8,16,33,Large Language Models Fundamentals
+lecture_8_p17_c1,lecture_8,17,13,Large Language Models Fundamentals
+lecture_8_p18_c1,lecture_8,18,61,Retrieval-Augmented Generation (RAG)
+lecture_8_p19_c1,lecture_8,19,69,Retrieval-Augmented Generation (RAG)
+lecture_8_p20_c1,lecture_8,20,65,Retrieval-Augmented Generation (RAG)
+lecture_8_p21_c1,lecture_8,21,22,Retrieval-Augmented Generation (RAG)
+lecture_8_p22_c1,lecture_8,22,51,Retrieval-Augmented Generation (RAG)
+lecture_8_p23_c1,lecture_8,23,55,Retrieval-Augmented Generation (RAG)
+lecture_8_p24_c1,lecture_8,24,9,Large Language Models Fundamentals
+lecture_8_p25_c1,lecture_8,25,89,Retrieval-Augmented Generation (RAG)
+lecture_8_p26_c1,lecture_8,26,40,LLM Evaluation & Safety
+lecture_8_p27_c1,lecture_8,27,62,Retrieval-Augmented Generation (RAG)
+lecture_8_p28_c1,lecture_8,28,42,Large Language Models Fundamentals
+lecture_8_p29_c1,lecture_8,29,8,Large Language Models Fundamentals
+lecture_8_p30_c1,lecture_8,30,14,LLM Agents & Multi-Agent Systems
+lecture_8_p31_c1,lecture_8,31,62,LLM Agents & Multi-Agent Systems
+lecture_8_p32_c1,lecture_8,32,65,LLM Agents & Multi-Agent Systems
+lecture_8_p33_c1,lecture_8,33,60,Retrieval-Augmented Generation (RAG)
+lecture_8_p34_c1,lecture_8,34,79,LLM Agents & Multi-Agent Systems
+lecture_8_p35_c1,lecture_8,35,34,LLM Agents & Multi-Agent Systems
+lecture_8_p36_c1,lecture_8,36,11,Large Language Models Fundamentals
+lecture_8_p37_c1,lecture_8,37,62,Large Language Models Fundamentals
+lecture_8_p38_c1,lecture_8,38,44,Large Language Models Fundamentals
+lecture_8_p39_c1,lecture_8,39,51,LLM Alignment (RLHF / DPO)
+lecture_8_p40_c1,lecture_8,40,9,Large Language Models Fundamentals
+lecture_8_p41_c1,lecture_8,41,53,Large Language Models Fundamentals
+lecture_8_p42_c1,lecture_8,42,54,Prompt Engineering & In-Context Learning
+lecture_8_p43_c1,lecture_8,43,55,Prompt Engineering & In-Context Learning
+lecture_8_p44_c1,lecture_8,44,53,LLM Alignment (RLHF / DPO)
+lecture_8_p45_c1,lecture_8,45,61,Prompt Engineering & In-Context Learning
+lecture_8_p46_c1,lecture_8,46,106,LLM Agents & Multi-Agent Systems
+lecture_8_p47_c1,lecture_8,47,41,Large Language Models Fundamentals
+lecture_8_p48_c1,lecture_8,48,65,Large Language Models Fundamentals
+lecture_8_p49_c1,lecture_8,49,63,LLM Alignment (RLHF / DPO)
+lecture_8_p50_c1,lecture_8,50,9,Large Language Models Fundamentals
+lecture_8_p51_c1,lecture_8,51,85,Prompt Engineering & In-Context Learning
+lecture_8_p52_c1,lecture_8,52,58,Large Language Models Fundamentals
+lecture_8_p53_c1,lecture_8,53,37,LLM Evaluation & Safety
+lecture_8_p54_c1,lecture_8,54,93,Prompt Engineering & In-Context Learning
+lecture_8_p55_c1,lecture_8,55,33,Large Language Models Fundamentals
+lecture_8_p56_c1,lecture_8,56,7,LLM Alignment (RLHF / DPO)
+lecture_8_p57_c1,lecture_8,57,20,Prompt Engineering & In-Context Learning
+lecture_8_p58_c1,lecture_8,58,51,LLM Alignment (RLHF / DPO)
+lecture_8_p59_c1,lecture_8,59,55,LLM Agents & Multi-Agent Systems
+lecture_8_p60_c1,lecture_8,60,6,LLM Agents & Multi-Agent Systems
+lecture_8_p61_c1,lecture_8,61,43,LLM Agents & Multi-Agent Systems
+lecture_8_p62_c1,lecture_8,62,43,LLM Agents & Multi-Agent Systems
+lecture_8_p63_c1,lecture_8,63,75,LLM Agents & Multi-Agent Systems
+lecture_8_p64_c1,lecture_8,64,62,LLM Agents & Multi-Agent Systems
+lecture_8_p65_c1,lecture_8,65,33,LLM Agents & Multi-Agent Systems
+lecture_8_p66_c1,lecture_8,66,62,LLM Agents & Multi-Agent Systems
+lecture_8_p67_c1,lecture_8,67,82,LLM Agents & Multi-Agent Systems
+lecture_8_p68_c1,lecture_8,68,52,LLM Agents & Multi-Agent Systems
+lecture_8_p69_c1,lecture_8,69,67,LLM Agents & Multi-Agent Systems
+lecture_8_p70_c1,lecture_8,70,88,LLM Agents & Multi-Agent Systems
+lecture_8_p71_c1,lecture_8,71,33,LLM Agents & Multi-Agent Systems
+lecture_8_p72_c1,lecture_8,72,53,Prompt Engineering & In-Context Learning
+lecture_8_p73_c1,lecture_8,73,51,LLM Alignment (RLHF / DPO)
+lecture_8_p74_c1,lecture_8,74,21,Large Language Models Fundamentals
+lecture_8_p75_c1,lecture_8,75,11,Large Language Models Fundamentals
+lecture_9_p1_c1,lecture_9,1,9,Large Language Models Fundamentals
+lecture_9_p2_c1,lecture_9,2,8,LLM Agents & Multi-Agent Systems
+lecture_9_p3_c1,lecture_9,3,82,LLM Agents & Multi-Agent Systems
+lecture_9_p4_c1,lecture_9,4,106,LLM Agents & Multi-Agent Systems
+lecture_9_p5_c1,lecture_9,5,109,LLM Agents & Multi-Agent Systems
+lecture_9_p6_c1,lecture_9,6,115,LLM Agents & Multi-Agent Systems
+lecture_9_p7_c1,lecture_9,7,11,LLM Agents & Multi-Agent Systems
+lecture_9_p8_c1,lecture_9,8,106,LLM Agents & Multi-Agent Systems
+lecture_9_p9_c1,lecture_9,9,102,LLM Agents & Multi-Agent Systems
+lecture_9_p10_c1,lecture_9,10,10,LLM Agents & Multi-Agent Systems
+lecture_9_p11_c1,lecture_9,11,119,LLM Agents & Multi-Agent Systems
+lecture_9_p12_c1,lecture_9,12,83,LLM Agents & Multi-Agent Systems
+lecture_9_p13_c1,lecture_9,13,94,Prompt Engineering & In-Context Learning
+lecture_9_p14_c1,lecture_9,14,91,Prompt Engineering & In-Context Learning
+lecture_9_p15_c1,lecture_9,15,25,LLM Agents & Multi-Agent Systems
+lecture_9_p16_c1,lecture_9,16,8,LLM Agents & Multi-Agent Systems
+lecture_9_p17_c1,lecture_9,17,33,Large Language Models Fundamentals
+lecture_9_p18_c1,lecture_9,18,56,LLM Agents & Multi-Agent Systems
+lecture_9_p19_c1,lecture_9,19,44,Large Language Models Fundamentals
+lecture_9_p20_c1,lecture_9,20,49,LLM Agents & Multi-Agent Systems
+lecture_9_p21_c1,lecture_9,21,41,LLM Agents & Multi-Agent Systems
+lecture_9_p22_c1,lecture_9,22,49,LLM Agents & Multi-Agent Systems
+lecture_9_p23_c1,lecture_9,23,95,LLM Agents & Multi-Agent Systems
+lecture_9_p24_c1,lecture_9,24,11,LLM Agents & Multi-Agent Systems
+lecture_9_p25_c1,lecture_9,25,51,Large Language Models Fundamentals
+lecture_9_p26_c1,lecture_9,26,103,LLM Agents & Multi-Agent Systems
+lecture_9_p27_c1,lecture_9,27,27,Large Language Models Fundamentals
+lecture_9_p28_c1,lecture_9,28,23,LLM Agents & Multi-Agent Systems
+lecture_9_p29_c1,lecture_9,29,9,Large Language Models Fundamentals
+lecture_9_p30_c1,lecture_9,30,50,Retrieval-Augmented Generation (RAG)
+lecture_9_p31_c1,lecture_9,31,70,Prompt Engineering & In-Context Learning
+lecture_9_p32_c1,lecture_9,32,71,Prompt Engineering & In-Context Learning
+lecture_9_p33_c1,lecture_9,33,27,Large Language Models Fundamentals
+lecture_9_p34_c1,lecture_9,34,54,Prompt Engineering & In-Context Learning
+lecture_9_p35_c1,lecture_9,35,76,Retrieval-Augmented Generation (RAG)
+lecture_9_p36_c1,lecture_9,36,110,Prompt Engineering & In-Context Learning
+lecture_9_p37_c1,lecture_9,37,75,LLM Evaluation & Safety
+lecture_9_p38_c1,lecture_9,38,52,LLM Evaluation & Safety
+lecture_9_p39_c1,lecture_9,39,13,Large Language Models Fundamentals
+lecture_9_p40_c1,lecture_9,40,79,Retrieval-Augmented Generation (RAG)
+lecture_9_p41_c1,lecture_9,41,58,Retrieval-Augmented Generation (RAG)
+lecture_9_p42_c1,lecture_9,42,82,Retrieval-Augmented Generation (RAG)
+lecture_9_p43_c1,lecture_9,43,72,Retrieval-Augmented Generation (RAG)
+lecture_9_p44_c1,lecture_9,44,42,Large Language Models Fundamentals
+lecture_9_p45_c1,lecture_9,45,11,Large Language Models Fundamentals
+lecture_9_p46_c1,lecture_9,46,47,Retrieval-Augmented Generation (RAG)
+lecture_9_p47_c1,lecture_9,47,52,Large Language Models Fundamentals
+lecture_9_p48_c1,lecture_9,48,79,Retrieval-Augmented Generation (RAG)
+lecture_9_p49_c1,lecture_9,49,43,Retrieval-Augmented Generation (RAG)
+lecture_9_p50_c1,lecture_9,50,9,Large Language Models Fundamentals
+lecture_9_p51_c1,lecture_9,51,72,Retrieval-Augmented Generation (RAG)
+lecture_9_p52_c1,lecture_9,52,73,Retrieval-Augmented Generation (RAG)
+lecture_9_p53_c1,lecture_9,53,36,Large Language Models Fundamentals
+lecture_9_p54_c1,lecture_9,54,13,Large Language Models Fundamentals
+lecture_9_p55_c1,lecture_9,55,58,Retrieval-Augmented Generation (RAG)
+lecture_9_p56_c1,lecture_9,56,63,Prompt Engineering & In-Context Learning
+lecture_9_p57_c1,lecture_9,57,71,Prompt Engineering & In-Context Learning
+lecture_9_p58_c1,lecture_9,58,84,Large Language Models Fundamentals
+lecture_9_p59_c1,lecture_9,59,54,LLM Pre-training & Training Objectives
+lecture_9_p60_c1,lecture_9,60,61,Prompt Engineering & In-Context Learning
+lecture_9_p61_c1,lecture_9,61,10,Large Language Models Fundamentals
+lecture_9_p62_c1,lecture_9,62,53,Retrieval-Augmented Generation (RAG)
+lecture_9_p63_c1,lecture_9,63,25,LLM Agents & Multi-Agent Systems
+lecture_9_p64_c1,lecture_9,64,45,Retrieval-Augmented Generation (RAG)
+lecture_9_p65_c1,lecture_9,65,10,Large Language Models Fundamentals
+lecture_9_p66_c1,lecture_9,66,23,LLM Evaluation & Safety
+lecture_9_p67_c1,lecture_9,67,11,Large Language Models Fundamentals

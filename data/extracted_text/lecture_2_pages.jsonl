@@ -1,0 +1,43 @@
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 1, "text": "Transformer\nArchitecture\nDr. Tamer Arafa\n1", "char_count": 42}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 2, "text": "Recent History of Language Models\n2", "char_count": 35}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 3, "text": "Language as Bag-of-Words\n3\nBag-of-Words does not consider the symantic meaning of text", "char_count": 86}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 4, "text": "Word2Vec\n4\nVector Embeddings\nWord2Vec captures meaning of words in vector embeddings through neural network\nEmbeddings are randomly initialized and iteratively optimized based on the neural\nnetwork’s gradient updates to capture semantic relevance", "char_count": 246}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 5, "text": "Word2Vec\n5\nVector Embeddings\nWord2Vec captures meaning of words in vector embeddings through neural network", "char_count": 107}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 6, "text": "Vector Embeddings\n6", "char_count": 19}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 7, "text": "Vector Embeddings\n7", "char_count": 19}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 8, "text": "Vector Embeddings\n8\n• Word2Vec\ncreates static\nembeddings.\n• The same\nembedding is\ngenerated for the\nword regardless\nof the context", "char_count": 130}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 9, "text": "Encoding and Decoding Context\n9\nAutoregressive Process", "char_count": 54}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 10, "text": "Encoding and Decoding Context\n10\nUsing Word2Vec Embeddings\nContext Embedding\nmakes it difficult to deal with\nlonger sentences since it is\nmerely a single embedding\nrepresenting the entire input", "char_count": 193}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 11, "text": "Attention\n11\nAttention allows a model to\nfocus on parts of the input\nthat are relevant to one\nanother\nAttend to each other and\namplify their signal", "char_count": 147}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 12, "text": "Attention\n12\nThe sequential\nnature of this\nprocess precludes\nparallelization of\nthe model", "char_count": 89}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 13, "text": "Transformers\n13\nTransformer – A new architecture\nsolely based on attention and without\nthe RNN.\nCould be trained in parallel which\nspeeds up calculation significantly", "char_count": 166}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 14, "text": "Transformers\n14\nContexualized embeddings", "char_count": 40}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 15, "text": "Self-Attention vs Masked Self-Attention\n15\nSelf-attention attends to all\nparts of the input sequence\nMasked self-attention\nattends to previous tokens\nonly, to prevent “looking into\nthe future.”", "char_count": 193}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 16, "text": "Generative Models vs. Representation Models\n16\nBidirectional Encoder\nRepresentations from\nTransformers (BERT)\nclassification\ntoken", "char_count": 130}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 17, "text": "Representation Models\n17\nBidirectional Encoder\nRepresentations from\nTransformers (BERT)\nclassification\ntoken", "char_count": 108}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 18, "text": "Representation Models\n18\nTrained using Masked\nLanguage Modeling", "char_count": 63}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 19, "text": "Representation Models\n19", "char_count": 24}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 20, "text": "Generative Models\n20", "char_count": 20}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 21, "text": "Context Length\n21", "char_count": 17}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 22, "text": "Model Parameters\n22", "char_count": 19}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 23, "text": "Year of Generative AI\n23", "char_count": 24}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 24, "text": "Tokenization\n24", "char_count": 15}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 25, "text": "Code Sample\n25\nComparing Trained LLM Tokenizers", "char_count": 47}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 26, "text": "Architectural Overview\n26", "char_count": 25}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 27, "text": "Architectural Overview\n27", "char_count": 25}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 28, "text": "Caching\n28", "char_count": 10}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 29, "text": "Self Attention\n29", "char_count": 17}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 30, "text": "Self Attention\n30\nQuery\nKey\nValue", "char_count": 33}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 31, "text": "Self Attention\n31", "char_count": 17}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 32, "text": "Self Attention\n32", "char_count": 17}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 33, "text": "Introducing Parallelizm\n33\n•\nEach attention head has\nseparate Keys, values and\nQueries\n•\nShare Keys and values\namong all hears\n•\nShare keys and values\nbetween groups of heads", "char_count": 174}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 34, "text": "Sparse Attention\n34", "char_count": 19}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 35, "text": "Full Attention Vs. Sparse Attention\n35", "char_count": 38}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 36, "text": "Llama 3 Herd of Models\n36", "char_count": 25}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 37, "text": "Code Sample\n37\nModel Example", "char_count": 28}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 38, "text": "Recent Improvements\n38", "char_count": 22}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 39, "text": "Specific Positional Encoding\n39", "char_count": 31}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 40, "text": "Mixture of Experts (MOE)\n40", "char_count": 27}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 41, "text": "Mixture of Experts (MOE)\n41", "char_count": 27}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 42, "text": "Sample Computational Requirements\n42\nUse 2 experts at a time", "char_count": 60}
+{"lecture_file": "LLM Lecture 2.pdf", "lecture_id": "lecture_2", "page": 43, "text": "Lecture References\n●\nHands-On Large Language Models: Jay Alammar & Maarten Grootendorst\n●\nDeepLearning.AI – How Transformer LLMs Work Course\n43", "char_count": 143}
