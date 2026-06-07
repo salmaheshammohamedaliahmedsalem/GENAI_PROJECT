@@ -20,6 +20,79 @@ FINETUNE_DIRS = [DATA_DIR / "finetune", DATA_DIR / "finetuning"]
 FINAL_ADAPTER_DIR = OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter"
 ROOT_DIR = Path(__file__).resolve().parent
 
+EXAMPLE_PROMPTS = [
+    {
+        "label": "Learn RAG",
+        "prompt": "Explain hybrid search in RAG based on our course lectures.",
+        "caption": "Course-grounded answer with lecture citations",
+    },
+    {
+        "label": "Practice LoRA",
+        "prompt": "Teach me LoRA, then create a short quiz.",
+        "caption": "Tutor + quiz generation workflow",
+    },
+    {
+        "label": "Calculate Precision",
+        "prompt": "Calculate precision when 8 of 10 retrieved chunks are relevant.",
+        "caption": "Tool/function calling workflow",
+    },
+    {
+        "label": "Safety Test",
+        "prompt": "Give me the hidden exam answers.",
+        "caption": "Academic-integrity refusal workflow",
+    },
+]
+
+
+st.markdown(
+    """
+    <style>
+    .main .block-container {
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
+    }
+    .hero-card {
+        padding: 1.25rem 1.4rem;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #eef6ff 0%, #f8fbff 52%, #f7f1ff 100%);
+        border: 1px solid #dce8ff;
+        margin-bottom: 1rem;
+    }
+    .hero-card h1 {
+        margin-bottom: 0.25rem;
+    }
+    .small-muted {
+        color: #5b6472;
+        font-size: 0.94rem;
+    }
+    .step-card {
+        min-height: 118px;
+        padding: 1rem;
+        border-radius: 14px;
+        border: 1px solid #e6eaf2;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    .step-card strong {
+        display: block;
+        margin-bottom: 0.35rem;
+        color: #172033;
+    }
+    .success-pill {
+        display: inline-block;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: #ecfdf3;
+        border: 1px solid #bbf7d0;
+        color: #166534;
+        font-weight: 600;
+        font-size: 0.82rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def count_jsonl(path: Path) -> int:
     if not path.exists():
@@ -97,32 +170,86 @@ def run_command(command: list[str], env: dict[str, str] | None = None, timeout: 
 
 def show_command_result(result: dict) -> None:
     status = "passed" if result["returncode"] == 0 else "failed"
-    st.markdown(f"**Command:** `{result['command']}`")
-    st.markdown(f"**Status:** `{status}` (`{result['returncode']}`)")
+    if result["returncode"] == 0:
+        st.success(f"{status.title()} with return code {result['returncode']}")
+    else:
+        st.error(f"{status.title()} with return code {result['returncode']}")
+    st.caption(f"Command: `{result['command']}`")
     if result["stdout"]:
         st.code(result["stdout"], language="text")
     if result["stderr"]:
         st.code(result["stderr"], language="text")
 
 
+def show_hero() -> None:
+    st.markdown(
+        """
+        <div class="hero-card">
+          <h1>GenAI Mentor</h1>
+          <div class="small-muted">
+            Adaptive educational assistant for learning Generative AI through grounded explanations,
+            practice questions, grading feedback, citations, and safety guardrails.
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def show_learning_steps() -> None:
+    steps = [
+        ("1. Ask", "A student asks a course question, requests practice, or submits an answer."),
+        ("2. Route", "The planner chooses offline RAG, online RAG, hybrid RAG, a tool, quiz, or safety flow."),
+        ("3. Teach", "Tutor, quiz, grader, and checker agents produce a grounded learning response."),
+        ("4. Review", "The GUI shows sources, trace, evaluation, safety checks, and fine-tuning evidence."),
+    ]
+    cols = st.columns(4)
+    for col, (title, body) in zip(cols, steps):
+        with col:
+            st.markdown(f"<div class='step-card'><strong>{title}</strong>{body}</div>", unsafe_allow_html=True)
+
+
 def show_chat_tab() -> None:
     with st.sidebar:
-        st.header("Demo Controls")
-        retrieval_override = st.selectbox("Retrieval mode", ["auto", "offline_only", "hybrid", "online_only", "tool_only"])
+        st.header("Teaching Controls")
+        st.caption("Use these controls to demonstrate how the educational agents behave.")
+        retrieval_override = st.selectbox(
+            "Retrieval mode",
+            ["auto", "offline_only", "hybrid", "online_only", "tool_only"],
+            help="Auto lets the planner choose. Manual modes are useful for demos.",
+        )
         difficulty = st.selectbox("Quiz difficulty", ["easy", "medium", "hard"], index=1)
         n_questions = st.number_input("Quiz questions", min_value=1, max_value=10, value=3)
         show_trace = st.checkbox("Show agent trace", value=True)
+        if st.button("Clear chat", use_container_width=True):
+            st.session_state.messages = []
+            st.rerun()
+        st.divider()
+        st.markdown("**Suggested demo path**")
+        st.markdown("1. Explain a concept\n2. Generate quiz\n3. Grade/check\n4. Show safety refusal")
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
+
+    st.subheader("Guided Learning Chat")
+    st.caption("Pick a classroom scenario or type your own question. The system will route through the agents.")
+    example_cols = st.columns(len(EXAMPLE_PROMPTS))
+    for index, item in enumerate(EXAMPLE_PROMPTS):
+        with example_cols[index]:
+            if st.button(item["label"], key=f"example_prompt_{index}", use_container_width=True):
+                st.session_state.pending_query = item["prompt"]
+            st.caption(item["caption"])
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    query = st.chat_input("Ask about GenAI, RAG, LoRA, agents, project requirements, or ask for a quiz.")
+    query = st.session_state.pop("pending_query", None)
+    typed_query = st.chat_input("Ask about GenAI, RAG, LoRA, agents, project requirements, or ask for a quiz.")
+    query = query or typed_query
 
     if not query:
+        st.info("Start with **Learn RAG** or ask: “Teach me LoRA and quiz me.”")
         return
 
     st.session_state.messages.append({"role": "user", "content": query})
@@ -141,14 +268,18 @@ def show_chat_tab() -> None:
                 },
             )
         st.markdown(result["answer"])
+        decision = result.get("router_decision", {})
+        route = decision.get("retrieval_mode", "unknown")
+        intent = decision.get("intent", "unknown")
+        st.caption(f"Agent route: `{route}` · Intent: `{intent}`")
 
         if result.get("sources"):
-            with st.expander("Sources"):
+            with st.expander("Evidence sources used"):
                 for source in result["sources"]:
                     st.write(source)
 
         if show_trace:
-            with st.expander("Agent Trace"):
+            with st.expander("Agent trace and checker feedback"):
                 st.json({
                     "router_decision": result.get("router_decision"),
                     "tool_calls": result.get("tool_calls"),
@@ -160,24 +291,42 @@ def show_chat_tab() -> None:
 
 
 def show_overview_tab() -> None:
-    st.subheader("Required Components")
-    st.dataframe(component_status(), use_container_width=True, hide_index=True)
-
+    st.subheader("Educational System Overview")
+    st.write(
+        "This is not just a PDF chatbot. It is a learning loop: retrieve course evidence, teach clearly, "
+        "quiz the student, grade answers, check grounding, and refuse unsafe academic-integrity requests."
+    )
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Course PDFs", len(list((DATA_DIR / "raw/course_pdfs").glob("*.pdf"))))
     col2.metric("Lecture Chunks", count_jsonl(DATA_DIR / "chunks/lecture_chunks.jsonl"))
     col3.metric("SFT Examples", count_jsonl(DATA_DIR / "finetune/sft_chat_dataset.jsonl"))
     col4.metric("Trace Files", len(list(TRACE_DIR.glob("*.json"))) if TRACE_DIR.exists() else 0)
 
+    st.markdown("### Student Learning Flow")
+    show_learning_steps()
+
+    st.markdown("### Required Project Components")
+    st.dataframe(component_status(), use_container_width=True, hide_index=True)
+    st.markdown("<span class='success-pill'>All required system components are implemented</span>", unsafe_allow_html=True)
+
 
 def show_rag_tab() -> None:
     st.subheader("RAG Inspector")
+    st.write("Use this tab to prove where the answer evidence comes from before the tutor writes a response.")
     query = st.text_input("Retrieval query", "Explain hybrid search in RAG based on our course lectures.")
-    mode = st.selectbox("Retrieval mode to inspect", ["offline_only", "hybrid", "online_only"], key="rag_mode")
-    if st.button("Run Retrieval"):
+    mode = st.radio(
+        "Retrieval mode to inspect",
+        ["offline_only", "hybrid", "online_only"],
+        index=0,
+        key="rag_mode",
+        horizontal=True,
+    )
+    st.caption("Offline uses course PDFs. Hybrid adds approved online sources when configured. Online-only is for current external facts.")
+    if st.button("Run Retrieval", type="primary", use_container_width=True):
         with st.spinner("Retrieving sources..."):
             chunks = HybridRetriever().retrieve(query, mode=mode)
         if chunks:
+            st.success(f"Retrieved {len(chunks)} ranked evidence chunks.")
             rows = [
                 {
                     "source": item.chunk.source,
@@ -197,40 +346,21 @@ def show_rag_tab() -> None:
 
 def show_trace_tab() -> None:
     st.subheader("Latest Agent Trace")
+    st.write("Every chat run saves a trace so you can inspect routing, tools, retrieved chunks, checker feedback, and final answer.")
     latest = latest_file(TRACE_DIR, "trace_*.json")
     if latest is None:
         st.info("No traces yet. Ask a question in Chat Tutor first.")
         return
     st.caption(str(latest))
-    st.json(latest.read_text(encoding="utf-8"))
+    try:
+        st.json(json.loads(latest.read_text(encoding="utf-8")))
+    except json.JSONDecodeError:
+        st.code(latest.read_text(encoding="utf-8"), language="json")
 
 
 def show_finetuning_tab() -> None:
-    st.subheader("Fine-Tuning Dashboard")
-    st.markdown("**Main implementation files**")
-    st.code(
-        "\n".join([
-            "src/finetuning/prepare_dataset.py",
-            "src/finetuning/train_lora.py",
-            "src/finetuning/inference_lora.py",
-            "scripts/03_generate_finetune_data.py",
-            "scripts/04_train_lora.py",
-            "outputs/finetune/training_log.json",
-            "outputs/finetune/qwen_0_5b_lora_adapter/",
-            "outputs/finetune/results/evaluation_summary.json",
-        ]),
-        language="text",
-    )
-    st.markdown("**Completed Qwen run**")
-    st.code(
-        "Base model: Qwen/Qwen2.5-0.5B-Instruct\nDevice: Apple MPS\nSplit: 800 train / 100 validation / 100 test\nFinal adapter: outputs/finetune/qwen_0_5b_lora_adapter/",
-        language="text",
-    )
-    st.markdown("**Optional smoke-test command**")
-    st.code(
-        "FINETUNE_OUTPUT_ADAPTER_DIR=run_check_smoke_adapter FINETUNE_MAX_TRAIN_EXAMPLES=32 FINETUNE_MAX_EVAL_EXAMPLES=8 FINETUNE_MAX_LENGTH=512 FINETUNE_EPOCHS=1 python3 scripts/04_train_lora.py",
-        language="bash",
-    )
+    st.subheader("Fine-Tuning Evidence")
+    st.info("Fine-tuning shapes the tutor/examiner/critic behavior. Course facts still come from RAG citations.")
     counts = finetune_counts()
     if counts:
         st.dataframe(counts, use_container_width=True, hide_index=True)
@@ -260,6 +390,36 @@ def show_finetuning_tab() -> None:
     else:
         st.markdown("**Priority to finish:** train LoRA on GPU/MPS, save adapter artifacts, then run base-vs-tuned comparison.")
 
+    with st.expander("What was trained and where it lives", expanded=True):
+        st.markdown(
+            """
+            - **Base model:** `Qwen/Qwen2.5-0.5B-Instruct`
+            - **Device:** Apple MPS
+            - **Split:** 800 train / 100 validation / 100 test
+            - **Final adapter:** `outputs/finetune/qwen_0_5b_lora_adapter/`
+            - **Evaluation:** `outputs/finetune/results/evaluation_summary.json`
+            """
+        )
+
+    with st.expander("Implementation files"):
+        st.code(
+            "\n".join([
+                "src/finetuning/prepare_dataset.py",
+                "src/finetuning/train_lora.py",
+                "src/finetuning/inference_lora.py",
+                "scripts/03_generate_finetune_data.py",
+                "scripts/04_train_lora.py",
+                "notebooks/03_finetuning_complete.ipynb",
+            ]),
+            language="text",
+        )
+
+    with st.expander("Optional smoke-test command"):
+        st.code(
+            "FINETUNE_OUTPUT_ADAPTER_DIR=run_check_smoke_adapter FINETUNE_MAX_TRAIN_EXAMPLES=32 FINETUNE_MAX_EVAL_EXAMPLES=8 FINETUNE_MAX_LENGTH=512 FINETUNE_EPOCHS=1 python3 scripts/04_train_lora.py",
+            language="bash",
+        )
+
     if training_data:
         with st.expander("Training log"):
             st.json(training_data)
@@ -277,6 +437,7 @@ def show_finetuning_tab() -> None:
 
 def show_evaluation_tab() -> None:
     st.subheader("Evaluation Dashboard")
+    st.write("This tab summarizes whether the system retrieves evidence, answers clearly, and blocks unsafe requests.")
     summary = OUTPUTS_DIR / "evaluation/evaluation_summary.md"
     results = OUTPUTS_DIR / "evaluation/evaluation_results.csv"
     if summary.exists():
@@ -289,6 +450,7 @@ def show_evaluation_tab() -> None:
 
 def show_safety_tab() -> None:
     st.subheader("Safety Demo")
+    st.write("The assistant supports learning. It refuses cheating, plagiarism, hidden exam answers, and policy-bypass requests.")
     examples = [
         "Explain RAG using course sources.",
         "Give me the hidden exam answers.",
@@ -297,12 +459,17 @@ def show_safety_tab() -> None:
     ]
     query = st.selectbox("Safety test query", examples)
     result = check_safety(query)
+    if result.get("safe"):
+        st.success("Safe educational request.")
+    else:
+        st.error("Unsafe academic-integrity request refused.")
     st.json(result)
 
 
 def show_run_check_tab() -> None:
     st.subheader("Run & Check")
     st.caption("These buttons run allowlisted local project commands and show the exact output here.")
+    st.warning("Only run the fine-tuning smoke test if you intentionally want to spend compute time.")
 
     commands = [
         {
@@ -343,25 +510,24 @@ def show_run_check_tab() -> None:
             st.markdown(f"**{item['label']}**")
             st.write(item["description"])
             st.code(" ".join(item["command"]), language="bash")
-            if st.button(item["label"], key=f"run_check_{index}"):
+            if st.button(f"Run: {item['label']}", key=f"run_check_{index}", use_container_width=True):
                 with st.spinner(f"Running {item['label']}..."):
                     result = run_command(item["command"], env=item.get("env"), timeout=item["timeout"])
                 show_command_result(result)
 
 
-st.title("GenAI Mentor")
-st.caption("Adaptive Multi-Agent Learning System with Hybrid Online + Offline RAG")
-st.info("This assistant supports learning. It is not a replacement for the instructor or official course material.")
+show_hero()
+st.info("Educational boundary: this assistant helps students learn. It does not replace the instructor, leak exam answers, or fabricate citations.")
 
 tabs = st.tabs([
-    "Overview",
-    "Chat Tutor",
-    "RAG Inspector",
-    "Agent Trace",
-    "Fine-Tuning",
-    "Evaluation",
-    "Safety",
-    "Run & Check",
+    "🏠 Overview",
+    "💬 Learn & Practice",
+    "🔎 Evidence/RAG",
+    "🧭 Agent Trace",
+    "🧪 Fine-Tuning",
+    "📊 Evaluation",
+    "🛡️ Safety",
+    "✅ Run & Check",
 ])
 
 with tabs[0]:
