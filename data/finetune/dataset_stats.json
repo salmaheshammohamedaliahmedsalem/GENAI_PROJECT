@@ -1,0 +1,10 @@
+{
+  "source_path": "/Users/salmaheshamsalem/Desktop/genai_project/data/finetune/sft_chat_dataset.jsonl",
+  "raw_examples": 5976,
+  "clean_examples_used": 1000,
+  "train_examples": 800,
+  "validation_examples": 100,
+  "test_examples": 100,
+  "split": "80/10/10",
+  "base_model": "Qwen/Qwen2.5-0.5B-Instruct"
+}
