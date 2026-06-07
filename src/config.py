@@ -18,7 +18,7 @@ TRACE_DIR = OUTPUTS_DIR / "traces"
 
 CHAT_MODEL = os.getenv("CHAT_MODEL", "gpt-4o-mini")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-FINETUNE_BASE_MODEL = os.getenv("FINETUNE_BASE_MODEL", "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+FINETUNE_BASE_MODEL = os.getenv("FINETUNE_BASE_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
 
 USE_LOCAL_LLM = os.getenv("USE_LOCAL_LLM", "false").lower() == "true"
 ENABLE_ONLINE_RAG = os.getenv("ENABLE_ONLINE_RAG", "true").lower() == "true"

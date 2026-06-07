@@ -16,13 +16,14 @@ def _device() -> str:
 
 
 def generate_with_lora(prompt: str, max_new_tokens: int = 256, adapter_dir: str | Path | None = None) -> str:
-    adapter_path = Path(adapter_dir) if adapter_dir else OUTPUTS_DIR / "finetune" / "lora_adapter"
+    adapter_path = Path(adapter_dir) if adapter_dir else OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter"
     if not (adapter_path / "adapter_model.safetensors").exists():
         raise FileNotFoundError(f"No LoRA adapter found at {adapter_path}")
 
     device = _device()
     dtype = torch.float16 if device == "cuda" else torch.float32
-    tokenizer = AutoTokenizer.from_pretrained(FINETUNE_BASE_MODEL)
+    tokenizer_source = adapter_path if (adapter_path / "tokenizer_config.json").exists() else FINETUNE_BASE_MODEL
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_source)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 

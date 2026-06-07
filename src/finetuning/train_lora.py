@@ -91,7 +91,8 @@ def train_lora() -> None:
             data_collator=DataCollatorForLanguageModeling(tokenizer, mlm=False),
         )
         trainer.train()
-        adapter_dir = log_dir / "lora_adapter"
+        adapter_name = os.getenv("FINETUNE_OUTPUT_ADAPTER_DIR", "lora_adapter")
+        adapter_dir = log_dir / adapter_name
         adapter_dir.mkdir(parents=True, exist_ok=True)
         model.save_pretrained(adapter_dir)
         (log_dir / "training_log.json").write_text(json.dumps({

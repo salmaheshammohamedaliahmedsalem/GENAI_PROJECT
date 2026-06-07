@@ -9,7 +9,7 @@ import streamlit as st
 
 from src.agents.graph import run_genai_mentor
 from src.agents.safety_agent import check_safety
-from src.config import DATA_DIR, OUTPUTS_DIR, TRACE_DIR
+from src.config import DATA_DIR, FINETUNE_BASE_MODEL, OUTPUTS_DIR, TRACE_DIR
 from src.rag.hybrid_retriever import HybridRetriever
 
 
@@ -17,7 +17,7 @@ st.set_page_config(page_title="GenAI Mentor", layout="wide")
 
 
 FINETUNE_DIRS = [DATA_DIR / "finetune", DATA_DIR / "finetuning"]
-MODEL_DIR = Path("models/qwen_genai_tutor_lora")
+FINAL_ADAPTER_DIR = OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter"
 ROOT_DIR = Path(__file__).resolve().parent
 
 
@@ -57,8 +57,8 @@ def finetune_counts() -> list[dict]:
 def component_status() -> list[dict]:
     return [
         {"component": "Prompt Design", "evidence": "src/llm/prompts.py", "status": "Implemented"},
-        {"component": "Offline/Hybrid RAG", "evidence": "src/rag/ + data/vector_db/chroma", "status": "Implemented, needs retrieval eval evidence"},
-        {"component": "Fine-tuning/PEFT", "evidence": "src/finetuning/ + outputs/finetune/lora_adapter", "status": "MPS LoRA adapter trained"},
+        {"component": "Offline/Hybrid RAG", "evidence": "src/rag/ + data/processed/bm25_index.pkl", "status": "Implemented with BM25; semantic Chroma is optional"},
+        {"component": "Fine-tuning/PEFT", "evidence": "src/finetuning/ + outputs/finetune/qwen_0_5b_lora_adapter", "status": "Qwen LoRA adapter trained on MPS"},
         {"component": "Tools/Function Calling", "evidence": "src/tools/", "status": "Implemented"},
         {"component": "Multi-Agent System", "evidence": "src/agents/graph.py", "status": "Implemented"},
         {"component": "Evaluation", "evidence": "src/evaluation/ + outputs/evaluation", "status": "Implemented, run report before submission"},
@@ -216,13 +216,19 @@ def show_finetuning_tab() -> None:
             "scripts/03_generate_finetune_data.py",
             "scripts/04_train_lora.py",
             "outputs/finetune/training_log.json",
-            "outputs/finetune/lora_adapter/",
+            "outputs/finetune/qwen_0_5b_lora_adapter/",
+            "outputs/finetune/results/evaluation_summary.json",
         ]),
         language="text",
     )
-    st.markdown("**Small MPS command used for local evidence**")
+    st.markdown("**Completed Qwen run**")
     st.code(
-        "FINETUNE_MAX_TRAIN_EXAMPLES=32 FINETUNE_MAX_EVAL_EXAMPLES=8 FINETUNE_MAX_LENGTH=512 FINETUNE_EPOCHS=1 python3 scripts/04_train_lora.py",
+        "Base model: Qwen/Qwen2.5-0.5B-Instruct\nDevice: Apple MPS\nSplit: 800 train / 100 validation / 100 test\nFinal adapter: outputs/finetune/qwen_0_5b_lora_adapter/",
+        language="text",
+    )
+    st.markdown("**Optional smoke-test command**")
+    st.code(
+        "FINETUNE_OUTPUT_ADAPTER_DIR=run_check_smoke_adapter FINETUNE_MAX_TRAIN_EXAMPLES=32 FINETUNE_MAX_EVAL_EXAMPLES=8 FINETUNE_MAX_LENGTH=512 FINETUNE_EPOCHS=1 python3 scripts/04_train_lora.py",
         language="bash",
     )
     counts = finetune_counts()
@@ -231,9 +237,7 @@ def show_finetuning_tab() -> None:
     else:
         st.warning("No fine-tuning datasets found.")
 
-    adapter_files = list(MODEL_DIR.glob("**/*")) if MODEL_DIR.exists() else []
-    output_adapter = OUTPUTS_DIR / "finetune" / "lora_adapter"
-    output_files = list(output_adapter.glob("**/*")) if output_adapter.exists() else []
+    output_files = list(FINAL_ADAPTER_DIR.glob("**/*")) if FINAL_ADAPTER_DIR.exists() else []
     training_log = OUTPUTS_DIR / "finetune" / "training_log.json"
     training_status = "not run"
     if training_log.exists():
@@ -247,8 +251,8 @@ def show_finetuning_tab() -> None:
         training_data = {}
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Adapter files", len([item for item in adapter_files + output_files if item.is_file()]))
-    col2.metric("Training log", "Yes" if training_log.exists() else "No")
+    col1.metric("Final adapter files", len([item for item in output_files if item.is_file()]))
+    col2.metric("Base model", FINETUNE_BASE_MODEL)
     col3.metric("GPU training", "Completed" if training_status == "completed" else "Pending")
 
     if training_status == "completed":
@@ -328,6 +332,7 @@ def show_run_check_tab() -> None:
                 "FINETUNE_MAX_EVAL_EXAMPLES": "8",
                 "FINETUNE_MAX_LENGTH": "512",
                 "FINETUNE_EPOCHS": "1",
+                "FINETUNE_OUTPUT_ADAPTER_DIR": "run_check_smoke_adapter",
             },
             "timeout": 300,
         },
