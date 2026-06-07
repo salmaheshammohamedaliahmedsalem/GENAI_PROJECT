@@ -69,7 +69,7 @@ The complete GenAI Mentor project includes:
 - **data/raw/course_pdfs/**: Lecture PDFs (9 lectures included)
 - **data/processed/**: Processed chunks and metadata
 - **data/vector_db/**: ChromaDB vector database
-- **data/finetune/**: Fine-tuning datasets (8.4M+ lines prepared)
+- **data/finetune/**: Fine-tuning datasets, including 5,976 SFT examples and 800/100/100 train/validation/test splits for the Qwen run
 - **data/eval/**: Evaluation questions and safety tests
 
 ### Scripts (scripts/)
@@ -142,7 +142,7 @@ python scripts/04_train_lora.py
 
 ## Data
 - 9 LLM lecture PDFs (50MB total)
-- 8.4M+ fine-tuning examples
+- 5,976 SFT examples plus report-ready Qwen LoRA artifacts
 - Pre-processed evaluation questions
 
 ## Project Status

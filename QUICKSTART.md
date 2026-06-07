@@ -15,8 +15,8 @@ All 72 required files have been created and verified. The system is fully functi
 - **Safety guardrails** for educational use
 
 ### 2. Data
-- **9 LLM lecture PDFs** (50MB) in `data/raw_pdfs/`
-- **8.4M+ fine-tuning examples** in `data/finetuning/`
+- **9 LLM lecture PDFs** in `data/raw/course_pdfs/`
+- **5,976 SFT examples** in `data/finetune/sft_chat_dataset.jsonl`
 - **Evaluation questions** and safety tests in `data/eval/`
 
 ### 3. Scripts & Tools
@@ -138,7 +138,7 @@ pytest tests/
 # Run specific test
 pytest tests/test_chunking.py -v
 
-# Expected: 6/7 passing
+# Expected: 7 passed, 1 warning
 ```
 
 ## Configuration
@@ -175,8 +175,8 @@ genai_project/
 ├── tests/                        # Test suite (5 files)
 ├── docs/                         # Documentation (5 files)
 ├── data/                         # Data directory
-│   ├── raw_pdfs/               # 9 lecture PDFs
-│   ├── finetuning/             # 8.4M+ examples
+│   ├── raw/course_pdfs/        # 9 lecture PDFs
+│   ├── finetune/               # 5,976 SFT examples plus train/val/test splits
 │   ├── eval/                   # Evaluation data
 │   ├── processed/              # Processed chunks
 │   └── vector_db/              # ChromaDB
@@ -219,7 +219,7 @@ Use `USE_LOCAL_LLM=true` in `.env` to force deterministic local fallback.
 The system creates the database automatically on first run.
 
 ### "Tests failing"
-This is normal - 6/7 passing is expected. Some tests use mock LLM behavior.
+Run `python3 -m pytest tests/ -q`. The current expected result is `7 passed, 1 warning`.
 
 ## Documentation
 
@@ -237,7 +237,7 @@ Read these files for detailed information:
 The system is fully self-contained. All dependencies are in requirements.txt.
 
 Default behavior works without any API keys:
-- Uses mock LLM for responses
+- Uses deterministic local LLM fallback for responses
 - Offline RAG only (no web search)
 - All evaluation scripts run locally
 

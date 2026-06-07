@@ -20,10 +20,10 @@ By separating **knowledge (RAG)** from **behavior (fine-tuning)**, we achieve a 
 ```text
 genai_project/
 ├── data/
-│   ├── raw_pdfs/              # Raw source lecture PDFs (LLM Lectures 1 - 9)
+│   ├── raw/course_pdfs/       # Raw source lecture PDFs (LLM Lectures 1 - 9)
 │   ├── extracted_text/        # Normalized page-by-page JSONL extractions
 │   ├── chunks/                # Word-bounded slide/page text chunks
-│   ├── finetuning/            # Raw and clean target fine-tuning datasets
+│   ├── finetune/              # Chat-format SFT data and train/val/test splits
 │   │   ├── tutor_dataset.jsonl
 │   │   ├── examiner_dataset.jsonl
 │   │   ├── critic_dataset.jsonl
@@ -34,7 +34,8 @@ genai_project/
 │   │   └── combined_dataset_clean.jsonl
 │   ├── metadata/              # Generation summary CSV sheets
 │   │   └── chunk_summary.csv
-│   └── rag_db/                # Saved Vector DB stores (for subsequent offline RAG stage)
+│   ├── processed/             # BM25 index and processed retrieval artifacts
+│   └── vector_db/             # Optional semantic vector store
 ├── notebooks/
 │   └── 01_dataset_generation_pipeline.ipynb  # Interactive walkthrough notebook
 ├── src/
@@ -118,9 +119,11 @@ Our pipeline successfully synthesizes and cleans the following target datasets:
 
 ---
 
-## 🔮 Next Step: LoRA Fine-Tuning
+## ✅ Current LoRA, RAG, and Agent Status
 
-Once the datasets are prepared and validated, we will move forward to:
-1. **LoRA SFT Alignment**: Fine-tune **Qwen2.5-1.5B-Instruct** using the `combined_dataset_clean.jsonl` to teach the model to switch personas flawlessly based on the system instructions.
-2. **Offline RAG Integration**: Set up a **ChromaDB** or **FAISS** vector store using the generated chunks to support live context injections.
-3. **Multi-Agent Orchestration**: Connect the Tutor, Examiner, and Critic agents using **LangGraph** to construct the complete adaptive online/offline student learning portal.
+The end-to-end system is implemented:
+
+1. **LoRA SFT Alignment**: `Qwen/Qwen2.5-0.5B-Instruct` has been fine-tuned with PEFT/LoRA on Apple MPS. Final adapter artifacts are in `outputs/finetune/qwen_0_5b_lora_adapter/`.
+2. **Offline RAG Integration**: BM25 retrieval is built from `data/chunks/lecture_chunks.jsonl`; semantic Chroma retrieval is available when `ENABLE_SEMANTIC_RAG=true`.
+3. **Multi-Agent Orchestration**: Safety, planning, retrieval, tutoring, quiz, grading, and checking agents are connected through `src/agents/graph.py`.
+4. **GUI Showcase**: `app.py` exposes Overview, Chat Tutor, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.

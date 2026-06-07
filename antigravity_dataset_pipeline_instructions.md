@@ -398,9 +398,9 @@ This is the key project idea.
 
 # After this step
 
-Once the datasets are generated and validated, we will move to:
+The generated and validated datasets now feed these implemented project components:
 
-1. LoRA fine-tuning using Qwen2.5-1.5B-Instruct
-2. Offline RAG with ChromaDB/FAISS
-3. Online RAG with web/arXiv search
-4. LangGraph multi-agent orchestration
+1. LoRA fine-tuning using `Qwen/Qwen2.5-0.5B-Instruct`
+2. Offline RAG with BM25 and optional Chroma semantic retrieval
+3. Optional online RAG through configured search providers
+4. LangGraph-style multi-agent orchestration

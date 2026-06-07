@@ -12,13 +12,13 @@ This is a production-ready **Adaptive Multi-Agent GenAI Learning System with Hyb
 |-----------|--------|----------|
 | **Multi-Agent System** | ✅ | `src/agents/` - 7 specialized agents |
 | **Hybrid RAG** | ✅ | `src/rag/` - Offline + Online retrieval |
-| **Fine-tuning/PEFT** | ✅ | `src/finetuning/` - LoRA training ready |
+| **Fine-tuning/PEFT** | ✅ | `src/finetuning/` - Qwen LoRA training completed |
 | **Tools/Function Calling** | ✅ | `src/tools/` - 5 tools implemented |
 | **Evaluation Framework** | ✅ | `src/evaluation/` - Baselines & metrics |
 | **Streamlit UI** | ✅ | `app.py` - Full interactive demo |
 | **Ethics & Safety** | ✅ | Safety agent + validation rules |
 | **Course Data** | ✅ | 9 LLM lecture PDFs (50MB) |
-| **Training Data** | ✅ | 29,880 fine-tuning examples |
+| **Training Data** | ✅ | 5,976 chat-format SFT examples |
 
 ---
 
@@ -55,7 +55,7 @@ python3 scripts/06_run_demo_examples.py
 - LLM Lecture 1-7 (with full slides)
 - ~50MB total
 
-✅ **29,880 Fine-Tuning Examples** in `data/finetune/`
+✅ **5,976 Fine-Tuning Examples** in `data/finetune/`
 - `sft_chat_dataset.jsonl`: 5,976 examples (ready for LoRA training)
 - `combined_dataset_clean.jsonl`: Full multi-agent dataset
 - Tutor, Examiner, Critic personas already structured
@@ -85,7 +85,7 @@ python3 scripts/03_generate_finetune_data.py
 ### Step 4: Train LoRA Model (Optional)
 ```bash
 python3 scripts/04_train_lora.py
-# Fine-tunes TinyLlama with LoRA on prepared data
+# Fine-tunes the configured PEFT/LoRA model on prepared data
 ```
 
 ### Step 5: Run Evaluation
@@ -223,7 +223,7 @@ genai_project/
 ├── data/
 │   ├── raw/course_pdfs/       # ✅ 9 lecture PDFs ready
 │   ├── raw/project_docs/      # For project guidelines
-│   ├── finetune/              # ✅ 29,880 training examples
+│   ├── finetune/              # ✅ 5,976 SFT examples plus train/val/test splits
 │   ├── processed/             # Chunks & metadata
 │   ├── vector_db/             # ChromaDB index
 │   └── eval/                  # Evaluation data
@@ -265,7 +265,7 @@ ENABLE_ONLINE_RAG=true         # Set to false to use offline only
 ```
 
 If no keys provided:
-- LLM uses **deterministic mock responses** (tests don't need API keys)
+- LLM uses a **deterministic local fallback** (tests don't need API keys)
 - RAG works **offline-only** using course PDFs
 - All features remain functional
 
@@ -355,9 +355,9 @@ docker run -p 8501:8501 -e OPENAI_API_KEY=$OPENAI_API_KEY genai-mentor
 - ✅ All 72 project files created
 - ✅ All imports working (22/22 modules tested)
 - ✅ 9 course lecture PDFs loaded
-- ✅ 29,880 training examples ready
+- ✅ 5,976 SFT examples ready
 - ✅ Streamlit UI functional
-- ✅ Mock LLM fallback working
+- ✅ Deterministic local LLM fallback working
 - ✅ RAG system ready
 - ✅ Evaluation framework ready
 - ✅ Tests passing
@@ -380,7 +380,7 @@ For issues, check:
 This project includes:
 - ✅ All required course components
 - ✅ Complete source code (51 modules)
-- ✅ Real training data (29,880 examples)
+- ✅ Real training data (5,976 SFT examples)
 - ✅ Working Streamlit demo
 - ✅ Full test suite
 - ✅ Comprehensive documentation

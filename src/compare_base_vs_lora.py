@@ -15,8 +15,8 @@ def clean_memory():
 def main():
     print("Initializing environment for Base vs LoRA comparative analysis...")
     
-    base_model_id = "Qwen/Qwen2.5-1.5B-Instruct"
-    lora_dir = "models/qwen_genai_tutor_lora"
+    base_model_id = "Qwen/Qwen2.5-0.5B-Instruct"
+    lora_dir = "outputs/finetune/qwen_0_5b_lora_adapter"
     output_file = "results/base_vs_lora_comparison.md"
     
     # 1. Device Selection
@@ -210,7 +210,7 @@ def main():
     
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("# Base vs LoRA Fine-Tuned Model Comparison\n\n")
-        f.write("This document provides a systematic comparative analysis between the base instruction-tuned model (`Qwen2.5-1.5B-Instruct`) and the fine-tuned `Qwen2.5-1.5B-Instruct` model with LoRA (Low-Rank Adaptation) trained on adaptive GenAI tutoring sequences.\n\n")
+        f.write("This document provides a systematic comparative analysis between the base instruction-tuned model (`Qwen2.5-0.5B-Instruct`) and the fine-tuned `Qwen2.5-0.5B-Instruct` model with LoRA (Low-Rank Adaptation) trained on adaptive GenAI tutoring sequences.\n\n")
         
         # Methodology section
         f.write("## 1. Evaluation Methodology\n")

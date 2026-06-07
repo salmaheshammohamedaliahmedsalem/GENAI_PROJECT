@@ -1,11 +1,11 @@
 # GenAI Mentor - Current Project Status
 
-**Last updated:** June 6, 2026  
-**Status:** Working demo with MPS LoRA adapter training evidence
+**Last updated:** June 7, 2026  
+**Status:** Working demo with completed Qwen LoRA adapter training evidence
 
 ## Executive Summary
 
-The project now has a working Streamlit GUI, passing tests, prepared fine-tuning splits, generated evaluation outputs, local offline retrieval from the lecture chunks, and a completed bounded LoRA adapter training run on Apple MPS.
+The project has a working Streamlit GUI, passing tests, prepared fine-tuning data, generated evaluation outputs, local offline retrieval from lecture chunks, safety routing, tool use, multi-agent orchestration, and a completed Qwen LoRA adapter training run on Apple MPS.
 
 ## Current Verification
 
@@ -25,7 +25,7 @@ The project now has a working Streamlit GUI, passing tests, prepared fine-tuning
 | --- | --- | --- |
 | Prompt Design | `src/llm/prompts.py` | Implemented |
 | RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 fallback; semantic Chroma is opt-in via `ENABLE_SEMANTIC_RAG=true` |
-| Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/lora_adapter/` | MPS adapter training completed |
+| Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
 | Multi-Agent Setup | `src/agents/graph.py` | Implemented |
 | Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
@@ -38,9 +38,9 @@ Prepared chat-format SFT data:
 
 | Split | Examples |
 | --- | ---: |
-| `data/finetune/train.jsonl` | 4,780 |
-| `data/finetune/val.jsonl` | 598 |
-| `data/finetune/test.jsonl` | 598 |
+| `data/finetune/train.jsonl` | 800 |
+| `data/finetune/val.jsonl` | 100 |
+| `data/finetune/test.jsonl` | 100 |
 | `data/finetune/sft_chat_dataset.jsonl` | 5,976 |
 
 Training command:
@@ -54,15 +54,18 @@ Current local result:
 ```json
 {
   "status": "completed",
+  "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
   "device": "mps",
-  "train_examples": 32,
-  "validation_examples": 8,
-  "epochs": 1.0,
-  "max_length": 512
+  "train_examples": 800,
+  "validation_examples": 100,
+  "test_examples": 100,
+  "epochs": 2.0,
+  "train_loss": 2.3253,
+  "eval_loss": 2.1984
 }
 ```
 
-Adapter artifacts are saved in `outputs/finetune/lora_adapter/`. This was a bounded local MPS run for project evidence. For a stronger final experiment, increase `FINETUNE_MAX_TRAIN_EXAMPLES` or omit it and rerun on MPS/GPU.
+Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter/`. The smaller `outputs/finetune/lora_adapter/` artifact is retained only as a script-level TinyLlama smoke-test.
 
 ## Final GUI
 
