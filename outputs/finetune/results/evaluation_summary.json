@@ -1,0 +1,9 @@
+{
+  "num_examples": 25,
+  "average_base_score": 0.423,
+  "average_tuned_score": 0.484,
+  "average_improvement": 0.06,
+  "tuned_wins": 15,
+  "base_wins_or_ties": 10,
+  "comparison_csv": "/Users/salmaheshamsalem/Desktop/genai_project/outputs/finetune/results/base_vs_tuned_comparison.csv"
+}

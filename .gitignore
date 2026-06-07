@@ -12,7 +12,14 @@ outputs/*
 !outputs/finetune/
 outputs/finetune/*
 !outputs/finetune/training_log.json
+!outputs/finetune/eval_metrics.json
+!outputs/finetune/train_metrics.json
+!outputs/finetune/notebook_adapter_eval.csv
 !outputs/finetune/lora_adapter/
 !outputs/finetune/lora_adapter/**
+!outputs/finetune/qwen_0_5b_lora_adapter/
+!outputs/finetune/qwen_0_5b_lora_adapter/**
+!outputs/finetune/results/
+!outputs/finetune/results/**
 .pytest_cache/
 .DS_Store
