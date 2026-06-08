@@ -418,7 +418,17 @@ def show_rag_tab() -> None:
     st.caption("Offline uses course PDFs. Hybrid adds approved online sources when configured. Online-only is for current external facts.")
     if st.button("Run Retrieval", type="primary", width="stretch"):
         with st.spinner("Retrieving sources..."):
-            chunks = HybridRetriever().retrieve(query, mode=mode)
+            retriever = HybridRetriever()
+            chunks = retriever.retrieve(query, mode=mode)
+            diagnostics = retriever.last_status
+        if diagnostics.get("online"):
+            online_status = diagnostics["online"]
+            with st.expander("Online retrieval diagnostics", expanded=not chunks and mode in {"online_only", "hybrid"}):
+                st.json(online_status)
+                if online_status.get("message"):
+                    st.caption(online_status["message"])
+                if any(provider.get("name") == "tavily" and provider.get("status") == "skipped" for provider in online_status.get("providers", [])):
+                    st.info("For the most reliable online retrieval, add `TAVILY_API_KEY` to `.env`. The app also tries the maintained `ddgs` package as a no-key fallback.")
         if chunks:
             st.success(f"Retrieved {len(chunks)} ranked evidence chunks.")
             rows = [

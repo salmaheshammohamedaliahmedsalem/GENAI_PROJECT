@@ -124,7 +124,7 @@ Our pipeline successfully synthesizes and cleans the following target datasets:
 The end-to-end system is implemented:
 
 1. **LoRA SFT Alignment**: `Qwen/Qwen2.5-0.5B-Instruct` has been fine-tuned with PEFT/LoRA on Apple MPS. Final adapter artifacts are in `outputs/finetune/qwen_0_5b_lora_adapter/`.
-2. **Offline RAG Integration**: BM25 retrieval is built from `data/chunks/lecture_chunks.jsonl`; semantic Chroma retrieval is available when `ENABLE_SEMANTIC_RAG=true`.
+2. **Offline/Online RAG Integration**: BM25 retrieval is built from `data/chunks/lecture_chunks.jsonl`; approved online retrieval uses Tavily when configured and the maintained `ddgs` package as a no-key fallback.
 3. **Multi-Agent Orchestration**: Safety, planning, retrieval, tutoring, quiz, grading, checking, and trace-writing nodes are connected through `src/agents/graph.py` using LangGraph when installed.
 4. **Prompt Template Layer**: `src/llm/prompts.py` documents the base, router, tutor, quiz, grading, checker, and safety prompts with required inputs.
 5. **GUI Showcase**: `app.py` exposes Overview, Learn & Practice, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.

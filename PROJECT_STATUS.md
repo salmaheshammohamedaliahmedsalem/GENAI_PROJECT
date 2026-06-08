@@ -24,7 +24,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | Requirement | Evidence | Status |
 | --- | --- | --- |
 | Prompt Design | `src/llm/prompts.py` | Implemented |
-| RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 fallback; semantic Chroma is opt-in via `ENABLE_SEMANTIC_RAG=true` |
+| RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback |
 | Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
 | Multi-Agent Setup | `src/agents/graph.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` when `langgraph` is installed, with the same node sequence available as a local fallback |

@@ -11,7 +11,7 @@ Safety node
   ↓
 Planner/router node
   ├─ offline_only → course BM25/optional semantic retrieval
-  ├─ online_only  → approved external retrieval when configured
+  ├─ online_only  → approved external retrieval with Tavily or ddgs fallback
   ├─ hybrid       → course + approved external retrieval
   ├─ tool_only    → calculator, quiz, or grader
   └─ no_retrieval → safe refusal or direct non-grounded response
@@ -37,7 +37,7 @@ Student-facing answer + sources + trace
 | LangGraph workflow | `src/agents/graph.py` | Builds a `StateGraph` when `langgraph` is installed; otherwise runs the same nodes sequentially so local demos remain functional. |
 | Safety agent | `src/agents/safety_agent.py` | Blocks cheating, plagiarism, hidden exam answer requests, and policy bypass attempts. |
 | Planner agent | `src/agents/planner_agent.py` | Selects retrieval mode and whether tools, quizzes, or grading are needed. |
-| RAG layer | `src/rag/` | Retrieves course chunks locally with BM25 and optional semantic/online extensions. |
+| RAG layer | `src/rag/` | Retrieves course chunks locally with BM25 and approved online results with Tavily or `ddgs` fallback. |
 | Tutor agent | `src/agents/tutor_agent.py` | Produces student-friendly grounded explanations. |
 | Quiz agent | `src/agents/quiz_agent.py` | Generates practice questions with answers and explanations. |
 | Grader agent | `src/agents/grader_agent.py` | Scores student answers and returns targeted feedback. |

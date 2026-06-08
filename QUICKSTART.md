@@ -36,9 +36,10 @@ pip install -r requirements.txt
 # 3. Copy environment template
 cp .env.example .env
 
-# 4. (Optional) Add API keys to .env for online search
+# 4. (Optional) Add API keys to .env for more reliable online search
 # OPENAI_API_KEY=your_key_here
 # TAVILY_API_KEY=your_key_here
+# If TAVILY_API_KEY is empty, online retrieval uses the no-key ddgs fallback.
 ```
 
 ## Running the System
@@ -149,7 +150,7 @@ Edit `.env` to customize:
 
 ```env
 OPENAI_API_KEY=your_key          # For GPT-4o-mini
-TAVILY_API_KEY=your_key          # For web search
+TAVILY_API_KEY=your_key          # Optional; improves online search reliability
 USE_LOCAL_LLM=false              # Set to 'true' for deterministic local fallback
 ENABLE_ONLINE_RAG=true           # Enable web search
 CHUNK_SIZE=900                   # Document chunk size
@@ -240,12 +241,12 @@ The system is fully self-contained. All dependencies are in requirements.txt.
 
 Default behavior works without any API keys:
 - Uses deterministic local LLM fallback for responses
-- Offline RAG only (no web search)
+- Uses `ddgs` as the no-key online retrieval fallback when `ENABLE_ONLINE_RAG=true`
 - All evaluation scripts run locally
 
 To enable full features:
 - Add OPENAI_API_KEY for GPT-4o-mini
-- Add TAVILY_API_KEY for web search
+- Add TAVILY_API_KEY for the most reliable online search
 - Set corresponding flags in .env
 
 ## Next Steps
