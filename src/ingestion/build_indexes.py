@@ -1,12 +1,17 @@
 import os
-import chromadb
-from chromadb.utils import embedding_functions
 from rank_bm25 import BM25Okapi
 from src.config import DATA_DIR, PROCESSED_DIR, VECTOR_DB_DIR, EMBEDDING_MODEL
 from src.schemas import DocumentChunk
 from src.utils.jsonl_utils import read_jsonl
 from src.utils.file_utils import write_pickle, write_json
 from src.ingestion.build_metadata import build_metadata
+
+
+def _load_chroma_dependencies():
+    import chromadb
+    from chromadb.utils import embedding_functions
+
+    return chromadb, embedding_functions
 
 def load_chunks() -> list[DocumentChunk]:
     rows = read_jsonl(PROCESSED_DIR / "chunks.jsonl")
@@ -45,29 +50,33 @@ def build_indexes() -> None:
         raise RuntimeError("No chunks found. Run scripts/01_ingest_documents.py first.")
 
     if os.getenv("ENABLE_SEMANTIC_RAG", "false").lower() == "true":
-        VECTOR_DB_DIR.mkdir(parents=True, exist_ok=True)
-        client = chromadb.PersistentClient(path=str(VECTOR_DB_DIR))
-        emb = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
-        collection = client.get_or_create_collection("course_chunks", embedding_function=emb)
-
         try:
-            existing = collection.get()
-            if existing.get("ids"):
-                collection.delete(ids=existing["ids"])
-        except Exception:
-            pass
+            chromadb, embedding_functions = _load_chroma_dependencies()
+            VECTOR_DB_DIR.mkdir(parents=True, exist_ok=True)
+            client = chromadb.PersistentClient(path=str(VECTOR_DB_DIR))
+            emb = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
+            collection = client.get_or_create_collection("course_chunks", embedding_function=emb)
 
-        collection.add(
-            ids=[c.chunk_id for c in chunks],
-            documents=[c.text for c in chunks],
-            metadatas=[{
-                "source": c.source,
-                "source_type": c.source_type,
-                "page": c.page or -1,
-                "lecture_number": c.lecture_number or -1,
-                "topic": c.topic or "",
-            } for c in chunks],
-        )
+            try:
+                existing = collection.get()
+                if existing.get("ids"):
+                    collection.delete(ids=existing["ids"])
+            except Exception:
+                pass
+
+            collection.add(
+                ids=[c.chunk_id for c in chunks],
+                documents=[c.text for c in chunks],
+                metadatas=[{
+                    "source": c.source,
+                    "source_type": c.source_type,
+                    "page": c.page or -1,
+                    "lecture_number": c.lecture_number or -1,
+                    "topic": c.topic or "",
+                } for c in chunks],
+            )
+        except Exception as exc:
+            print(f"Semantic index skipped: {type(exc).__name__}: {exc}")
 
     bm25 = BM25Okapi([tokenize(c.text) for c in chunks])
     write_pickle(PROCESSED_DIR / "bm25_index.pkl", {"bm25": bm25, "chunks": [c.model_dump() for c in chunks]})

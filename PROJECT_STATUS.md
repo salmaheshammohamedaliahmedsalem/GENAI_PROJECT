@@ -11,7 +11,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 
 | Check | Result |
 | --- | --- |
-| Unit tests | `7 passed, 1 warning` with `python3 -m pytest tests/ -q` |
+| Unit tests | `16 passed, 1 warning` with `python3 -m pytest tests/ -q` |
 | Syntax check | Passed for app, scripts, fine-tuning, and retrieval modules |
 | Streamlit GUI | Running at `http://localhost:8501` |
 | RAG index | BM25 index built from `data/chunks/lecture_chunks.jsonl` |
@@ -24,7 +24,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | Requirement | Evidence | Status |
 | --- | --- | --- |
 | Prompt Design | `src/llm/prompts.py` | Implemented |
-| RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback |
+| RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback; Chroma semantic retrieval is optional via `requirements_semantic.txt` |
 | Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
 | Multi-Agent Setup | `src/agents/graph.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` when `langgraph` is installed, with the same node sequence available as a local fallback |

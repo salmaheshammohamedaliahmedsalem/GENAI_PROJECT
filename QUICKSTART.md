@@ -212,17 +212,21 @@ Try asking the system:
 
 ### "ModuleNotFoundError: No module named 'dotenv'"
 ```bash
-pip install python-dotenv pydantic chromadb pandas -q
+pip install -r requirements.txt
 ```
 
 ### "No API key available"
 Use `USE_LOCAL_LLM=true` in `.env` to force deterministic local fallback.
 
-### "ChromaDB connection error"
-The system creates the database automatically on first run.
+### "ChromaDB/protobuf error on Streamlit Cloud"
+Default deployment does not require ChromaDB. Leave `ENABLE_SEMANTIC_RAG=false` on Streamlit Cloud and use the BM25 retriever. For local semantic retrieval, install optional dependencies with:
+
+```bash
+pip install -r requirements_semantic.txt
+```
 
 ### "Tests failing"
-Run `python3 -m pytest tests/ -q`. The current expected result is `7 passed, 1 warning`.
+Run `python3 -m pytest tests/ -q`. The current expected result is `16 passed, 1 warning`.
 
 ## Documentation
 

@@ -1,10 +1,15 @@
-import chromadb
 import os
-from chromadb.utils import embedding_functions
 from src.config import VECTOR_DB_DIR, PROCESSED_DIR, EMBEDDING_MODEL, TOP_K_SEMANTIC, TOP_K_KEYWORD, TOP_K_FINAL
 from src.schemas import DocumentChunk, RetrievedChunk
 from src.utils.file_utils import read_pickle
 from src.rag.reranker import rerank
+
+
+def _load_chroma_dependencies():
+    import chromadb
+    from chromadb.utils import embedding_functions
+
+    return chromadb, embedding_functions
 
 class OfflineRetriever:
     def __init__(self):
@@ -12,15 +17,18 @@ class OfflineRetriever:
         self.emb = None
         self.collection = None
         self.bm25_data = None
+        self.semantic_error = ""
         bm25_path = PROCESSED_DIR / "bm25_index.pkl"
         if bm25_path.exists():
             self.bm25_data = read_pickle(bm25_path)
         if os.getenv("ENABLE_SEMANTIC_RAG", "false").lower() == "true":
             try:
+                chromadb, embedding_functions = _load_chroma_dependencies()
                 self.client = chromadb.PersistentClient(path=str(VECTOR_DB_DIR))
                 self.emb = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
                 self.collection = self.client.get_or_create_collection("course_chunks", embedding_function=self.emb)
-            except Exception:
+            except Exception as exc:
+                self.semantic_error = f"{type(exc).__name__}: {exc}"
                 self.collection = None
 
     def retrieve(self, query: str, top_k: int = TOP_K_FINAL) -> list[RetrievedChunk]:

@@ -54,8 +54,10 @@ genai_project/
 The pipeline relies on `PyMuPDF` for PDF reading, `tqdm` for interactive command line progress, and `openai` / `python-dotenv` for API generation.
 
 ```bash
-pip install pymupdf pandas tqdm python-dotenv openai
+pip install -r requirements.txt
 ```
+
+For Streamlit Community Cloud, use the default `requirements.txt`. It intentionally excludes ChromaDB and fine-tuning libraries so the deployed app can start reliably with BM25 retrieval, online retrieval, tools, agents, evaluation displays, and fine-tuning artifacts. For local semantic retrieval, install `requirements_semantic.txt`. For local LoRA training, install `requirements_finetune.txt`.
 
 ---
 
