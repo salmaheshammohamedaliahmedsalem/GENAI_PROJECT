@@ -9,7 +9,7 @@ All 72 required files have been created and verified. The system is fully functi
 
 ### 1. Core System (src/)
 - **9 modules** with specialized functionality
-- **Multi-agent workflow** using LangGraph
+- **Multi-agent workflow** using LangGraph when installed, with the same local graph node sequence available for offline demos
 - **Hybrid RAG** combining offline + online retrieval
 - **LoRA fine-tuning** with PEFT
 - **Safety guardrails** for educational use
@@ -101,7 +101,7 @@ python src/finetuning/compare_base_vs_tuned.py
 | **RAG System** | `src/rag/` | ✅ Complete |
 | **Fine-tuning** | `src/finetuning/` | ✅ Complete |
 | **Tools/Functions** | `src/tools/` | ✅ Complete |
-| **Multi-Agent** | `src/agents/graph.py` | ✅ Complete |
+| **Multi-Agent** | `src/agents/graph.py` | ✅ Complete with LangGraph node implementation |
 | **Evaluation** | `src/evaluation/` | ✅ Complete |
 | **Safety** | `src/agents/safety_agent.py` | ✅ Complete |
 | **Streamlit UI** | `app.py` | ✅ Complete |
@@ -128,6 +128,8 @@ Checker Agent (Verify grounding & citations)
     ↓
 Final Answer + Sources
 ```
+
+The Streamlit UI also includes an **Agents & Prompts** tab that shows the graph nodes, graph edges, and exact prompt templates used by the system.
 
 ## Testing
 

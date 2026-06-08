@@ -27,7 +27,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 fallback; semantic Chroma is opt-in via `ENABLE_SEMANTIC_RAG=true` |
 | Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
-| Multi-Agent Setup | `src/agents/graph.py` | Implemented |
+| Multi-Agent Setup | `src/agents/graph.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` when `langgraph` is installed, with the same node sequence available as a local fallback |
 | Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
 | Ethics / Safety | `src/agents/safety_agent.py`, `docs/ethics_safety.md` | Implemented |
 | GUI | `app.py` | Implemented with full showcase tabs |
@@ -77,8 +77,9 @@ streamlit run app.py
 
 The GUI now includes:
 
-- **Overview:** required component checklist and live data metrics.
-- **Chat Tutor:** multi-agent chat with retrieval controls, quiz controls, sources, and trace.
+- **Overview:** required component checklist, graph-engine status, student flow, and live data metrics.
+- **Chat Tutor:** multi-agent chat with retrieval controls, quiz controls, sources, graph engine, and trace.
+- **Agents & Prompts:** LangGraph nodes, graph edges, and exact prompt templates.
 - **RAG Inspector:** retrieval query runner with chunk/source scoring table.
 - **Agent Trace:** latest saved agent trace JSON.
 - **Fine-Tuning:** dataset counts, adapter status, training log status, and dataset quality review.
