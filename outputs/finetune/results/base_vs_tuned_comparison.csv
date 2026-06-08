@@ -32,12 +32,12 @@ This question tests the student's understanding of how different types of LLMs p
 
 Correct Answer: Summarization
 
-Explanation: The correct answer is ""Summarization"" because summarization involves extracting key information from large text datasets to create concise summaries or highlight important points. This aligns with the evaluation metrics provided in the context, which include both human-aligned and human-inferred LLMs.
+Explanation: The correct answer is ""Summarization"" because summarization involves extracting key information from large text datasets to create concise summaries or highlight important points.
 
 Incorrect Answers:
-- Evaluation of human-aligned LLMs does not involve summarization; it focuses on comparing their performance against human-generated outputs.
-- Toxicity scores are not directly related to summarization tasks; they measure how well a model handles natural language processing tasks.
-- The evaluation criteria for toxicology score do not apply to summarization tasks.",0.477,0.604,"model, llm, evaluation","context, model, llm, evaluation",False,False,True,True,Tuned score higher
+- Evaluation of human-aligned LLMs does not involve summarization; it focuses on comparing their performance with human-generated outputs.
+- Toxicity scores are used during evaluation rather than being evaluated directly by humans.
+- The provided context mentions that the evaluation uses a toxicity score but does not specify what it measures.",0.477,0.511,"model, evaluation, llm","evaluation, context, llm",False,False,True,True,Tuned score higher
 Generate an exam-style question from the lecture context.,"Topic: Retrieval-Augmented Generation (RAG)
 Difficulty: medium
 Lecture context: Keyword search - TF-IDF
@@ -45,8 +45,12 @@ Lecture context: Keyword search - TF-IDF
 Term Frequency – Inverse Document Frequency","Question: Which of the following is true regarding model weights in a standard RAG setup?
 Choices: A) They are updated via backpropagation B) They are fine-tuned on retrieved results C) They remain frozen during retrieval and generation D) They are adjusted dynamically at inference time
 Correct answer: C
-Explanation: In a standard RAG pipeline, the pre-trained language model remains frozen, and external context is injected directly into the prompt without altering the weights.",Question: What is the primary difference between Term Frequency-Inverse Document Frequency (TF-IDF) and traditional retrieval-based generation methods in the context of keyword search?,"Question: What is the primary difference between Term Frequency-Inverse Document Frequency (TF-IDF) and Word Embeddings?
-Answer: The main distinction lies in how they measure term importance. TF-IDF calculates the frequency of each word across all documents while embedding vectors capture the semantic meaning of words.",0.207,0.337,"retrieval, context",embedding,False,False,False,True,Tuned score higher
+Explanation: In a standard RAG pipeline, the pre-trained language model remains frozen, and external context is injected directly into the prompt without altering the weights.",Question: What is the primary difference between Term Frequency-Inverse Document Frequency (TF-IDF) and traditional retrieval-based generation methods in the context of keyword search?,"Question: According to the lecture, what is the primary difference between Term Frequency-Inverse Document Frequency (TF-IDF) and Word Embeddings?
+Answer: The term frequency-inverse document frequency (TF-IDF) measures how important a word is in a corpus by counting its occurrences within documents rather than its importance in the text itself. It's used for retrieval-based generation tasks like RAG.
+Question: What does the term ""word embedding"" refer to in the context of retrieval-Augmented Generation (RAG)?
+Answer: A word embedding is a numerical representation of words that captures their meaning across different contexts or languages. This allows RAG systems to understand the semantic relationships between words more accurately.
+Question: How does the concept of TF-IDF relate to the retrieval process in RAG?
+Answer: In",0.207,0.58,"retrieval, context","retrieval, rag, context, embedding",False,False,False,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: advanced
 Question: What is Low-Rank Adaptation (LoRA) and how does it optimize fine-tuning?
 Retrieved lecture context: Fine-tuning,
@@ -71,13 +75,10 @@ Quick check question: Why does LoRA freeze the original model weights and only t
 
 Low-Rank Adaptation (LoRA) is an optimization technique used to improve the performance of deep neural networks by reducing their dimensionality while preserving important features. This method aims to make the model more efficient and easier to train, especially when dealing with large datasets or complex tasks.
 
-In the context of fine-tuning, LoRA helps in optimizing the parameters of a pre-trained model (like a pre-trained language model like BERT) to better match the specific needs of a new task or dataset. The idea behind LoRA is that by reducing the number of parameters, we can reduce the computational complexity and potentially speed up training","Advanced student level: LoRA is an optimization technique used in deep learning models to reduce overfitting by reducing the rank of the model's weight matrix. It works by iteratively updating the weights of the model based on the loss function, minimizing the difference between the predicted output and the ground truth labels while keeping the learned parameters sparse. This results in better generalization performance compared to traditional methods that rely solely on regularization terms.
+In the context of fine-tuning, LoRA helps in optimizing the parameters of a pre-trained model (like a pre-trained language model like BERT) to better match the specific needs of a new task or dataset. The idea behind LoRA is that by reducing the number of parameters, we can reduce the computational complexity and potentially speed up training","Advanced student level: LoRA is an optimization technique used in deep learning models to reduce the computational cost associated with large-scale model training by reducing the number of parameters needed for efficient inference. It works by projecting the weights of the model onto a lower-dimensional space where they can be computed more efficiently.
 
-Course terminology: LoRA stands for Low-Rank Adaptation
-
-Explanation: The lecture context mentions ""Fine-tuning,"" which refers to the process of training a pre-trained model on new data without retraining it from scratch. LoRA optimizes this process by adjusting the model's structure during training to make it more efficient at predicting unseen data points with fewer parameters.
-
-Answering",0.59,0.674,"context, lora, model, fine-tuning","context, lora, model, fine-tuning, course",False,False,True,True,Tuned score higher
+Course terminology: LoRA stands for ""Low-Rank Adaptation.""
+Context: The lecture explains that LoRA optimizes the fine-tuning process by projecting the weights of the model onto a lower-dimensional space. This projection reduces the dimensionality of the parameter space while preserving the essential features learned during training. By doing so, LoRA enables faster inference times without sacrificing accuracy, making it particularly useful for large language models like GPT-3.",0.59,0.656,"model, lora, fine-tuning, context","course, model, lora, fine-tuning, context",False,False,True,True,Tuned score higher
 Critique and improve the assistant answer using the lecture context.,"Question: What are the best practices for structuring system prompts?
 Lecture context: Summaryofin-contextlearning(ICL)
 Classify this review:
@@ -119,7 +120,7 @@ For the third review, ""I don't like this chair."" the sentiment is negative. Th
 
 Lastly, for the fourth review, ""Who would use this product? "", the sentiment is neutral. It asks about potential","Review critique: The reviewer's sentiment seems to be negative due to their criticism of the prompt structure used in the movie review. They express disappointment with the lack of depth and specificity in the response.
 
-Improved answer: Prompt engineering involves crafting clear, concise, and relevant questions that accurately reflect the intended audience and purpose of the conversation. It requires careful consideration of the context, target audience, and desired outcome. A good prompt should provide specific, actionable answers that align with the user's needs and expectations.",0.46,0.424,"context, prompt","context, prompt",False,False,True,True,Base score equal or higher
+Improved answer: Prompt engineering involves crafting clear, concise, and relevant questions that accurately reflect the intended audience and purpose of the conversation. This ensures that responses are tailored to meet specific needs and expectations.",0.46,0.34,"prompt, context",prompt,False,False,True,True,Base score equal or higher
 Teach the concept using the required tutoring format.,"Student level: beginner
 Question: What are the best practices for structuring system prompts?
 Retrieved lecture context: Return on investment on prompt engineering
@@ -156,23 +157,23 @@ Quick check question: How does Chain of Thought (CoT) prompting improve performa
 
 3. **Specify Inputs and Outputs**: Clearly define what inputs (e.g., data sources) and outputs (e.g., results) will be used. This makes it easier for others to understand how to interact with your system.
 
-4. **Provide Contextual Information**: Include contextual information such as","Beginner-level question: What are the best practices for structuring system prompts?
+4. **Provide Contextual Information**: Include contextual information such as","Beginner student level instruction:
+What are the best practices for structuring system prompts?
 
-Answer: The best practices for structuring system prompts include:
+Answer:
+The best practices for structuring system prompts include:
 
 1. **Clarity**: Ensure that your prompts are clear and concise to guide users effectively.
 
-2. **Relevance**: Make sure your prompts are relevant to the task at hand, avoiding generic or irrelevant instructions.
+2. **Relevance**: Make sure your prompts are relevant to the task at hand. This helps in guiding users towards the correct answer.
 
-3. **Consistency**: Use consistent language throughout your prompts to maintain clarity and professionalism.
+3. **Completeness**: Provide enough information so that users can understand what is expected of them without needing additional explanations.
 
-4. **Avoiding Redundancy**: Avoid repeating information in your prompts to prevent confusion.
+4. **Consistency**: Use consistent language throughout your prompts to maintain clarity and professionalism.
 
-5. **Structured Structure**: Organize your prompts into logical sections (e.g., introduction, main points, conclusion) to enhance readability and comprehension.
+5. **Avoiding Bias**: Be aware of any potential biases in your prompts (e.g., gendered or racialized language) and adjust accordingly.
 
-6. **Use of Examples**: Include examples where appropriate to illustrate key points and help clarify complex ideas.
-
-7",0.445,0.354,"context, prompt",prompt,False,False,True,True,Base score equal or higher
+6. **Testing**: Regularly test your prompts with",0.445,0.367,"prompt, context",prompt,False,False,True,True,Base score equal or higher
 Critique and improve the assistant answer using the lecture context.,"Question: Explain the mathematics of the scaled dot-product attention.
 Lecture context: Representation Models
 17
@@ -194,11 +195,11 @@ Improved answer: Transformers do not process tokens sequentially from left to ri
 
 Explanation: The mathematics behind the scaled dot-product attention involves several key components:
 
-1. **Dot-Product Attention**: This is a type of self-attention mechanism used in transformer models. It computes the weighted sum of query vectors, key vectors, and value vectors.
+1. **Dot Product**: This operation computes the inner product between two vectors in a vector space. In this case, it calculates the similarity between the query vector \( Q \) and the key vector \( K \).
 
-2. **Scaled Dot-Product Attention**: This variant scales the dot-product attention computation by multiplying it with a scalar factor called `temp`. This scaling helps in reducing the dimensionality of the output vector while preserving important information.
+2. **Scaled Dot-Product Attention**: Instead of computing the full dot product, which can be computationally expensive, scaled dot-product attention uses a scaling factor \( \lambda \). This reduces the complexity by reducing the number of multiplications required.
 
-3. **Self-Attention Mechanism**: In transformers, each token attends to its own context window, which is represented as a set of queries, keys, and values. These tokens interact through these attended vectors",0.578,0.662,"transformer, token, attention, rag","transformer, context, token, model, attention",False,False,True,True,Tuned score higher
+3. **Attention Weighting**: The weightings are calculated based on the cosine similarity or Euclidean distance between the query vector \( Q \) and the",0.578,0.347,"rag, attention, transformer, token",attention,False,False,True,True,Base score equal or higher
 Teach the concept using the required tutoring format.,"Student level: intermediate
 Question: What are the main components of a RAG pipeline?
 Retrieved lecture context: Understanding Embedding Models
@@ -244,11 +245,13 @@ Quick check question: How does vector database lookup fit into the standard RAG 
 4. **Pooling/Flattening**: After processing each time step, the output from the RNN is flattened and passed through a pooling operation to reduce the dimensionality of the data.
 
 5. **Embedding Layer**: Converts the flattened vector back into a dense representation suitable for further processing.","The main components of a Recurrent Attention Graph (RAG) pipeline include:
-1. **Attention Mechanism**: This component allows for selective attention to different parts of the input space based on their relevance to the current query or prompt.
-2. **Query Generation**: The output from the RAG model is used as the query for subsequent layers, which can be either positional encoding or word embeddings.
-3. **Prompt Handling**: The prompt layer adjusts the query dynamically during training to guide the generation process towards more coherent outputs.
+1. **Attention Mechanism**: This component allows for selective attention to different parts of the input space based on their relevance to the current query or target word.
+2. **Query Word Embeddings**: These vectors capture the meaning of the query word at the global scale.
+3. **Contextual Embeddings**: These vectors represent the semantic relationships between words within the context.
+4. **Query-Context Attention**: This mechanism combines the query embedding with contextual embeddings to produce an updated vector representation of the query word.
+5. **Query-Context Query Attention**: This is another layer that combines the query embedding with the query-context attention to further refine the query word's representation.
 
-These components work together to generate text that is both contextually relevant and grammatically correct, making it suitable for tasks like question-answering and summarization.",0.564,0.63,"model, attention, rag, embedding","context, model, attention, prompt, rag, embedding",False,False,True,True,Tuned score higher
+These components work together to enable the model to understand",0.564,0.622,"model, rag, attention, embedding","model, rag, attention, context, embedding",False,False,True,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: beginner
 Question: Explain the difference between Chain of Thought (CoT) and standard prompting.
 Retrieved lecture context: Contrastive Language-Image Pretraining (CLIP)
@@ -288,13 +291,15 @@ Chain of thought is a method used in machine learning to train models by iterati
 #### Example Scenario:
 Imagine you're trying to understand how to build a bridge. You start by asking ""What materials should I use?"" This question guides your thinking about what kind of structure would be most effective. As you refine this question, you might ask ""How do these materials connect? What supports the structure?"" Each","Beginner-level explanation:
 
-Chain of Thought (CoT) is a technique used in natural language processing to improve understanding by asking questions that lead to new information. It's like a puzzle-solving game where you start with a clue and ask follow-up questions until you find the answer.
+Chain of Thought (CoT) is a technique used in natural language processing to improve understanding by asking questions that lead to new information. It's like a puzzle-solving game where you ask ""What if...?"" type questions to find out what happens next.
 
-Standard prompting, on the other hand, is when a system asks you to provide specific answers based on what it has learned so far. It's more like a teacher telling you exactly what to say.
+Standard prompting, on the other hand, is when you give instructions directly to the AI system. This could be something like ""Write an essay about [topic]""
 
-Example: Imagine you're trying to understand why your friend likes ice cream. You might ask ""What do you think makes someone like ice cream?"" This question leads naturally to new insights about how people feel about ice cream.
+The main difference is that CoT asks questions to understand the context before answering, while standard prompting gives clear instructions straight away.
 
-In contrast, CLIP focuses on learning a shared representation across images and text. It doesn't just",0.548,0.4,"context, model, prompt",prompt,False,False,True,True,Base score equal or higher
+Example: If I asked you ""What will happen if we don't clean our room?"", you'd need to think about your own habits and then answer based on those thoughts.
+
+This contrasts with CLIP, which focuses more on comparing",0.548,0.454,"model, prompt, context","prompt, context",False,False,True,True,Base score equal or higher
 Grade the student's answer using the lecture context.,"Question: Explain the difference between RAG and fine-tuning.
 Student answer: RAG is when you train a model on search engine results so it learns everything online.
 Lecture context: More challenging: Customer service agent
@@ -322,7 +327,7 @@ Given this mismatch, the instruction cannot be applied directly to the question 
 **Grade:** 0
 
 **Explanation:** The student's answer is incorrect because RAG is not related to customer service agents as described in the lecture. Instead, it pertains to the process of training models on search engine results to enhance their relevance-based capabilities. Therefore, the instruction cannot be used to grade the student's answer","Grade: B
-Explanation: The student's answer contains factual errors about RAG (Relevance-Augmented Generation) and fine-tuning in the context of customer service agents. Specifically, they incorrectly state that RAG trains models on search engine results to learn everything online, which is not accurate. Additionally, their question does not align with the lecture context, which discusses more complex scenarios involving customer service agents rather than general search queries.",0.627,0.611,"context, model, fine-tuning, rag","context, model, fine-tuning, rag",False,False,True,True,Base score equal or higher
+Explanation: The student's answer contains factual errors about RAG (Relevance-Augmented Generation) and fine-tuning in the context of customer service agents. Specifically, they incorrectly state that RAG trains models on search engine results to learn everything online, which is not accurate. Additionally, their question does not align with the lecture context, which discusses more complex scenarios involving customer service agents rather than general search queries.",0.627,0.611,"model, rag, fine-tuning, context","model, rag, fine-tuning, context",False,False,True,True,Base score equal or higher
 Generate an exam-style question from the lecture context.,"Topic: LLM Agents & Multi-Agent Systems
 Difficulty: medium
 Lecture context: Successful task completion rate (%)
@@ -341,9 +346,9 @@ D) To reduce computational resources by caching responses
 
 Correct answer: A) To generate text that accurately reflects the intent behind the prompt
 
-Explanation: The lecture states that ""Planning with code improves performance,"" which directly addresses the core objective of generating accurate and relevant responses based on user input.
+Explanation: The lecture states that ""Planning with code improves performance,"" indicating that generating text based on intent is crucial for achieving high accuracy.
 
-This question tests comprehension of how planning functions within language models, aligning closely with the difficulty level specified (medium).",0.192,0.518,"model, llm","model, prompt",False,False,False,True,Tuned score higher
+This question tests comprehension of how planning aids in language model performance, aligning closely with the lecture's emphasis on enhancing model efficiency through code-based reasoning.",0.192,0.507,"model, llm","model, prompt",False,False,False,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: advanced
 Question: Explain the difference between RAG and fine-tuning.
 Retrieved lecture context: Prompt Template
@@ -430,15 +435,16 @@ The system will first ask about your name and then proceed to gather information
 **Example Completion 2:**
 The system will then ask if you prefer credit card payments,","**Concept Explanation**
 
-Chain of Thought (CoT) is an AI technique used in natural language processing to guide the generation process by providing a logical sequence of prompts that lead to coherent answers. It's particularly useful when dealing with complex questions or instructions where a user might want to follow multiple steps.
+Chain of Thought (CoT) is an AI technique used in natural language processing to guide the generation process by providing a logical sequence of prompts that lead to coherent responses. It's particularly useful when dealing with complex questions or instructions where a user might want to follow multiple steps.
 
-Standard prompting, on the other hand, is a more straightforward approach where users provide their own input directly. This method can be faster but may not always yield the most accurate results due to lack of structured guidance.
+Standard prompting, on the other hand, is a more straightforward approach where users provide their own input directly. This method can be faster but may not always yield the most accurate or complete answers.
 
 **Difference Between CoT and Standard Prompting**
 
-1. **Flexibility**: CoT allows for a more flexible structure because it provides a clear path for the system to follow, which can help prevent errors and ensure coherence.
-   
-2. **Speed**: While CoT can speed up responses,",0.44,0.358,"model, prompt",prompt,False,False,True,True,Base score equal or higher
+1. **Purpose**: CoT guides the system through a series of prompts to generate a coherent response.
+2. **Speed**: Faster than standard prompting but less precise.
+3. **Accuracy**: Less reliable due to lack of guidance.
+4. **Flexibility**:",0.44,0.346,"model, prompt",prompt,False,False,True,True,Base score equal or higher
 Teach the concept using the required tutoring format.,"Student level: advanced
 Question: What is the difference between small and large language models?
 Retrieved lecture context: Introduction to
@@ -471,14 +477,11 @@ Small language models (SLMs) are typically very simple models that can be traine
 **Key Characteristics:**
 - **Size**: Smaller models tend to be more efficient with less computational resources.
 - **Training Time**: Can be faster due to fewer parameters and simpler architecture.
-- **Efficiency**: Often perform better than larger models because they require less training time","Advanced student level explanation:
-The difference between small and large language models lies in their computational power and training capabilities.
+- **Efficiency**: Often perform better than larger models because they require less training time","Advanced student level: The main difference between small and large language models lies in their computational power and training capabilities. Small models typically have fewer parameters and are trained on smaller datasets, often focusing on simple tasks like classification or tokenization. They can be very fast but may struggle with complex natural language processing (NLP) tasks that require deep learning architectures.
 
-Small Language Models (SLLMs) are relatively simple neural networks designed for text generation tasks like chatbots or summarization. They typically have fewer parameters than larger models but can generate coherent sentences quickly due to their simplicity. SLLM architectures often include attention mechanisms that allow them to understand context dependencies.
+Large models, on the other hand, are significantly larger and more powerful. They are trained on massive datasets, including the full Wikipedia corpus, which allows them to capture intricate patterns and semantic understanding. Large models are capable of handling even the most challenging NLP tasks, such as question answering, summarization, and translation, without requiring extensive retraining.
 
-Large Language Models (LLMs), on the other hand, are more complex deep learning architectures trained on massive datasets. LLMs are capable of generating human-like text with high accuracy and diversity. They require vast amounts of computational resources and are optimized for inference rather than fine-tuning.
-
-Contextual understanding is key for LLMs; they need to grasp contextual information from the input prompt to",0.541,0.699,"transformer, context, model","context, model, attention, prompt, fine-tuning, llm",False,False,True,True,Tuned score higher
+In summary, small models excel at basic text generation tasks, while large models excel at sophisticated NLP",0.541,0.484,"model, transformer, context","model, token",False,False,True,True,Base score equal or higher
 Generate an exam-style question from the lecture context.,"Topic: Retrieval-Augmented Generation (RAG)
 Difficulty: medium
 Lecture context: Having an LLM initiate a clothing return
@@ -499,7 +502,7 @@ API call
 34","Question: Which of the following is true regarding model weights in a standard RAG setup?
 Choices: A) They are updated via backpropagation B) They are fine-tuned on retrieved results C) They remain frozen during retrieval and generation D) They are adjusted dynamically at inference time
 Correct answer: C
-Explanation: In a standard RAG pipeline, the pre-trained language model remains frozen, and external context is injected directly into the prompt without altering the weights.","Question: In the scenario described in the lecture where an LLM initiates a clothing return at a shopping platform, what is the next step for the user after confirming they wish to return any additional items? Specifically, how should the user proceed by calling the ""lookup with RAG API call"" method to retrieve the email associated with their previous order?",Question: What is retrieval-augmented generation (RAG) in the context of this scenario?,0.407,0.277,"llm, rag","retrieval, context, rag",False,False,True,False,Base score equal or higher
+Explanation: In a standard RAG pipeline, the pre-trained language model remains frozen, and external context is injected directly into the prompt without altering the weights.","Question: In the scenario described in the lecture where an LLM initiates a clothing return at a shopping platform, what is the next step for the user after confirming they wish to return any additional items? Specifically, how should the user proceed by calling the ""lookup with RAG API call"" method to retrieve the email associated with their previous order?",Question: What is retrieval-augmented generation (RAG) in the context of this scenario?,0.407,0.277,"rag, llm","retrieval, rag, context",False,False,True,False,Base score equal or higher
 Grade the student's answer using the lecture context.,"Question: What are the best practices for structuring system prompts?
 Student answer: Prompt engineering is just typing questions in ChatGPT until you get the right answer.
 Lecture context: Traditional Language Model Usage
@@ -531,7 +534,7 @@ Here’s an analysis of the student's response:
 
 Grade: Not so great
 
-Explanation: The student's answer contains incorrect information about prompt engineering and does not accurately reflect the lecture context. Instead of focusing on typing questions into ChatGPT to get answers, it emphasizes the importance of prompt engineering, which is actually a more accurate reflection of what the lecture states.",0.627,0.515,"context, model, prompt, llm","context, model, prompt",False,False,True,True,Base score equal or higher
+Explanation: The provided answer does not address the question about best practices for structuring system prompts as accurately as it could. It mentions typing questions into ChatGPT without understanding the underlying principles of prompt engineering or LLM internet data usage.",0.627,0.606,"model, prompt, context, llm","model, prompt, context, llm",False,False,True,True,Base score equal or higher
 Generate an exam-style question from the lecture context.,"Topic: LLM Agents & Multi-Agent Systems
 Difficulty: medium
 Lecture context: Example: Marketing team
@@ -574,18 +577,14 @@ Tools
 Choices: A) BLEU B) LoRA C) ReAct D) RAG
 Correct answer: C
 Explanation: The ReAct (Reasoning and Acting) framework structures agent prompts to generate thoughts, execute tool actions, and observe results in an iterative loop.","**Question:** How can researchers effectively utilize web search tools to gather and analyze market trends, while also leveraging graphic design software to create compelling marketing reports?","Question: What is the primary purpose of using multi-agent systems in marketing research?
-A) To analyze market trends and generate reports
-B) To create interactive graphic designs
-C) To execute complex code scripts
-D) To manipulate data visualization tools
+A) To analyze competitor strategies
+B) To create interactive web pages
+C) To generate animated graphics
+D) To execute complex code scripts
+Correct answer: A) To analyze competitor strategies
+Explanation: In marketing research, analyzing competitor strategies is crucial because it helps identify gaps, opportunities, and potential threats that can inform product development decisions. This analysis often involves multiple agents working together to gather information and make informed decisions.
 
-Correct answer: A) To analyze market trends and generate reports
-Explanation: The lecture explains that multi-agent systems (MAS) allow multiple agents to work together on a project, such as analyzing market trends or generating marketing copy. This allows for more efficient collaboration and faster decision-making compared to single-agent approaches.
-
-Incorrect answers:
-B) Creating interactive graphic designs - While this can be part of MAS, it's not its main function.
-C) Executing complex code scripts - This is outside the scope of MAS.
-D) Manipulating data visualization tools -",0.091,0.367,rag,,False,False,False,True,Tuned score higher
+This question tests comprehension of how multi-agent systems contribute to effective marketing research by providing a practical application of the concept discussed in the lecture.",0.091,0.367,rag,,False,False,False,True,Tuned score higher
 Critique and improve the assistant answer using the lecture context.,"Question: Explain the difference between Chain of Thought (CoT) and standard prompting.
 Lecture context: Bag of words
 Bag of Words
@@ -615,15 +614,15 @@ Improved answer: Few-shot prompting involves injecting 2-5 input-output examples
 
 In contrast, standard prompting typically requires a much larger dataset for effective learning. It relies heavily on the model's ability to understand the nuances of language and context, which can be challenging with limited input.
 
-For example, if we were to train a model to predict whether a given sentence contains ""pizza"" or not, we might start by providing a large number of sentences containing ""pizza."" However, this would result","The assistant's answer contains several inaccuracies and oversimplifications that need to be corrected for clarity and accuracy:
+For example, if we were to train a model to predict whether a given sentence contains ""pizza"" or not, we might start by providing a large number of sentences containing ""pizza."" However, this would result","The assistant's answer contains several inaccuracies and oversimplifications that need to be corrected for clarity and accuracy. Let me explain the correct concept:
 
-1. **Incorrect Explanation**: The assistant incorrectly states that ""Few-shot prompting is when you train a model on a very small dataset.""
-   - This is incorrect because few-shot prompting typically involves training models on limited data rather than datasets with many examples.
+**Correct Answer:** Few-shot prompting involves training a model on a very small dataset. This means the model learns from limited examples rather than large-scale labeled data.
 
-2. **Misinterpretation of CoT**: The assistant misinterprets CoT as being about how prompts should be structured or formatted.
-   - CoT refers to the process of generating natural language questions based on a given prompt, not how prompts should be structured.
+Now, let's critique the given answer:
 
-3. **Incorrect Use of Context**: The assistant uses the context of bag-of-words in its explanation but fails to mention that this concept applies universally across all languages and",0.526,0.526,"context, model, prompt","context, model, prompt",False,False,True,True,Base score equal or higher
+- **Incorrectness**: The answer incorrectly states that ""Chain of Thought"" (CoT) and standard prompting both involve training a model on a very small dataset. CoT is about understanding the context and reasoning behind prompts, while standard prompting focuses on generating text based on pre-defined rules or templates.
+  
+- **Insufficient detail**: The answer fails to mention that CoT requires explicit instructions and does not include the process of training a model on a",0.526,0.511,"model, prompt, context","model, prompt, context",False,False,True,True,Base score equal or higher
 Grade the student's answer using the lecture context.,"Question: What is the difference between small and large language models?
 Student answer: An LLM is a giant database of sentences that it searches through when you ask it a question.
 Lecture context: Lecture References
@@ -648,18 +647,26 @@ Corrected answer: An LLM is a deep neural network consisting of billions of para
 4. **Contextual Understanding**: The context provides additional information about how large language models work, including their ability to search through databases of sentences.
 
 Given this detailed analysis, the student's answer aligns well with the lecture context regarding the definition and capabilities","Grade: 3/5
-Explanation: The answer does not directly address the question about the difference between small and large language models as presented in the lecture context. Instead, it provides a general explanation about how LLMs work without addressing the specific comparison asked for.
-Correct Answer: Small language models are typically much smaller than large ones, often consisting of tens or hundreds of thousands of parameters. They are designed to be efficient and fast, making them suitable for real-time applications like chatbots and virtual assistants. Large language models, on the other hand, have millions or billions of parameters, allowing them to process vast amounts of text data quickly and accurately.",0.512,0.563,"context, model","context, model, llm",False,False,True,True,Tuned score higher
+Explanation: The student's answer contains factual inaccuracies about how large language models work. Specifically, they incorrectly state that an LLM is a ""giant database of sentences"" rather than a collection of text files. This misunderstanding leads to incorrect conclusions about their functionality and limitations.
+
+Correct Answer: A large language model (LLM) is a neural network trained on vast amounts of textual data to generate human-like text based on prompts or queries. It uses pre-trained weights from a large corpus of text to understand natural language syntax and semantics.
+
+This explanation directly addresses the misconception in the student's response by explaining what an LLM does and why it differs from traditional machine learning models like deep learning.",0.512,0.63,"model, context","model, prompt, llm",False,False,True,True,Tuned score higher
 Generate an exam-style question from the lecture context.,"Topic: Large Language Models Fundamentals
 Difficulty: medium
 Lecture context: GenerativeAI projectlifecycle
 56","Question: What is the core training objective of autoregressive large language models?
 Choices: A) Image classification B) Reinforcement learning from scratch C) Next-token prediction D) Token alignment mapping
 Correct answer: C
-Explanation: Autoregressive LLMs are trained to predict the most likely next token in a sequence given the preceding context.",What is the primary goal of the large language models (LLMs) project lifecycle in the context of generative AI?,"Question: What is the primary purpose of using large language models in generative AI projects?
-Options: A) To generate text that accurately reflects human speech patterns B) To analyze natural language data C) To perform statistical analysis on text D) To create synthetic content for marketing purposes
-Correct answer: A
-Explanation: The correct answer is A because large language models (LLMs) are designed to generate text that closely mirrors human speech patterns, making them ideal for tasks like conversational agents or summarization.",0.312,0.534,"context, model, llm","model, llm",False,False,False,True,Tuned score higher
+Explanation: Autoregressive LLMs are trained to predict the most likely next token in a sequence given the preceding context.",What is the primary goal of the large language models (LLMs) project lifecycle in the context of generative AI?,"Question: What is the primary goal of the large language models (LLMs) lifecycle in the context of generative AI projects? 
+Answer Choices: 
+A) To optimize model performance for specific tasks
+B) To reduce the computational cost associated with training LLMs
+C) To ensure that LLMs can generate text at any speed
+D) To increase the accuracy of generated text by fine-tuning weights
+
+Correct Answer: A
+Explanation: The correct answer is A because it directly addresses the core objective of the LLM lifecycle - to optimize model performance for specific tasks. This ensures that the LLMs are designed and trained efficiently to achieve their intended outputs within the constraints of the project's requirements.",0.312,0.736,"model, context, llm","model, fine-tuning, context, llm",False,False,False,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: advanced
 Question: Explain causal language modeling and how it differs from masked language modeling.
 Retrieved lecture context: Instruction following results (GPT-5)
@@ -701,14 +708,14 @@ Suppose you have a sentence ""The cat sat on the","Advanced student level questi
 
 Causal Language Modeling (CLM) is a type of machine learning model designed to predict the next token in a sequence based on its preceding tokens. It's particularly useful for tasks like sentiment analysis or cause-effect reasoning.
 
-Masked Language Modeling (MLM) is another type of model that predicts the next token in a sequence by replacing part of the input with a mask character. This allows the model to focus on specific parts of the text rather than predicting every word.
+Masked Language Modeling (MLM) is another type of model that predicts the next token in a sequence by replacing part of the input with a mask character. This allows MLMs to learn more complex dependencies between words.
 
-The key difference between CLM and MLM lies in their approach to generating text:
+The key difference lies in how they handle masked tokens:
 
-1. CLM uses past information to guide current predictions.
-2. MLM replaces words with masks to generate new sequences.
+1. CLM uses masking to prevent the model from predicting masked tokens during inference.
+2. MLM uses masking to replace masked tokens during training.
 
-Both models aim to understand the underlying structure of natural language but differ significantly in their computational approaches and application",0.44,0.451,"context, model","token, model",False,False,True,True,Tuned score higher
+Both models aim to generate plausible text given prompts, but CLMs focus on understanding the underlying logic behind sentences, while MLMs focus",0.44,0.532,"model, context","model, prompt, token",False,False,True,True,Tuned score higher
 Generate an exam-style question from the lecture context.,"Topic: LLM Evaluation & Safety
 Difficulty: hard
 Lecture context: LLM Evaluation - Metrics - ROUGE-2
@@ -724,14 +731,13 @@ It is
 is cold
 cold outside
 55","Question: Based on the lecture context, explain the following: Explain the MMLU benchmark and its significance.
-Answer Guidance: Look for mentions of 'LLM Evaluation & Safety' and details of their structural interaction in your response.",What is the weather like outside?,"Question: According to the lecture, what metric does the ROUGE-2 score primarily evaluate?
+Answer Guidance: Look for mentions of 'LLM Evaluation & Safety' and details of their structural interaction in your response.",What is the weather like outside?,"Question: According to the lecture, what metric does ROUGE-2 primarily evaluate?
 A) The accuracy of language models in generating human-like text
-B) The similarity between two sentences based on word order and meaning
-C) The precision of language models for detecting grammatical errors
-D) The recall of language models for identifying common words
+B) The speed at which language models process natural language
+C) The depth of knowledge conveyed by language models
+D) The frequency with which language models generate similar sentences
 
-Correct answer: B) The similarity between two sentences based on word order and meaning
-Explanation: ROUGE-2 scores compare the predicted sentence with a gold standard reference sentence, indicating how well the model's predictions match the ground truth.",0.015,0.42,,model,False,False,False,True,Tuned score higher
+Correct answer: A) The accuracy of language models in generating human-like text",0.015,0.36,,model,False,False,False,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: beginner
 Question: Explain how autoregressive decoding works in LLM inference.
 Retrieved lecture context: What Is Language AI?
@@ -764,14 +770,10 @@ Here’s how it works:
 Autoregressive decoding is a technique used by large language models (LLMs) like GPT-3 and BART to generate text based on previous tokens or prompts. It's particularly useful for tasks requiring long-term planning or understanding context.
 
 How it works:
-
-1. **Contextual Context**: The model starts with an initial guess about what the next token should say based on its own history.
-
-2. **Feedback Loop**: For each new token, the model checks if it follows a specific pattern called ""contextual feedback."" If not, it generates a random word from a predefined set of words.
-
-3. **Repetition**: The process repeats until the model reaches a state where it has enough context to make a meaningful prediction.
-
-4. **Hierarchical Structure**: This method",0.521,0.674,"token, model, llm","context, token, model, prompt, llm",False,False,True,True,Tuned score higher
+1. **Contextual Context**: The model starts with an initial guess about what the next token should say.
+2. **Feedback Loop**: For each subsequent token, the model receives feedback from the previous token. This feedback helps refine its prediction.
+3. **Recurrent Neural Networks (RNNs)**: These allow the model to remember past inputs and outputs, enabling it to predict future words more accurately.
+4. **Hierarchical Structure**: The model constructs a hierarchical structure where each layer predicts the most likely next",0.521,0.678,"model, token, llm","model, prompt, token, context, llm",False,False,True,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: beginner
 Question: How do agents utilize tools in a ReAct loop?
 Retrieved lecture context: Building up the ReAct prompt
@@ -845,10 +847,13 @@ Action
 Observation
 Answer
 LLM
-This answer demonstrates an understanding of how ReAct loops work by showing an example of how an agent might react based on received inputs. It also explains that this is part of the broader concept of AI agent behavior, which is beyond the scope of the given lecture context but can be inferred from the provided context.
+(could be more
+than one
+answer)
+Agent A initiates an action by calling `execute()` on its `execute` method. It then calls another method called `react()`, passing it the current state of the environment as input. The output from this call is used to update the agent's internal state, allowing it to react to new events or observations.
 
 Final Answer
-In a ReAct loop, an agent utilizes various tools such as state variables, actions, and feedback mechanisms to make decisions and update its internal representation over time. The tool selection process",0.463,0.545,"context, prompt","context, llm, course",False,False,True,True,Tuned score higher
+In a ReAct loop, an agent utilizes tools like `execute()` and `react()` to interact with its environment",0.463,0.487,"prompt, context","course, llm",False,False,True,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: intermediate
 Question: Explain the MMLU benchmark and its significance.
 Retrieved lecture context: LLM Evaluation - Metrics - ROUGE-2
@@ -949,16 +954,16 @@ The significance of this benchmark lies in several key points:
 ### Explanation:
 
 #### The Reference Corpus:
-This corpus contains pre-defined text samples that serve as ground truth for evaluating language models' predictions. These texts are typically written in English but can be adapted to other languages if needed.
+This corpus contains pre-defined text samples that serve as ground truth for evaluating language models' predictions. These texts are typically crafted with specific intents or queries, ensuring consistency and reproducibility.
 
 #### The Test Set:
-This set includes actual outputs from language models trained on the same dataset used by the Reference Corpus. The goal is to evaluate how well the models perform when presented with unseen data.
+This set includes actual outputs from language models trained on the same dataset. Each test sample is annotated with both the predicted tokens and their corresponding references.
 
 ### Significance:
 
-The MMLU Benchmark plays a crucial role in understanding the limitations and strengths of language models. Here’s why it's significant:
+The MMLU Benchmark plays a crucial role in evaluating the quality of language models by comparing their performance against human annotators. Here’s how it works:
 
-1. **Evaluation Precision**: By comparing the",0.41,0.418,"model, evaluation","model, evaluation",False,False,True,True,Tuned score higher
+1. **Ground Truth**: The reference corpus",0.41,0.488,"model, evaluation","model, token, evaluation",False,False,True,True,Tuned score higher
 Teach the concept using the required tutoring format.,"Student level: beginner
 Question: What is the difference between small and large language models?
 Retrieved lecture context: Mixture of Experts (MOE)
@@ -984,12 +989,12 @@ Small language models, also known as generative models or neural machine transla
 
 ### Large Language Models
 
-Large language models, such as","Beginner-level question explanation:
-The student is asking about the differences between small and large language models. The instructor explains that MOE stands for ""Mixture of Experts"" and describes it as a technique used in natural language processing to combine multiple expert systems into one model.
+Large language models, such as","Beginner-level question: What is the difference between small and large language models?
 
-Answer explanation:
-1. Small Language Models (SLLMs): These are relatively simple models designed to perform specific tasks like sentiment analysis or named entity recognition. They typically have fewer parameters than larger models but can be trained on limited data sets.
+Answer: Small language models are typically much smaller in size compared to their larger counterparts. They consist of fewer parameters than their larger counterparts but still have enough capacity to understand and generate text at a high speed.
 
-2. Large Language Models (LLMs): LLMs are more complex models capable of understanding and generating human-like text. They often have millions of parameters and require vast amounts of training data to learn from.
+Large language models, on the other hand, are significantly larger in size, often containing millions or billions of parameters. These models can process vast amounts of data quickly, enabling them to generate coherent and natural-sounding text with remarkable accuracy.
 
-3. Size comparison: While both SLLMs and LLMs are neural",0.566,0.501,"transformer, context, model","model, llm",False,False,True,True,Base score equal or higher
+Retrieved lecture context: Mixture of Experts (MOE)
+
+Explanation: The MOE model is a type of transformer-based language model that combines multiple smaller transformers into one larger model. This allows it to learn hierarchical dependencies across different parts of the input sequence, making it particularly effective",0.566,0.58,"model, transformer, context","model, transformer, context",False,False,True,True,Tuned score higher

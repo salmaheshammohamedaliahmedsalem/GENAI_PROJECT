@@ -3,11 +3,9 @@ base_model: Qwen/Qwen2.5-0.5B-Instruct
 library_name: peft
 pipeline_tag: text-generation
 tags:
+- base_model:adapter:Qwen/Qwen2.5-0.5B-Instruct
 - lora
-- peft
-- education
-- rag
-- multi-agent-tutor
+- transformers
 ---
 
 # GenAI Mentor Qwen 0.5B LoRA Adapter
@@ -60,3 +58,6 @@ model = PeftModel.from_pretrained(model, adapter_dir)
 - It should not be used without the base Qwen model.
 - It is not a substitute for RAG grounding; course facts should still come from retrieved lecture chunks.
 - Safety rules in `src/agents/safety_agent.py` still govern cheating, plagiarism, and harmful requests.
+### Framework versions
+
+- PEFT 0.19.1
