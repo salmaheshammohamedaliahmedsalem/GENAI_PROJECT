@@ -10,6 +10,7 @@ import streamlit as st
 from src.agents.graph import get_graph_blueprint, run_genai_mentor
 from src.agents.safety_agent import check_safety
 from src.config import DATA_DIR, FINETUNE_BASE_MODEL, OUTPUTS_DIR, TRACE_DIR
+from src.llm.model_registry import get_recommended_chat_model_id, list_chat_model_options, resolve_chat_model_option
 from src.llm.prompts import list_prompt_templates
 from src.rag.hybrid_retriever import HybridRetriever
 
@@ -456,6 +457,28 @@ def show_student_view() -> None:
                 format_func=lambda value: STUDENT_LEVELS[value],
                 help="The adaptation agent changes explanation depth, examples, and quiz difficulty based on this.",
             )
+            model_options = list_chat_model_options(include_unavailable=False)
+            model_ids = [option.id for option in model_options]
+            recommended_model_id = get_recommended_chat_model_id()
+            model_index = model_ids.index(recommended_model_id) if recommended_model_id in model_ids else 0
+            selected_model_id = st.selectbox(
+                "Response model",
+                options=model_ids,
+                index=model_index,
+                format_func=lambda value: resolve_chat_model_option(value).label,
+                help="Fine-tuned adapters are discovered from outputs/finetune/**/adapter_model.safetensors.",
+            )
+            selected_model = resolve_chat_model_option(selected_model_id)
+            st.caption(selected_model.status)
+            if selected_model.is_finetuned:
+                st.success("Using the fine-tuned Qwen LoRA tutor model.")
+            else:
+                unavailable_finetuned = [
+                    option for option in list_chat_model_options(include_unavailable=True)
+                    if option.is_finetuned and not option.available
+                ]
+                if unavailable_finetuned:
+                    st.warning("Fine-tuned adapters exist, but local model dependencies are missing. Install `requirements_finetune.txt` to enable them.")
             if st.button("New chat", key="clear_student_chat", width="stretch"):
                 st.session_state.student_messages = []
                 st.session_state.last_student_result = None
@@ -497,14 +520,17 @@ def show_student_view() -> None:
                             ui_options={
                                 "retrieval_override": "auto",
                                 "student_level": selected_level,
+                                "chat_model_id": selected_model_id,
                                 "n_questions": 3,
                             },
                         )
                     st.markdown(result["answer"])
                     decision = result.get("router_decision", {})
+                    response_model = result.get("response_model", {})
                     st.caption(
                         f"Route: `{decision.get('retrieval_mode', 'unknown')}` · "
                         f"Level: `{result.get('student_profile', {}).get('label', STUDENT_LEVELS[selected_level])}` · "
+                        f"Model: `{response_model.get('label', selected_model.label)}` · "
                         f"Graph: `{result.get('graph_engine', 'unknown')}`"
                     )
                 st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})

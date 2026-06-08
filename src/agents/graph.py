@@ -11,6 +11,7 @@ from src.agents.quiz_agent import QuizAgent
 from src.agents.safety_agent import check_safety
 from src.agents.tutor_agent import TutorAgent
 from src.config import TRACE_DIR, ensure_dirs
+from src.llm.model_registry import resolve_chat_model_option
 from src.rag.citations import list_source_labels
 from src.rag.hybrid_retriever import HybridRetriever
 from src.schemas import AgentTrace, RetrievedChunk, RouterDecision
@@ -38,6 +39,7 @@ class MentorGraphState(TypedDict, total=False):
     retrieved_chunks: list[RetrievedChunk]
     tool_calls: list[dict[str, Any]]
     answer: str
+    response_model: dict[str, Any]
     checker_feedback: dict[str, Any]
     trace_path: str
 
@@ -203,8 +205,23 @@ def _response_node(state: MentorGraphState) -> dict[str, Any]:
         tool_calls.append({"tool": "calculator_tool", "args": {"expression": expression}, "result": result})
         return {"answer": answer, "tool_calls": tool_calls}
 
-    answer = TutorAgent().answer(user_query, retrieved, decision.retrieval_mode, student_profile=student_profile)
-    return {"answer": answer, "tool_calls": tool_calls}
+    model_selection = ui_options.get("chat_model_id") or ui_options.get("llm_backend")
+    selected_model = resolve_chat_model_option(model_selection, prefer_finetuned=bool(model_selection))
+    answer = TutorAgent().answer(
+        user_query,
+        retrieved,
+        decision.retrieval_mode,
+        student_profile=student_profile,
+        model_selection=selected_model.id,
+        conversation_history=state.get("conversation_history", []),
+    )
+    tool_calls.append(
+        {
+            "tool": "response_model",
+            "result": selected_model.model_dump(),
+        }
+    )
+    return {"answer": answer, "tool_calls": tool_calls, "response_model": selected_model.model_dump()}
 
 
 def _checker_node(state: MentorGraphState) -> dict[str, Any]:
@@ -297,6 +314,7 @@ def _format_response(state: MentorGraphState, graph_engine: str) -> dict[str, An
         ],
         "tool_calls": state.get("tool_calls", []),
         "checker_feedback": state.get("checker_feedback", {}),
+        "response_model": state.get("response_model", {}),
         "trace_path": state.get("trace_path", ""),
         "graph_engine": graph_engine,
         "langgraph_available": LANGGRAPH_AVAILABLE,
