@@ -253,10 +253,26 @@ def _run_sequential_graph(state: MentorGraphState) -> MentorGraphState:
 
 
 def _format_response(state: MentorGraphState, graph_engine: str) -> dict[str, Any]:
+    retrieved_chunks = state.get("retrieved_chunks", [])
     return {
         "answer": state.get("answer", ""),
         "router_decision": state["router_decision"].model_dump(),
-        "sources": list_source_labels(state.get("retrieved_chunks", [])),
+        "sources": list_source_labels(retrieved_chunks),
+        "retrieved_content": [
+            {
+                "source": item.chunk.source,
+                "source_type": item.chunk.source_type,
+                "page": item.chunk.page,
+                "topic": item.chunk.topic,
+                "chunk_id": item.chunk.chunk_id,
+                "text": item.chunk.text,
+                "semantic_score": item.semantic_score,
+                "keyword_score": item.keyword_score,
+                "final_score": item.final_score,
+                "metadata": item.chunk.metadata,
+            }
+            for item in retrieved_chunks
+        ],
         "tool_calls": state.get("tool_calls", []),
         "checker_feedback": state.get("checker_feedback", {}),
         "trace_path": state.get("trace_path", ""),

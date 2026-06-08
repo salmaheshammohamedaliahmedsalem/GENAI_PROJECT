@@ -19,6 +19,7 @@ def test_tool_flow_returns_calculation_and_trace():
 
     assert "0.80" in result["answer"] or "80%" in result["answer"]
     assert result["tool_calls"][0]["tool"] == "calculator_tool"
+    assert "retrieved_content" in result
     assert Path(result["trace_path"]).exists()
 
 

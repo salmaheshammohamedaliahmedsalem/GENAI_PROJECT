@@ -44,18 +44,11 @@ Student-facing answer + sources + trace
 | Checker agent | `src/agents/checker_agent.py` | Checks grounding and citation validity. |
 | Tool layer | `src/tools/` | Provides calculator, quiz, grading, citations, and progress helpers. |
 | Fine-tuning | `notebooks/03_finetuning_complete.ipynb`, `src/finetuning/` | Trains and evaluates a Qwen LoRA adapter for educational behavior. |
-| GUI | `app.py` | Presents the student learning flow, agents/prompts, RAG inspector, traces, fine-tuning, evaluation, safety, and run checks. |
+| GUI | `app.py` | Presents a Student mode for chat plus retrieved content, and a Backend Tracking mode for implementation evidence, traces, fine-tuning, evaluation, safety, and run checks. |
 
 ## Student Interface
 
-The Streamlit app is organized around how a student uses the system:
+The Streamlit app is split into two top-level buttons:
 
-1. **Overview:** Shows project evidence and the learning flow.
-2. **Learn & Practice:** Main chat for explanations, quizzes, grading, and tool-backed answers.
-3. **Agents & Prompts:** Shows the graph nodes, graph edges, and exact prompt templates.
-4. **Evidence/RAG:** Lets reviewers inspect retrieved chunks before answer generation.
-5. **Agent Trace:** Shows the saved JSON trace for auditability.
-6. **Fine-Tuning:** Shows dataset splits, Qwen LoRA adapter status, metrics, and output files.
-7. **Evaluation:** Shows evaluation summaries and result tables.
-8. **Safety:** Demonstrates academic-integrity refusals.
-9. **Run & Check:** Runs tests, index build, evaluation, and bounded fine-tuning smoke checks from the UI.
+1. **Student:** Main student chat. The left side is the conversation; the right side shows the retrieved chunks/sources used for the latest answer.
+2. **Backend Tracking:** Reviewer/developer dashboard with Overview, Agents & Prompts, Evidence/RAG, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.

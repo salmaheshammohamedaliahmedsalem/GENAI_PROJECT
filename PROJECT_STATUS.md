@@ -30,7 +30,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | Multi-Agent Setup | `src/agents/graph.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` when `langgraph` is installed, with the same node sequence available as a local fallback |
 | Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
 | Ethics / Safety | `src/agents/safety_agent.py`, `docs/ethics_safety.md` | Implemented |
-| GUI | `app.py` | Implemented with full showcase tabs |
+| GUI | `app.py` | Implemented with Student mode and Backend Tracking mode |
 
 ## Fine-Tuning Status
 
@@ -75,20 +75,14 @@ Run:
 streamlit run app.py
 ```
 
-The GUI now includes:
+The GUI now has two top-level modes:
 
-- **Overview:** required component checklist, graph-engine status, student flow, and live data metrics.
-- **Chat Tutor:** multi-agent chat with retrieval controls, quiz controls, sources, graph engine, and trace.
-- **Agents & Prompts:** LangGraph nodes, graph edges, and exact prompt templates.
-- **RAG Inspector:** retrieval query runner with chunk/source scoring table.
-- **Agent Trace:** latest saved agent trace JSON.
-- **Fine-Tuning:** dataset counts, adapter status, training log status, and dataset quality review.
-- **Evaluation:** generated evaluation summary and result table.
-- **Safety:** refusal and safety classification demo.
+- **Student:** chat interface for students plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
+- **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
 
 ## Recommended Submission Order
 
 1. Demo the GUI at `http://localhost:8501`.
-2. Show `Overview`, `RAG Inspector`, `Fine-Tuning`, `Evaluation`, and `Safety` tabs.
-3. Show the `Fine-Tuning` tab with completed MPS training status and adapter artifacts.
-4. If more time is available, rerun LoRA with more examples for stronger quality evidence.
+2. Show **Student** mode with chat and retrieved content.
+3. Switch to **Backend Tracking** and show `Overview`, `RAG Inspector`, `Fine-Tuning`, `Evaluation`, and `Safety` tabs.
+4. Show the `Fine-Tuning` tab with completed MPS training status and adapter artifacts.
