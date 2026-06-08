@@ -388,8 +388,8 @@ def show_mode_selector() -> None:
 
 
 def show_retrieved_content_panel(result: dict | None) -> None:
-    st.markdown("### Sources")
-    st.caption("Retrieved content used for the latest answer.")
+    st.markdown("### Retrieved sources")
+    st.caption("What the assistant used for the latest answer.")
 
     if not result:
         st.info("Ask a question first. Sources will appear here.")
@@ -398,11 +398,9 @@ def show_retrieved_content_panel(result: dict | None) -> None:
     decision = result.get("router_decision", {})
     route = decision.get("retrieval_mode", "unknown")
     intent = decision.get("intent", "unknown")
-    st.markdown(
-        f"<span class='success-pill'>{route}</span>",
-        unsafe_allow_html=True,
-    )
-    st.caption(f"Intent: {intent}")
+    route_col, intent_col = st.columns(2)
+    route_col.metric("Route", route)
+    intent_col.metric("Intent", intent[:22] + ("..." if len(intent) > 22 else ""))
 
     retrieved = result.get("retrieved_content", [])
     if not retrieved:
@@ -421,114 +419,84 @@ def show_retrieved_content_panel(result: dict | None) -> None:
         topic = f" · {item.get('topic')}" if item.get("topic") else ""
         source = item.get("source") or "unknown source"
         preview = (item.get("text", "") or "").strip()
-        preview = preview[:260] + ("..." if len(preview) > 260 else "")
-        st.markdown(
-            f"<div class='evidence-card'><strong>{index}. {title}</strong><br>"
-            f"<span class='small-muted'>{item.get('source_type')} · {source}{page}{topic}{score_text}</span>"
-            f"<p>{preview}</p></div>",
-            unsafe_allow_html=True,
-        )
-        with st.expander(f"View retrieved text {index}"):
-            st.write(item.get("text", ""))
+        preview = preview[:300] + ("..." if len(preview) > 300 else "")
+        with st.container(border=True):
+            st.markdown(f"**{index}. {title}**")
+            st.caption(f"{item.get('source_type')} · {source}{page}{topic}{score_text}")
+            st.write(preview)
+            with st.expander("Full retrieved text"):
+                st.write(item.get("text", ""))
 
 
 def show_student_view() -> None:
     if "student_messages" not in st.session_state:
         st.session_state.student_messages = []
 
-    rail_col, chat_col, sources_col = st.columns([0.22, 0.53, 0.25], gap="large")
+    st.markdown("## Student workspace")
+    st.caption("Ask questions, get course-grounded answers, and inspect the sources used.")
+
+    rail_col, chat_col, sources_col = st.columns([0.23, 0.52, 0.25], gap="large")
 
     with rail_col:
-        st.markdown(
-            """
-            <div class='student-rail'>
-              <h3>GenAI Mentor</h3>
-              <p class='rail-muted'>Course assistant for RAG, LoRA, agents, evaluation, and safe study.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if st.button("＋ New chat", key="clear_student_chat", width="stretch"):
-            st.session_state.student_messages = []
-            st.session_state.last_student_result = None
-            st.rerun()
-        st.markdown("#### Try this")
-        for index, item in enumerate(STUDENT_PROMPTS):
-            if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
-                st.session_state.pending_student_query = item["prompt"]
-        st.divider()
-        st.caption("Student mode hides backend internals but keeps sources visible.")
+        with st.container(border=True):
+            st.markdown("### Study tools")
+            st.caption("Use a starter prompt or begin a fresh chat.")
+            if st.button("New chat", key="clear_student_chat", width="stretch"):
+                st.session_state.student_messages = []
+                st.session_state.last_student_result = None
+                st.rerun()
+            st.divider()
+            for index, item in enumerate(STUDENT_PROMPTS):
+                if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
+                    st.session_state.pending_student_query = item["prompt"]
+            st.divider()
+            st.caption("Sources stay visible on the right. Backend details are separated into Backend Tracking.")
 
     with chat_col:
-        st.markdown("<div class='student-shell'>", unsafe_allow_html=True)
-        st.markdown(
-            """
-            <div class='chat-header'>
-              <h2>What can I help you learn?</h2>
-              <span class='small-muted'><span class='status-dot'></span>RAG, tools, safety, and course tutoring are active.</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        with st.container(border=True):
+            header_col, status_col = st.columns([0.72, 0.28])
+            header_col.markdown("### Chat")
+            status_col.success("Ready")
 
-        if not st.session_state.student_messages:
-            st.markdown(
-                """
-                <div class='empty-chat'>
-                  <h2>Start a study conversation</h2>
-                  <p>Ask for an explanation, a quiz, grading feedback, or a source-grounded answer.</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            tile_cols = st.columns(2)
-            for index, item in enumerate(STUDENT_PROMPTS[:2]):
-                with tile_cols[index]:
-                    st.markdown(
-                        f"<div class='prompt-tile'><strong>{item['label']}</strong>{item['prompt']}</div>",
-                        unsafe_allow_html=True,
+            if not st.session_state.student_messages:
+                st.info("Start with a question like: “Explain RAG using course sources.”")
+
+            for message in st.session_state.student_messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
+            query = st.session_state.pop("pending_student_query", None)
+            typed_query = st.chat_input("Ask a GenAI course question, request a quiz, or submit an answer for feedback.")
+            query = query or typed_query
+
+            if query:
+                st.session_state.student_messages.append({"role": "user", "content": query})
+                with st.chat_message("user"):
+                    st.markdown(query)
+
+                with st.chat_message("assistant"):
+                    with st.spinner("Retrieving evidence and preparing a learning response..."):
+                        result = run_genai_mentor(
+                            query,
+                            conversation_history=st.session_state.student_messages,
+                            ui_options={
+                                "retrieval_override": "auto",
+                                "difficulty": "medium",
+                                "n_questions": 3,
+                            },
+                        )
+                    st.markdown(result["answer"])
+                    decision = result.get("router_decision", {})
+                    st.caption(
+                        f"Route: `{decision.get('retrieval_mode', 'unknown')}` · "
+                        f"Graph: `{result.get('graph_engine', 'unknown')}`"
                     )
-
-        for message in st.session_state.student_messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-        query = st.session_state.pop("pending_student_query", None)
-        typed_query = st.chat_input("Ask a GenAI course question, request a quiz, or submit an answer for feedback.")
-        query = query or typed_query
-
-        if query:
-            st.session_state.student_messages.append({"role": "user", "content": query})
-            with st.chat_message("user"):
-                st.markdown(query)
-
-            with st.chat_message("assistant"):
-                with st.spinner("Retrieving evidence and preparing a learning response..."):
-                    result = run_genai_mentor(
-                        query,
-                        conversation_history=st.session_state.student_messages,
-                        ui_options={
-                            "retrieval_override": "auto",
-                            "difficulty": "medium",
-                            "n_questions": 3,
-                        },
-                    )
-                st.markdown(result["answer"])
-                decision = result.get("router_decision", {})
-                st.caption(
-                    f"Route: `{decision.get('retrieval_mode', 'unknown')}` · "
-                    f"Graph: `{result.get('graph_engine', 'unknown')}`"
-                )
-            st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})
-            st.session_state.last_student_result = result
-        else:
-            st.caption("Use the message box below or pick a prompt from the left.")
-        st.markdown("</div>", unsafe_allow_html=True)
+                st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})
+                st.session_state.last_student_result = result
 
     with sources_col:
-        st.markdown("<div class='sources-panel'>", unsafe_allow_html=True)
-        show_retrieved_content_panel(st.session_state.get("last_student_result"))
-        st.markdown("</div>", unsafe_allow_html=True)
+        with st.container(border=True):
+            show_retrieved_content_panel(st.session_state.get("last_student_result"))
 
 
 def show_chat_tab() -> None:
