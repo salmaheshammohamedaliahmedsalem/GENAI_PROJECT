@@ -10,6 +10,11 @@ Student query
 Safety node
   ↓
 Planner/router node
+  ↓
+Student adaptation node
+  ├─ beginner     → simple definitions, analogy, quick check
+  ├─ intermediate → course terminology, mechanisms, implementation steps
+  └─ advanced     → tradeoffs, assumptions, failure modes, evaluation
   ├─ offline_only → course BM25/optional semantic retrieval
   ├─ online_only  → approved external retrieval with Tavily or ddgs fallback
   ├─ hybrid       → course + approved external retrieval
@@ -37,6 +42,7 @@ Student-facing answer + sources + trace
 | LangGraph workflow | `src/agents/graph.py` | Builds a `StateGraph` when `langgraph` is installed; otherwise runs the same nodes sequentially so local demos remain functional. |
 | Safety agent | `src/agents/safety_agent.py` | Blocks cheating, plagiarism, hidden exam answer requests, and policy bypass attempts. |
 | Planner agent | `src/agents/planner_agent.py` | Selects retrieval mode and whether tools, quizzes, or grading are needed. |
+| Student adaptation agent | `src/agents/adaptation_agent.py` | Adapts answer depth, terminology, examples, and quiz difficulty to beginner, intermediate, or advanced students. |
 | RAG layer | `src/rag/` | Retrieves course chunks locally with BM25 and approved online results with Tavily or `ddgs` fallback. |
 | Tutor agent | `src/agents/tutor_agent.py` | Produces student-friendly grounded explanations. |
 | Quiz agent | `src/agents/quiz_agent.py` | Generates practice questions with answers and explanations. |
@@ -50,5 +56,5 @@ Student-facing answer + sources + trace
 
 The Streamlit app is split into two top-level buttons:
 
-1. **Student:** Main student chat. The left side is the conversation; the right side shows the retrieved chunks/sources used for the latest answer.
+1. **Student:** Main student chat with a level selector. The left side contains study controls, the center is the conversation, and the right side shows retrieved chunks/sources used for the latest answer.
 2. **Backend Tracking:** Reviewer/developer dashboard with Overview, Agents & Prompts, Evidence/RAG, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.

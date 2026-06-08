@@ -7,7 +7,7 @@ def test_graph_blueprint_exposes_required_agents():
     blueprint = get_graph_blueprint()
     node_names = {node["node"] for node in blueprint["nodes"]}
 
-    assert {"safety", "planner", "retrieve", "respond", "check", "finalize"} <= node_names
+    assert {"safety", "planner", "adapt", "retrieve", "respond", "check", "finalize"} <= node_names
     assert blueprint["engine"] in {"langgraph", "sequential_fallback"}
 
 
@@ -21,6 +21,16 @@ def test_tool_flow_returns_calculation_and_trace():
     assert result["tool_calls"][0]["tool"] == "calculator_tool"
     assert "retrieved_content" in result
     assert Path(result["trace_path"]).exists()
+
+
+def test_graph_returns_student_profile():
+    result = run_genai_mentor(
+        "Calculate precision when 8 of 10 retrieved chunks are relevant.",
+        ui_options={"retrieval_override": "auto", "student_level": "advanced"},
+    )
+
+    assert result["student_profile"]["level"] == "advanced"
+    assert result["student_profile"]["quiz_difficulty"] == "hard"
 
 
 def test_safety_flow_refuses_academic_integrity_request():

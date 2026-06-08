@@ -54,6 +54,15 @@ Rules:
 TUTOR_PROMPT = """Answer the user as GenAI Mentor using only the provided sources when sources are provided.
 If sources are insufficient, say you do not have enough grounded evidence.
 Include citations after claims using the source labels provided.
+Adapt the explanation to the provided student level and learning profile.
+"""
+
+ADAPTATION_PROMPT = """Adapt the educational response to the student's level.
+
+Levels:
+- beginner: define terms, use simple language, include an analogy, avoid unnecessary jargon.
+- intermediate: use course terminology, explain mechanisms, include implementation steps.
+- advanced: use precise technical language, discuss tradeoffs, assumptions, failure modes, and evaluation.
 """
 
 QUIZ_PROMPT = """Generate a quiz as JSON with topic, difficulty, and questions. Include answer and explanation for each question."""
@@ -81,8 +90,14 @@ PROMPT_TEMPLATES = {
     "tutor": PromptTemplate(
         name="tutor",
         purpose="Produces grounded teaching answers from retrieved course or approved external sources.",
-        required_inputs=("user_query", "retrieval_mode", "sources"),
+        required_inputs=("user_query", "retrieval_mode", "sources", "student_profile"),
         template=TUTOR_PROMPT,
+    ),
+    "adaptation": PromptTemplate(
+        name="adaptation",
+        purpose="Adapts response depth, language, examples, and quiz difficulty to beginner, intermediate, or advanced students.",
+        required_inputs=("student_level",),
+        template=ADAPTATION_PROMPT,
     ),
     "quiz": PromptTemplate(
         name="quiz",

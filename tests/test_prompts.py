@@ -5,7 +5,7 @@ def test_prompt_templates_are_named_and_documented():
     templates = list_prompt_templates()
     names = {template.name for template in templates}
 
-    assert {"base_system", "router", "tutor", "quiz", "grading", "checker", "safety"} <= names
+    assert {"base_system", "router", "tutor", "adaptation", "quiz", "grading", "checker", "safety"} <= names
     assert all(template.purpose for template in templates)
     assert all(template.template.strip() for template in templates)
 

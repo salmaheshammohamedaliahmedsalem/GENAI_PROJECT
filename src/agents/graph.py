@@ -3,6 +3,7 @@ import json
 import re
 from typing import Any, TypedDict
 
+from src.agents.adaptation_agent import StudentAdaptationAgent
 from src.agents.checker_agent import CheckerAgent
 from src.agents.grader_agent import GraderAgent
 from src.agents.planner_agent import PlannerAgent
@@ -32,6 +33,7 @@ class MentorGraphState(TypedDict, total=False):
     conversation_history: list[dict[str, Any]]
     ui_options: dict[str, Any]
     safety: dict[str, Any]
+    student_profile: dict[str, Any]
     router_decision: RouterDecision
     retrieved_chunks: list[RetrievedChunk]
     tool_calls: list[dict[str, Any]]
@@ -50,6 +52,11 @@ GRAPH_NODE_DESCRIPTIONS = [
         "node": "planner",
         "agent": "PlannerAgent",
         "purpose": "Classifies the student request and chooses offline RAG, online RAG, hybrid RAG, tool-only, or no retrieval.",
+    },
+    {
+        "node": "adapt",
+        "agent": "StudentAdaptationAgent",
+        "purpose": "Builds a student-level profile so answers and quizzes adapt to beginner, intermediate, or advanced learners.",
     },
     {
         "node": "retrieve",
@@ -75,8 +82,9 @@ GRAPH_NODE_DESCRIPTIONS = [
 
 GRAPH_EDGES = [
     ("safety", "planner"),
-    ("planner", "retrieve", "when retrieval is required"),
-    ("planner", "respond", "when tool-only, no-retrieval, or unsafe"),
+    ("planner", "adapt"),
+    ("adapt", "retrieve", "when retrieval is required"),
+    ("adapt", "respond", "when tool-only, no-retrieval, or unsafe"),
     ("retrieve", "respond"),
     ("respond", "check"),
     ("check", "finalize"),
@@ -133,6 +141,12 @@ def _planner_node(state: MentorGraphState) -> dict[str, Any]:
     return {"router_decision": decision}
 
 
+def _adaptation_node(state: MentorGraphState) -> dict[str, Any]:
+    student_level = state.get("ui_options", {}).get("student_level", "intermediate")
+    profile = StudentAdaptationAgent().run(student_level)
+    return {"student_profile": profile}
+
+
 def _requires_retrieval(state: MentorGraphState) -> str:
     safety = state.get("safety", {"safe": True})
     if not safety.get("safe", True):
@@ -155,6 +169,7 @@ def _response_node(state: MentorGraphState) -> dict[str, Any]:
     decision = state["router_decision"]
     retrieved = state.get("retrieved_chunks", [])
     ui_options = state.get("ui_options", {})
+    student_profile = state.get("student_profile", StudentAdaptationAgent().run("intermediate"))
     tool_calls = list(state.get("tool_calls", []))
 
     if not safety.get("safe", True):
@@ -164,11 +179,11 @@ def _response_node(state: MentorGraphState) -> dict[str, Any]:
         context = "\n".join(retrieved_item.chunk.text for retrieved_item in retrieved)
         quiz = QuizAgent().run(
             user_query,
-            ui_options.get("difficulty", "medium"),
+            ui_options.get("difficulty") or student_profile.get("quiz_difficulty", "medium"),
             int(ui_options.get("n_questions", 3)),
             context,
         )
-        tool_calls.append({"tool": "quiz_tool", "args": {"topic": user_query}, "result": quiz})
+        tool_calls.append({"tool": "quiz_tool", "args": {"topic": user_query, "student_profile": student_profile}, "result": quiz})
         return {"answer": "## Quiz\n\n" + json.dumps(quiz, indent=2, ensure_ascii=False), "tool_calls": tool_calls}
 
     if decision.needs_grading or "grade" in user_query.lower():
@@ -188,7 +203,7 @@ def _response_node(state: MentorGraphState) -> dict[str, Any]:
         tool_calls.append({"tool": "calculator_tool", "args": {"expression": expression}, "result": result})
         return {"answer": answer, "tool_calls": tool_calls}
 
-    answer = TutorAgent().answer(user_query, retrieved, decision.retrieval_mode)
+    answer = TutorAgent().answer(user_query, retrieved, decision.retrieval_mode, student_profile=student_profile)
     return {"answer": answer, "tool_calls": tool_calls}
 
 
@@ -205,7 +220,10 @@ def _finalize_node(state: MentorGraphState) -> dict[str, Any]:
         user_query=state["user_query"],
         router_decision=state["router_decision"],
         retrieved_chunks=state.get("retrieved_chunks", []),
-        tool_calls=state.get("tool_calls", []),
+        tool_calls=[
+            {"tool": "student_adaptation_agent", "result": state.get("student_profile", {})},
+            *state.get("tool_calls", []),
+        ],
         checker_feedback=state.get("checker_feedback", {}),
         final_answer=state.get("answer", ""),
     )
@@ -219,6 +237,7 @@ def build_genai_mentor_graph():
     graph_builder = StateGraph(MentorGraphState)
     graph_builder.add_node("safety", _safety_node)
     graph_builder.add_node("planner", _planner_node)
+    graph_builder.add_node("adapt", _adaptation_node)
     graph_builder.add_node("retrieve", _retrieval_node)
     graph_builder.add_node("respond", _response_node)
     graph_builder.add_node("check", _checker_node)
@@ -226,8 +245,9 @@ def build_genai_mentor_graph():
 
     graph_builder.set_entry_point("safety")
     graph_builder.add_edge("safety", "planner")
+    graph_builder.add_edge("planner", "adapt")
     graph_builder.add_conditional_edges(
-        "planner",
+        "adapt",
         _requires_retrieval,
         {
             "retrieve": "retrieve",
@@ -244,6 +264,7 @@ def build_genai_mentor_graph():
 def _run_sequential_graph(state: MentorGraphState) -> MentorGraphState:
     state.update(_safety_node(state))
     state.update(_planner_node(state))
+    state.update(_adaptation_node(state))
     if _requires_retrieval(state) == "retrieve":
         state.update(_retrieval_node(state))
     state.update(_response_node(state))
@@ -257,6 +278,7 @@ def _format_response(state: MentorGraphState, graph_engine: str) -> dict[str, An
     return {
         "answer": state.get("answer", ""),
         "router_decision": state["router_decision"].model_dump(),
+        "student_profile": state.get("student_profile", {}),
         "sources": list_source_labels(retrieved_chunks),
         "retrieved_content": [
             {

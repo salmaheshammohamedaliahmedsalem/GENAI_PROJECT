@@ -127,6 +127,6 @@ The end-to-end system is implemented:
 
 1. **LoRA SFT Alignment**: `Qwen/Qwen2.5-0.5B-Instruct` has been fine-tuned with PEFT/LoRA on Apple MPS. Final adapter artifacts are in `outputs/finetune/qwen_0_5b_lora_adapter/`.
 2. **Offline/Online RAG Integration**: BM25 retrieval is built from `data/chunks/lecture_chunks.jsonl`; approved online retrieval uses Tavily when configured and the maintained `ddgs` package as a no-key fallback.
-3. **Multi-Agent Orchestration**: Safety, planning, retrieval, tutoring, quiz, grading, checking, and trace-writing nodes are connected through `src/agents/graph.py` using LangGraph when installed.
+3. **Multi-Agent Orchestration**: Safety, planning, student adaptation, retrieval, tutoring, quiz, grading, checking, and trace-writing nodes are connected through `src/agents/graph.py` using LangGraph when installed.
 4. **Prompt Template Layer**: `src/llm/prompts.py` documents the base, router, tutor, quiz, grading, checker, and safety prompts with required inputs.
-5. **GUI Showcase**: `app.py` is split into two primary modes: **Student** for chat plus retrieved-content review, and **Backend Tracking** for architecture, agents/prompts, RAG diagnostics, traces, fine-tuning, evaluation, safety, and run checks.
+5. **GUI Showcase**: `app.py` is split into two primary modes: **Student** for level-adaptive chat plus retrieved-content review, and **Backend Tracking** for architecture, agents/prompts, RAG diagnostics, traces, fine-tuning, evaluation, safety, and run checks.

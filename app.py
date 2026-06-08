@@ -63,6 +63,12 @@ STUDENT_PROMPTS = [
     },
 ]
 
+STUDENT_LEVELS = {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+}
+
 
 st.markdown(
     """
@@ -398,9 +404,11 @@ def show_retrieved_content_panel(result: dict | None) -> None:
     decision = result.get("router_decision", {})
     route = decision.get("retrieval_mode", "unknown")
     intent = decision.get("intent", "unknown")
-    route_col, intent_col = st.columns(2)
+    profile = result.get("student_profile", {})
+    route_col, intent_col, level_col = st.columns(3)
     route_col.metric("Route", route)
     intent_col.metric("Intent", intent[:22] + ("..." if len(intent) > 22 else ""))
+    level_col.metric("Level", profile.get("label", "Adaptive"))
 
     retrieved = result.get("retrieved_content", [])
     if not retrieved:
@@ -441,6 +449,13 @@ def show_student_view() -> None:
         with st.container(border=True):
             st.markdown("### Study tools")
             st.caption("Use a starter prompt or begin a fresh chat.")
+            selected_level = st.selectbox(
+                "Your level",
+                options=list(STUDENT_LEVELS.keys()),
+                index=1,
+                format_func=lambda value: STUDENT_LEVELS[value],
+                help="The adaptation agent changes explanation depth, examples, and quiz difficulty based on this.",
+            )
             if st.button("New chat", key="clear_student_chat", width="stretch"):
                 st.session_state.student_messages = []
                 st.session_state.last_student_result = None
@@ -481,7 +496,7 @@ def show_student_view() -> None:
                             conversation_history=st.session_state.student_messages,
                             ui_options={
                                 "retrieval_override": "auto",
-                                "difficulty": "medium",
+                                "student_level": selected_level,
                                 "n_questions": 3,
                             },
                         )
@@ -489,6 +504,7 @@ def show_student_view() -> None:
                     decision = result.get("router_decision", {})
                     st.caption(
                         f"Route: `{decision.get('retrieval_mode', 'unknown')}` · "
+                        f"Level: `{result.get('student_profile', {}).get('label', STUDENT_LEVELS[selected_level])}` · "
                         f"Graph: `{result.get('graph_engine', 'unknown')}`"
                     )
                 st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})

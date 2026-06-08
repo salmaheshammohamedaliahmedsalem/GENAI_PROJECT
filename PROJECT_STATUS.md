@@ -27,7 +27,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback; Chroma semantic retrieval is optional via `requirements_semantic.txt` |
 | Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
-| Multi-Agent Setup | `src/agents/graph.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` when `langgraph` is installed, with the same node sequence available as a local fallback |
+| Multi-Agent Setup | `src/agents/graph.py`, `src/agents/adaptation_agent.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` with safety, planner, student adaptation, retrieval, response, checker, and trace nodes |
 | Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
 | Ethics / Safety | `src/agents/safety_agent.py`, `docs/ethics_safety.md` | Implemented |
 | GUI | `app.py` | Implemented with Student mode and Backend Tracking mode |
@@ -77,7 +77,7 @@ streamlit run app.py
 
 The GUI now has two top-level modes:
 
-- **Student:** chat interface for students plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
+- **Student:** chat interface with a student-level selector plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
 - **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
 
 ## Recommended Submission Order
