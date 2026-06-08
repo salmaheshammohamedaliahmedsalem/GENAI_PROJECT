@@ -68,16 +68,20 @@ st.markdown(
     """
     <style>
     .main .block-container {
-        padding-top: 1.5rem;
+        padding-top: 1.1rem;
         padding-bottom: 2rem;
+        max-width: 1500px;
+    }
+    .stApp {
+        background: #f7f7f8;
     }
     .hero-card {
-        padding: 1.45rem 1.6rem;
-        border-radius: 22px;
-        background: radial-gradient(circle at top left, #dbeafe 0%, #eff6ff 35%, #f8fafc 65%, #f5f3ff 100%);
-        border: 1px solid #c7d7fe;
-        margin-bottom: 1rem;
-        box-shadow: 0 18px 48px rgba(30, 64, 175, 0.10);
+        padding: 1rem 1.2rem;
+        border-radius: 18px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
     }
     .hero-card h1 {
         margin-bottom: 0.25rem;
@@ -132,27 +136,107 @@ st.markdown(
         font-size: 0.84rem;
     }
     .mode-card {
-        padding: 0.75rem 1rem;
+        padding: 0.7rem 1rem;
         border-radius: 16px;
         background: #ffffff;
         border: 1px solid #e5e7eb;
         margin-bottom: 0.75rem;
+        color: #475569;
     }
     .evidence-card {
-        padding: 0.9rem 1rem;
-        border-radius: 14px;
+        padding: 0.85rem 0.95rem;
+        border-radius: 16px;
         background: #ffffff;
         border: 1px solid #e5e7eb;
-        margin-bottom: 0.7rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     }
     .evidence-card strong {
         color: #0f172a;
     }
     .student-shell {
+        padding: 1.1rem;
+        border-radius: 22px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        min-height: 640px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+    .student-rail {
         padding: 1rem;
+        border-radius: 22px;
+        background: #111827;
+        border: 1px solid #111827;
+        color: #f9fafb;
+        min-height: 640px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+    }
+    .student-rail h3,
+    .student-rail p,
+    .student-rail span {
+        color: #f9fafb;
+    }
+    .rail-muted {
+        color: #cbd5e1;
+        font-size: 0.88rem;
+    }
+    .chat-header {
+        padding: 0.85rem 1rem;
         border-radius: 18px;
+        border: 1px solid #e5e7eb;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        margin-bottom: 1rem;
+    }
+    .chat-header h2 {
+        margin: 0;
+        font-size: 1.35rem;
+    }
+    .status-dot {
+        display: inline-block;
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        background: #10b981;
+        margin-right: 0.35rem;
+    }
+    .prompt-tile {
+        padding: 0.8rem;
+        border-radius: 16px;
         background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #e5e7eb;
+        min-height: 90px;
+    }
+    .prompt-tile strong {
+        display: block;
+        color: #111827;
+        margin-bottom: 0.25rem;
+    }
+    .empty-chat {
+        text-align: center;
+        padding: 2rem 1rem 1.2rem 1rem;
+        color: #475569;
+    }
+    .empty-chat h2 {
+        color: #111827;
+        margin-bottom: 0.35rem;
+    }
+    .sources-panel {
+        padding: 1rem;
+        border-radius: 22px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        min-height: 640px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+    div[data-testid="stChatMessage"] {
+        border-radius: 18px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        margin-bottom: 0.75rem;
+    }
+    div[data-testid="stChatInput"] {
+        border-radius: 18px;
     }
     </style>
     """,
@@ -304,35 +388,44 @@ def show_mode_selector() -> None:
 
 
 def show_retrieved_content_panel(result: dict | None) -> None:
-    st.markdown("### Retrieved Content")
-    st.caption("These are the exact chunks/sources the system retrieved for the latest student question.")
+    st.markdown("### Sources")
+    st.caption("Retrieved content used for the latest answer.")
 
     if not result:
-        st.info("Ask a question first. Retrieved course or online content will appear here.")
+        st.info("Ask a question first. Sources will appear here.")
         return
 
     decision = result.get("router_decision", {})
-    st.markdown(f"**Route:** `{decision.get('retrieval_mode', 'unknown')}`")
-    st.markdown(f"**Intent:** `{decision.get('intent', 'unknown')}`")
+    route = decision.get("retrieval_mode", "unknown")
+    intent = decision.get("intent", "unknown")
+    st.markdown(
+        f"<span class='success-pill'>{route}</span>",
+        unsafe_allow_html=True,
+    )
+    st.caption(f"Intent: {intent}")
 
     retrieved = result.get("retrieved_content", [])
     if not retrieved:
         if result.get("tool_calls"):
-            st.info("This request used a tool instead of retrieval. Tool results are shown below.")
+            st.info("This request used a tool instead of retrieval.")
             st.json(result.get("tool_calls"))
         else:
             st.info("No retrieved content was needed or found for the latest answer.")
         return
 
     for index, item in enumerate(retrieved, start=1):
-        title = item.get("metadata", {}).get("title") or item.get("source") or f"Chunk {index}"
+        title = item.get("metadata", {}).get("title") or item.get("topic") or f"Source {index}"
         score = item.get("final_score")
         score_text = f" · score {score:.2f}" if isinstance(score, (int, float)) else ""
         page = f" · page {item.get('page')}" if item.get("page") else ""
         topic = f" · {item.get('topic')}" if item.get("topic") else ""
+        source = item.get("source") or "unknown source"
+        preview = (item.get("text", "") or "").strip()
+        preview = preview[:260] + ("..." if len(preview) > 260 else "")
         st.markdown(
             f"<div class='evidence-card'><strong>{index}. {title}</strong><br>"
-            f"<span class='small-muted'>{item.get('source_type')} · {item.get('source')}{page}{topic}{score_text}</span></div>",
+            f"<span class='small-muted'>{item.get('source_type')} · {source}{page}{topic}{score_text}</span>"
+            f"<p>{preview}</p></div>",
             unsafe_allow_html=True,
         )
         with st.expander(f"View retrieved text {index}"):
@@ -340,26 +433,61 @@ def show_retrieved_content_panel(result: dict | None) -> None:
 
 
 def show_student_view() -> None:
-    st.subheader("Student Learning Space")
-    st.caption("Chat with the GenAI Mentor. The right panel shows the retrieved content used for the latest answer.")
-
     if "student_messages" not in st.session_state:
         st.session_state.student_messages = []
 
-    left_col, right_col = st.columns([0.62, 0.38], gap="large")
-    with left_col:
-        st.markdown("<div class='student-shell'>", unsafe_allow_html=True)
-        st.markdown("### Chat")
-        prompt_cols = st.columns(len(STUDENT_PROMPTS))
-        for index, item in enumerate(STUDENT_PROMPTS):
-            with prompt_cols[index]:
-                if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
-                    st.session_state.pending_student_query = item["prompt"]
+    rail_col, chat_col, sources_col = st.columns([0.22, 0.53, 0.25], gap="large")
 
-        if st.button("Clear student chat", key="clear_student_chat", width="stretch"):
+    with rail_col:
+        st.markdown(
+            """
+            <div class='student-rail'>
+              <h3>GenAI Mentor</h3>
+              <p class='rail-muted'>Course assistant for RAG, LoRA, agents, evaluation, and safe study.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        if st.button("＋ New chat", key="clear_student_chat", width="stretch"):
             st.session_state.student_messages = []
             st.session_state.last_student_result = None
             st.rerun()
+        st.markdown("#### Try this")
+        for index, item in enumerate(STUDENT_PROMPTS):
+            if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
+                st.session_state.pending_student_query = item["prompt"]
+        st.divider()
+        st.caption("Student mode hides backend internals but keeps sources visible.")
+
+    with chat_col:
+        st.markdown("<div class='student-shell'>", unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class='chat-header'>
+              <h2>What can I help you learn?</h2>
+              <span class='small-muted'><span class='status-dot'></span>RAG, tools, safety, and course tutoring are active.</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if not st.session_state.student_messages:
+            st.markdown(
+                """
+                <div class='empty-chat'>
+                  <h2>Start a study conversation</h2>
+                  <p>Ask for an explanation, a quiz, grading feedback, or a source-grounded answer.</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            tile_cols = st.columns(2)
+            for index, item in enumerate(STUDENT_PROMPTS[:2]):
+                with tile_cols[index]:
+                    st.markdown(
+                        f"<div class='prompt-tile'><strong>{item['label']}</strong>{item['prompt']}</div>",
+                        unsafe_allow_html=True,
+                    )
 
         for message in st.session_state.student_messages:
             with st.chat_message(message["role"]):
@@ -394,11 +522,13 @@ def show_student_view() -> None:
             st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})
             st.session_state.last_student_result = result
         else:
-            st.info("Start with **Explain RAG** or ask your own course question.")
+            st.caption("Use the message box below or pick a prompt from the left.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    with right_col:
+    with sources_col:
+        st.markdown("<div class='sources-panel'>", unsafe_allow_html=True)
         show_retrieved_content_panel(st.session_state.get("last_student_result"))
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 def show_chat_tab() -> None:
