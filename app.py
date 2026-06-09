@@ -1174,14 +1174,37 @@ def show_finetuning_tab() -> None:
 def show_evaluation_tab() -> None:
     st.subheader("Evaluation Dashboard")
     st.write("This tab summarizes whether the system retrieves evidence, answers clearly, and blocks unsafe requests.")
+
     summary = OUTPUTS_DIR / "evaluation/evaluation_summary.md"
-    results = OUTPUTS_DIR / "evaluation/evaluation_results.csv"
-    if summary.exists():
-        st.markdown(summary.read_text(encoding="utf-8"))
-    else:
+    comparison_csv = OUTPUTS_DIR / "evaluation/baseline_comparison.csv"
+    results_csv = OUTPUTS_DIR / "evaluation/evaluation_results.csv"
+
+    if not summary.exists():
         st.warning("Evaluation report not generated yet. Run `python3 scripts/05_run_evaluation.py` before submission.")
-    if results.exists():
-        st.dataframe(pd.read_csv(results), width="stretch", hide_index=True)
+    else:
+        st.markdown(summary.read_text(encoding="utf-8"))
+
+    if comparison_csv.exists():
+        st.markdown("### Baseline Comparison Detail")
+        st.caption("Full per-question comparison across No RAG, Offline RAG, and Full System configurations.")
+        df_cmp = pd.read_csv(comparison_csv)
+
+        score_cols = [c for c in df_cmp.columns if c in ("no_rag_score", "rag_score")]
+        if score_cols:
+            chart_df = df_cmp[["question"] + score_cols].copy()
+            chart_df["question"] = chart_df["question"].str[:40] + "…"
+            chart_df = chart_df.rename(columns={
+                "no_rag_score": "No RAG (Groq only)",
+                "rag_score": "Groq + Offline RAG",
+            }).set_index("question")
+            st.bar_chart(chart_df)
+
+        with st.expander("Full comparison table"):
+            st.dataframe(df_cmp, width="stretch", hide_index=True)
+
+    if results_csv.exists():
+        with st.expander("Raw evaluation results"):
+            st.dataframe(pd.read_csv(results_csv), width="stretch", hide_index=True)
 
 
 def show_safety_tab() -> None:
