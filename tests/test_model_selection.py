@@ -16,6 +16,7 @@ def test_model_registry_discovers_finetuned_adapters():
     assert any("qwen_0_5b_lora_adapter_salma" in option_id for option_id in adapter_ids)
     assert any(option_id.endswith("_fatma") for option_id in adapter_ids)
     assert any(option_id.endswith("_salma") for option_id in adapter_ids)
+    assert any(option_id.endswith("_khadija") for option_id in adapter_ids)
     assert not any("checkpoint" in option_id for option_id in adapter_ids)
     assert get_recommended_chat_model_id() in {option.id for option in list_chat_model_options(include_unavailable=False)}
 

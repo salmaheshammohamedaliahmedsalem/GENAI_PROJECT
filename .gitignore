@@ -19,6 +19,8 @@ outputs/finetune/*
 !outputs/finetune/lora_adapter_salma/**
 !outputs/finetune/qwen_0_5b_lora_adapter_salma/
 !outputs/finetune/qwen_0_5b_lora_adapter_salma/**
+!outputs/finetune/qwen_0_5b_lora_adapter_khadija/
+!outputs/finetune/qwen_0_5b_lora_adapter_khadija/**
 !outputs/finetune/final_model_fatma/
 !outputs/finetune/final_model_fatma/**
 !outputs/finetune/mistral_lora_adapter_fatma/

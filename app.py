@@ -73,6 +73,7 @@ STUDENT_LEVELS = {
 CANONICAL_STUDENT_MODEL_LABELS = {
     "lora::outputs/finetune/qwen_0_5b_lora_adapter_salma": "Salma fine-tuned model (Qwen 0.5B LoRA)",
     "lora::outputs/finetune/final_model_fatma": "Fatma fine-tuned model (Mistral 7B LoRA)",
+    "lora::outputs/finetune/qwen_0_5b_lora_adapter_khadija": "Khadija fine-tuned model (Qwen 0.5B LoRA)",
 }
 
 
@@ -1097,7 +1098,7 @@ def show_finetuning_tab() -> None:
                 [
                     {
                         "Model name": option.label.split(": ", 1)[-1],
-                        "Owner suffix": "Fatma" if option.label.endswith("_fatma") else "Salma" if option.label.endswith("_salma") else "Other",
+                        "Owner suffix": "Khadija" if option.label.endswith("_khadija") else "Fatma" if option.label.endswith("_fatma") else "Salma" if option.label.endswith("_salma") else "Other",
                         "Base model": option.base_model,
                         "Path": option.path,
                         "Load status": option.status,

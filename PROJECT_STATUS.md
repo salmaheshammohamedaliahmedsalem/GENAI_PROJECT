@@ -18,7 +18,7 @@ The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning da
 | Evaluation outputs | Generated in `outputs/evaluation/` |
 | Fine-tuning splits | Generated in `data/finetune/` |
 | LoRA adapter | Completed on Apple MPS |
-| Saved model adapters | Student mode shows one canonical Salma model and one canonical Fatma model; Backend Tracking lists all `_salma` and `_fatma` adapters |
+| Saved model adapters | Student mode shows canonical Salma, Fatma, and Khadija models; Backend Tracking lists all `_salma`, `_fatma`, and `_khadija` adapters |
 | Hosted LLM routing | Groq and OpenAI supported through the app model selector when API keys are configured |
 
 ## Required Components
@@ -68,7 +68,7 @@ Current local result:
 }
 ```
 
-Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter_salma/`. The smaller `outputs/finetune/lora_adapter_salma/` artifact is retained only as a script-level TinyLlama smoke-test. Imported Fatma adapters are saved as `final_model_fatma/`, `mistral_lora_adapter_fatma/`, `phi3_lora_model_fatma/`, `qlora_model_fatma/`, and `qwen_lora_model_fatma/`.
+Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter_salma/`. The smaller `outputs/finetune/lora_adapter_salma/` artifact is retained only as a script-level TinyLlama smoke-test. Imported Fatma adapters are saved as `final_model_fatma/`, `mistral_lora_adapter_fatma/`, `phi3_lora_model_fatma/`, `qlora_model_fatma/`, and `qwen_lora_model_fatma/`. Khadija's Qwen adapter is saved as `qwen_0_5b_lora_adapter_khadija/`.
 
 ## Final GUI
 
@@ -86,7 +86,7 @@ The GUI now has two top-level modes:
 
 - **Student:** chat interface with a student-level selector plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
 - **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs. The Evaluation tab includes a RAG ablation evaluator that can force `no_retrieval`.
-- **Response model menu:** shows one canonical Salma model, one canonical Fatma model, hosted Groq/OpenAI options when configured, base Qwen, and deterministic fallback. Full adapter inventory remains visible in Backend Tracking.
+- **Response model menu:** shows canonical Salma, Fatma, and Khadija models, hosted Groq/OpenAI options when configured, base Qwen, and deterministic fallback. Full adapter inventory remains visible in Backend Tracking.
 
 ## Recommended Submission Order
 
