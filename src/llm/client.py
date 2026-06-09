@@ -44,6 +44,14 @@ class ChatClient:
                     adapter_dir=option.path,
                     base_model_id=option.base_model or CHAT_MODEL,
                 )
+            if option.kind == "base_model":
+                from src.finetuning.inference_lora import generate_with_base_messages
+
+                return generate_with_base_messages(
+                    messages,
+                    max_new_tokens=max_new_tokens,
+                    base_model_id=option.base_model or CHAT_MODEL,
+                )
             if option.kind == "openai":
                 if self.client is None:
                     raise RuntimeError("OpenAI model selected but OPENAI_API_KEY is not configured.")

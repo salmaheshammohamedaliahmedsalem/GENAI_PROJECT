@@ -25,11 +25,20 @@ def _has_module(name: str) -> bool:
     return importlib.util.find_spec(name) is not None
 
 
-def _local_model_dependency_status() -> tuple[bool, str]:
-    required = ["torch", "transformers", "peft", "accelerate"]
+def _base_model_dependency_status() -> tuple[bool, str]:
+    required = ["torch", "transformers", "accelerate"]
     missing = [name for name in required if not _has_module(name)]
     if missing:
         return False, "Missing local model packages: " + ", ".join(missing)
+    return True, "Ready for local base-model inference"
+
+
+def _lora_dependency_status() -> tuple[bool, str]:
+    base_ok, base_status = _base_model_dependency_status()
+    if not base_ok:
+        return base_ok, base_status
+    if not _has_module("peft"):
+        return False, "Missing local LoRA package: peft"
     return True, "Ready for local PEFT/LoRA inference"
 
 
@@ -64,7 +73,8 @@ def discover_finetuned_adapters() -> list[Path]:
 
 def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelOption]:
     options: list[ChatModelOption] = []
-    deps_ok, deps_status = _local_model_dependency_status()
+    lora_ok, lora_status = _lora_dependency_status()
+    base_ok, base_status = _base_model_dependency_status()
 
     for adapter_dir in discover_finetuned_adapters():
         rel_path = adapter_dir.relative_to(ROOT_DIR).as_posix()
@@ -75,13 +85,25 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
                 id=f"lora::{rel_path}",
                 label=f"{label_prefix}: {adapter_dir.name}",
                 kind="lora_adapter",
-                available=deps_ok,
-                status=f"{deps_status}; base model: {base_model}",
+                available=lora_ok,
+                status=f"{lora_status}; base model: {base_model}",
                 is_finetuned=True,
                 path=str(adapter_dir),
                 base_model=base_model,
             )
         )
+
+    options.append(
+        ChatModelOption(
+            id=f"base::{FINETUNE_BASE_MODEL}",
+            label=f"Base model only: {FINETUNE_BASE_MODEL}",
+            kind="base_model",
+            available=base_ok,
+            status=f"{base_status}; no LoRA adapter applied",
+            is_finetuned=False,
+            base_model=FINETUNE_BASE_MODEL,
+        )
+    )
 
     if OPENAI_API_KEY:
         options.append(
@@ -136,7 +158,7 @@ def resolve_chat_model_option(model_id: str | None = None, prefer_finetuned: boo
     if target_id.startswith("lora::"):
         rel_path = target_id.removeprefix("lora::")
         adapter_dir = ROOT_DIR / rel_path
-        deps_ok, deps_status = _local_model_dependency_status()
+        deps_ok, deps_status = _lora_dependency_status()
         return ChatModelOption(
             id=target_id,
             label=f"Fine-tuned LoRA adapter: {adapter_dir.name}",
@@ -146,5 +168,16 @@ def resolve_chat_model_option(model_id: str | None = None, prefer_finetuned: boo
             is_finetuned=True,
             path=str(adapter_dir),
             base_model=_adapter_base_model(adapter_dir),
+        )
+    if target_id.startswith("base::"):
+        base_model = target_id.removeprefix("base::") or FINETUNE_BASE_MODEL
+        deps_ok, deps_status = _base_model_dependency_status()
+        return ChatModelOption(
+            id=target_id,
+            label=f"Base model only: {base_model}",
+            kind="base_model",
+            available=deps_ok,
+            status=f"{deps_status}; no LoRA adapter applied",
+            base_model=base_model,
         )
     return next(option for option in options if option.id == "local::rule_based")

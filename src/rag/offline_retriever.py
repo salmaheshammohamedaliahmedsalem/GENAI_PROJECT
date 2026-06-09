@@ -61,7 +61,8 @@ class OfflineRetriever:
             bm25 = self.bm25_data["bm25"]
             chunks = [DocumentChunk(**c) for c in self.bm25_data["chunks"]]
             scores = bm25.get_scores(query.lower().split())
-            top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:TOP_K_KEYWORD]
+            candidate_count = max(TOP_K_KEYWORD, top_k * 8)
+            top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:candidate_count]
             for i in top_indices:
                 chunk = chunks[i]
                 if chunk.chunk_id not in merged:
