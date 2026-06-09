@@ -103,6 +103,103 @@ st.markdown(
     }
     .stApp {
         background: #f7f7f8;
+        color: #111827;
+    }
+    .stApp, .stApp p, .stApp span, .stApp label, .stApp div,
+    .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+    .stApp li, .stApp td, .stApp th, .stApp caption {
+        color: #111827;
+    }
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="select"] > div:hover {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        border-color: #d1d5db !important;
+    }
+    div[data-baseweb="select"] span,
+    div[data-baseweb="select"] div {
+        color: #111827 !important;
+        background-color: transparent;
+    }
+    div[data-baseweb="popover"] ul,
+    div[data-baseweb="popover"] li {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+    }
+    div[data-baseweb="popover"] li:hover {
+        background-color: #f3f4f6 !important;
+    }
+    div[data-baseweb="menu"] {
+        background-color: #ffffff !important;
+    }
+    div[data-baseweb="menu"] li {
+        color: #111827 !important;
+    }
+    div[data-baseweb="menu"] li:hover {
+        background-color: #f3f4f6 !important;
+    }
+    .stSelectbox label, .stMultiSelect label, .stRadio label {
+        color: #111827 !important;
+    }
+    div[data-testid="stFileUploader"] {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+    }
+    div[data-testid="stFileUploader"] section {
+        background-color: #ffffff !important;
+        border-color: #d1d5db !important;
+    }
+    div[data-testid="stFileUploader"] section > div,
+    div[data-testid="stFileUploader"] section span,
+    div[data-testid="stFileUploader"] section small,
+    div[data-testid="stFileUploader"] section p,
+    div[data-testid="stFileUploader"] label {
+        color: #111827 !important;
+    }
+    div[data-testid="stFileUploaderDropzone"] {
+        background-color: #ffffff !important;
+        border-color: #d1d5db !important;
+    }
+    div[data-testid="stFileUploaderDropzone"] span,
+    div[data-testid="stFileUploaderDropzone"] small {
+        color: #111827 !important;
+    }
+    div[data-testid="stFileUploaderDropzone"] button,
+    div[data-testid="stFileUploader"] button {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        border: 1px solid #d1d5db !important;
+    }
+    div[data-testid="stFileUploaderDropzone"] button:hover,
+    div[data-testid="stFileUploader"] button:hover {
+        background-color: #f3f4f6 !important;
+        color: #111827 !important;
+        border-color: #9ca3af !important;
+    }
+    .stButton > button,
+    .stDownloadButton > button,
+    .stFormSubmitButton > button {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        border: 1px solid #d1d5db !important;
+    }
+    .stButton > button:hover,
+    .stDownloadButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        background-color: #f3f4f6 !important;
+        color: #111827 !important;
+        border-color: #9ca3af !important;
+    }
+    .stButton > button:active,
+    .stDownloadButton > button:active,
+    .stFormSubmitButton > button:active {
+        background-color: #e5e7eb !important;
+        color: #111827 !important;
+    }
+    .stButton > button p,
+    .stDownloadButton > button p,
+    .stFormSubmitButton > button p {
+        color: #111827 !important;
     }
     .hero-card {
         padding: 1rem 1.2rem;
@@ -689,6 +786,58 @@ def show_retrieved_content_panel(result: dict | None) -> None:
                 st.write(item.get("text", ""))
 
 
+def _render_pdf_upload_panel() -> str | None:
+    """Renders the PDF upload widget. Returns the session_collection name if a PDF is loaded, else None."""
+    st.divider()
+    st.markdown("**Upload a study PDF**")
+    st.caption("Your PDF will be indexed and searched alongside course material.")
+
+    uploaded = st.file_uploader("Choose a PDF file", type=["pdf"], key="pdf_uploader", label_visibility="collapsed")
+
+    if uploaded is not None:
+        collection_name = "session_pdf"
+        prev_name = st.session_state.get("pdf_collection_name")
+        prev_file = st.session_state.get("pdf_uploaded_name")
+
+        if prev_file != uploaded.name or prev_name != collection_name:
+            with st.spinner("Indexing PDF..."):
+                try:
+                    from src.rag.pdf_ingestor import ingest_pdf
+                    result = ingest_pdf(uploaded.read(), collection_name=collection_name)
+                except ImportError:
+                    result = {"status": "error", "error": "pdf_ingestor not available", "chunks": 0}
+            st.session_state.pdf_ingest_result = result
+            st.session_state.pdf_collection_name = collection_name
+            st.session_state.pdf_uploaded_name = uploaded.name
+
+        result = st.session_state.get("pdf_ingest_result", {})
+        if result.get("status") == "ok":
+            st.success(f"Ready — {result['chunks']} chunks indexed from **{uploaded.name}**")
+        elif result.get("status") == "error":
+            st.error(f"Failed: {result.get('error', 'unknown error')}")
+        elif result.get("status") == "empty":
+            st.warning("No text could be extracted from this PDF.")
+
+        if st.button("Clear PDF", key="clear_pdf", width="stretch"):
+            try:
+                from src.rag.pdf_ingestor import clear_pdf_collection
+                clear_pdf_collection(collection_name)
+            except Exception:
+                pass
+            for key in ("pdf_ingest_result", "pdf_collection_name", "pdf_uploaded_name"):
+                st.session_state.pop(key, None)
+            st.rerun()
+
+        if result.get("status") == "ok":
+            return st.session_state.get("pdf_collection_name")
+
+    elif st.session_state.get("pdf_collection_name"):
+        for key in ("pdf_ingest_result", "pdf_collection_name", "pdf_uploaded_name"):
+            st.session_state.pop(key, None)
+
+    return None
+
+
 def show_student_view() -> None:
     if "student_messages" not in st.session_state:
         st.session_state.student_messages = []
@@ -742,6 +891,7 @@ def show_student_view() -> None:
             for index, item in enumerate(STUDENT_PROMPTS):
                 if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
                     st.session_state.pending_student_query = item["prompt"]
+            session_collection = _render_pdf_upload_panel()
             st.divider()
             st.caption("Sources stay visible on the right. Backend details are separated into Backend Tracking.")
 
@@ -782,6 +932,7 @@ def show_student_view() -> None:
                                 "student_level": selected_level,
                                 "chat_model_id": selected_model_id,
                                 "n_questions": 3,
+                                "session_collection": session_collection,
                             },
                         )
                     render_assistant_result(result, fallback_model_label=selected_model.label)

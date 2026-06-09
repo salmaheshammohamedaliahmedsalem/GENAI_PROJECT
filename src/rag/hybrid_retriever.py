@@ -53,22 +53,48 @@ class HybridRetriever:
         self.offline = OfflineRetriever()
         self.last_status = {}
 
-    def retrieve(self, query: str, mode: str = "offline_only") -> list[RetrievedChunk]:
+    def retrieve(self, query: str, mode: str = "offline_only", session_collection: str | None = None) -> list[RetrievedChunk]:
         self.last_status = {"mode": mode, "online": {}, "offline_count": 0, "online_count": 0}
         if mode in {"tool_only", "no_retrieval"}:
             return []
 
         search_query = _enriched_query(query)
 
+        session_chunks: list[RetrievedChunk] = []
+        if session_collection:
+            try:
+                from src.rag.pdf_ingestor import query_pdf_collection
+                raw = query_pdf_collection(query, collection_name=session_collection, top_k=5)
+                session_chunks = [
+                    RetrievedChunk(
+                        chunk=DocumentChunk(
+                            chunk_id=r["chunk_id"],
+                            text=r["text"],
+                            source=r["source"],
+                            source_type=r["source_type"],
+                            page=r.get("page"),
+                            metadata=r.get("metadata") or {},
+                        ),
+                        semantic_score=r.get("score", 0.5),
+                        keyword_score=0.0,
+                        final_score=r.get("score", 0.5),
+                    )
+                    for r in raw
+                ]
+                self.last_status["session_pdf_count"] = len(session_chunks)
+            except Exception:
+                pass
+
         if mode == "offline_only":
             chunks = self.offline.retrieve(search_query)
             self.last_status["offline_count"] = len(chunks)
-            return chunks
+            combined = rerank(query, chunks + session_chunks, top_k=TOP_K_FINAL) if session_chunks else chunks
+            return combined
 
         if mode == "online_only":
             online_chunks, diag = _online_candidates(search_query)
             self.last_status["online"] = diag
-            ranked = rerank(query, online_chunks, top_k=TOP_K_FINAL)
+            ranked = rerank(query, online_chunks + session_chunks, top_k=TOP_K_FINAL)
             self.last_status["online_count"] = len(ranked)
             return ranked
 
@@ -78,6 +104,6 @@ class HybridRetriever:
             self.last_status["offline_count"] = len(offline_chunks)
             self.last_status["online_count"] = len(online_chunks)
             self.last_status["online"] = diag
-            return rerank(query, offline_chunks + online_chunks, top_k=TOP_K_FINAL)
+            return rerank(query, offline_chunks + online_chunks + session_chunks, top_k=TOP_K_FINAL)
 
         return self.offline.retrieve(search_query)
