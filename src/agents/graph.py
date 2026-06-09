@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from pathlib import Path
 import re
 from typing import Any, TypedDict
 
@@ -95,6 +96,13 @@ GRAPH_EDGES = [
 ]
 
 
+def _node_agent(node: str) -> str:
+    for item in GRAPH_NODE_DESCRIPTIONS:
+        if item["node"] == node:
+            return item["agent"]
+    return node
+
+
 def _extract_expression(text: str) -> str:
     division_match = re.search(r"(\d+(?:\.\d+)?)\s*/\s*(\d+(?:\.\d+)?)", text)
     if division_match:
@@ -164,6 +172,98 @@ def _retrieval_node(state: MentorGraphState) -> dict[str, Any]:
     decision = state["router_decision"]
     retrieved = HybridRetriever().retrieve(state["user_query"], mode=decision.retrieval_mode)
     return {"retrieved_chunks": retrieved}
+
+
+def _responding_agent(state: MentorGraphState) -> str:
+    safety = state.get("safety", {"safe": True})
+    if not safety.get("safe", True):
+        return "SafetyAgent"
+    decision = state.get("router_decision")
+    user_query = state.get("user_query", "").lower()
+    if decision and (decision.needs_quiz or "quiz" in user_query):
+        return "QuizAgent"
+    if decision and (decision.needs_grading or "grade" in user_query):
+        return "GraderAgent"
+    if decision and (decision.needs_tool or "calculate" in user_query or "precision" in user_query):
+        return "CalculatorTool"
+    return "TutorAgent"
+
+
+def _build_execution_path(state: MentorGraphState, trace_path: str | None = None) -> list[dict[str, Any]]:
+    safety = state.get("safety", {"safe": True})
+    decision = state.get("router_decision")
+    retrieved = state.get("retrieved_chunks", [])
+    profile = state.get("student_profile", {})
+    checker = state.get("checker_feedback", {})
+    steps: list[dict[str, Any]] = [
+        {
+            "order": 1,
+            "node": "safety",
+            "agent": _node_agent("safety"),
+            "status": "passed" if safety.get("safe", True) else "blocked",
+            "detail": safety.get("category", "safe request"),
+        },
+    ]
+
+    if decision:
+        steps.append(
+            {
+                "order": len(steps) + 1,
+                "node": "planner",
+                "agent": _node_agent("planner"),
+                "status": decision.retrieval_mode,
+                "detail": f"intent={decision.intent}; reason={decision.reasoning}",
+            }
+        )
+    steps.append(
+        {
+            "order": len(steps) + 1,
+            "node": "adapt",
+            "agent": _node_agent("adapt"),
+            "status": profile.get("level", "intermediate"),
+            "detail": f"level={profile.get('label', 'Intermediate')}; quiz={profile.get('quiz_difficulty', 'medium')}",
+        }
+    )
+
+    if decision and decision.retrieval_mode not in {"tool_only", "no_retrieval"} and safety.get("safe", True):
+        steps.append(
+            {
+                "order": len(steps) + 1,
+                "node": "retrieve",
+                "agent": _node_agent("retrieve"),
+                "status": f"{len(retrieved)} chunks",
+                "detail": ", ".join(list_source_labels(retrieved[:3])) or "no retrieved sources",
+            }
+        )
+
+    steps.append(
+        {
+            "order": len(steps) + 1,
+            "node": "respond",
+            "agent": _responding_agent(state),
+            "status": "generated",
+            "detail": f"answer_length={len(state.get('answer', ''))}",
+        }
+    )
+    steps.append(
+        {
+            "order": len(steps) + 1,
+            "node": "check",
+            "agent": _node_agent("check"),
+            "status": "safe" if checker.get("safe", True) else "flagged",
+            "detail": f"grounded={checker.get('grounded', 'n/a')}; citations={checker.get('citations', checker.get('has_citations', 'n/a'))}",
+        }
+    )
+    steps.append(
+        {
+            "order": len(steps) + 1,
+            "node": "finalize",
+            "agent": _node_agent("finalize"),
+            "status": "saved" if trace_path else "pending",
+            "detail": trace_path or "trace pending",
+        }
+    )
+    return steps
 
 
 def _response_node(state: MentorGraphState) -> dict[str, Any]:
@@ -248,10 +348,14 @@ def _finalize_node(state: MentorGraphState) -> dict[str, Any]:
             {"tool": "student_adaptation_agent", "result": state.get("student_profile", {})},
             *state.get("tool_calls", []),
         ],
+        execution_path=_build_execution_path(state),
         checker_feedback=state.get("checker_feedback", {}),
         final_answer=state.get("answer", ""),
     )
-    return {"trace_path": _save_trace(trace)}
+    trace_path = _save_trace(trace)
+    trace.execution_path = _build_execution_path(state, trace_path=trace_path)
+    Path(trace_path).write_text(trace.model_dump_json(indent=2), encoding="utf-8")
+    return {"trace_path": trace_path}
 
 
 def build_genai_mentor_graph():
@@ -299,6 +403,7 @@ def _run_sequential_graph(state: MentorGraphState) -> MentorGraphState:
 
 def _format_response(state: MentorGraphState, graph_engine: str) -> dict[str, Any]:
     retrieved_chunks = state.get("retrieved_chunks", [])
+    trace_path = state.get("trace_path", "")
     return {
         "answer": state.get("answer", ""),
         "router_decision": state["router_decision"].model_dump(),
@@ -323,7 +428,8 @@ def _format_response(state: MentorGraphState, graph_engine: str) -> dict[str, An
         "quiz": state.get("quiz", {}),
         "checker_feedback": state.get("checker_feedback", {}),
         "response_model": state.get("response_model", {}),
-        "trace_path": state.get("trace_path", ""),
+        "execution_path": _build_execution_path(state, trace_path=trace_path),
+        "trace_path": trace_path,
         "graph_engine": graph_engine,
         "langgraph_available": LANGGRAPH_AVAILABLE,
     }

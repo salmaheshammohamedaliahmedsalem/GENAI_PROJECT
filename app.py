@@ -342,6 +342,151 @@ def show_command_result(result: dict) -> None:
         st.code(result["stderr"], language="text")
 
 
+def dot_escape(value: object) -> str:
+    return str(value).replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
+
+
+def fallback_execution_path_from_trace(trace: dict) -> list[dict]:
+    if trace.get("execution_path"):
+        return trace["execution_path"]
+    decision = trace.get("router_decision", {})
+    tool_calls = trace.get("tool_calls", [])
+    retrieved = trace.get("retrieved_chunks", [])
+    response_agent = "TutorAgent"
+    tool_names = [call.get("tool", "") for call in tool_calls]
+    if any(name == "quiz_tool" for name in tool_names):
+        response_agent = "QuizAgent"
+    elif any(name == "grading_tool" for name in tool_names):
+        response_agent = "GraderAgent"
+    elif any(name == "calculator_tool" for name in tool_names):
+        response_agent = "CalculatorTool"
+    elif decision.get("retrieval_mode") == "no_retrieval":
+        response_agent = "SafetyAgent"
+
+    steps = [
+        {"order": 1, "node": "safety", "agent": "SafetyAgent", "status": "completed", "detail": "request checked"},
+        {
+            "order": 2,
+            "node": "planner",
+            "agent": "PlannerAgent",
+            "status": decision.get("retrieval_mode", "unknown"),
+            "detail": f"intent={decision.get('intent', 'unknown')}",
+        },
+        {"order": 3, "node": "adapt", "agent": "StudentAdaptationAgent", "status": "completed", "detail": "student profile selected"},
+    ]
+    if retrieved and decision.get("retrieval_mode") not in {"tool_only", "no_retrieval"}:
+        steps.append(
+            {
+                "order": len(steps) + 1,
+                "node": "retrieve",
+                "agent": "HybridRetriever",
+                "status": f"{len(retrieved)} chunks",
+                "detail": "retrieved evidence before response",
+            }
+        )
+    for node, agent, status, detail in [
+        ("respond", response_agent, "generated", "response produced"),
+        ("check", "CheckerAgent", "completed", "final answer checked"),
+        ("finalize", "TraceWriter", "saved", "trace saved"),
+    ]:
+        steps.append({"order": len(steps) + 1, "node": node, "agent": agent, "status": status, "detail": detail})
+    return steps
+
+
+def latest_trace_payload() -> tuple[Path | None, dict]:
+    latest = latest_file(TRACE_DIR, "trace_*.json")
+    if latest is None:
+        return None, {}
+    try:
+        return latest, json.loads(latest.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return latest, {}
+
+
+def latest_execution_payload() -> tuple[str, dict]:
+    live_result = st.session_state.get("last_agent_result")
+    if live_result:
+        return "Latest live app response", live_result
+    latest, trace = latest_trace_payload()
+    if trace:
+        return str(latest), trace
+    return "", {}
+
+
+def agent_graph_dot(execution_path: list[dict] | None = None) -> str:
+    blueprint = get_graph_blueprint()
+    active_nodes = {step.get("node") for step in execution_path or []}
+    active_agents = {step.get("node"): step.get("agent") for step in execution_path or []}
+    path_nodes = [step.get("node") for step in (execution_path or []) if step.get("node")]
+    active_edges = set(zip(path_nodes, path_nodes[1:]))
+    lines = [
+        "digraph GenAIMentor {",
+        "  rankdir=LR;",
+        '  graph [bgcolor="transparent", pad="0.2", nodesep="0.45", ranksep="0.65"];',
+        '  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, margin="0.12,0.08"];',
+        '  edge [fontname="Helvetica", fontsize=9, color="#94a3b8", arrowsize=0.8];',
+    ]
+    for node in blueprint["nodes"]:
+        node_id = node["node"]
+        active = node_id in active_nodes
+        agent = active_agents.get(node_id) or node["agent"]
+        label = f"{node_id}\\n{agent}"
+        fill = "#fff7ed" if active else "#f8fafc"
+        color = "#f97316" if active else "#cbd5e1"
+        penwidth = "2.6" if active else "1.2"
+        lines.append(
+            f'  "{dot_escape(node_id)}" [label="{dot_escape(label)}", fillcolor="{fill}", color="{color}", penwidth={penwidth}];'
+        )
+    for edge in blueprint["edges"]:
+        source, target = edge[0], edge[1]
+        condition = edge[2] if len(edge) > 2 else ""
+        active = (source, target) in active_edges
+        color = "#f97316" if active else "#94a3b8"
+        penwidth = "2.8" if active else "1.2"
+        label = f' [label="{dot_escape(condition)}", color="{color}", fontcolor="{color}", penwidth={penwidth}]' if condition else f' [color="{color}", penwidth={penwidth}]'
+        lines.append(f'  "{dot_escape(source)}" -> "{dot_escape(target)}"{label};')
+    lines.append("}")
+    return "\n".join(lines)
+
+
+def render_agent_graph(execution_path: list[dict] | None = None) -> None:
+    dot = agent_graph_dot(execution_path)
+    try:
+        st.graphviz_chart(dot)
+    except Exception:
+        st.code(dot, language="dot")
+
+
+def render_execution_path(execution_path: list[dict]) -> None:
+    if not execution_path:
+        st.info("No execution path is available yet. Run a student chat or backend demo request first.")
+        return
+    st.markdown(
+        " → ".join(
+            f"<span class='agent-chip'>{step.get('order', index)}. {step.get('agent', step.get('node', 'agent'))}</span>"
+            for index, step in enumerate(execution_path, start=1)
+        ),
+        unsafe_allow_html=True,
+    )
+    for index, step in enumerate(execution_path, start=1):
+        with st.container(border=True):
+            st.markdown(f"**Step {step.get('order', index)} — {step.get('agent', 'Agent')}**")
+            st.caption(f"Graph node: `{step.get('node', '')}` · Status: `{step.get('status', '')}`")
+            st.write(step.get("detail", ""))
+    rows = [
+        {
+            "step": step.get("order", index),
+            "node": step.get("node", ""),
+            "agent/tool": step.get("agent", ""),
+            "status": step.get("status", ""),
+            "what happened": step.get("detail", ""),
+        }
+        for index, step in enumerate(execution_path, start=1)
+    ]
+    with st.expander("Compact execution table"):
+        st.table(rows)
+
+
 def result_caption(result: dict, fallback_model_label: str | None = None) -> str:
     decision = result.get("router_decision", {})
     response_model = result.get("response_model", {})
@@ -617,6 +762,7 @@ def show_student_view() -> None:
                     render_assistant_result(result, fallback_model_label=selected_model.label)
                 st.session_state.student_messages.append({"role": "assistant", "content": result["answer"], "result": result})
                 st.session_state.last_student_result = result
+                st.session_state.last_agent_result = result
 
     with sources_col:
         with st.container(border=True):
@@ -707,6 +853,8 @@ def show_chat_tab() -> None:
                 })
 
     st.session_state.messages.append({"role": "assistant", "content": result["answer"], "result": result})
+    st.session_state.last_backend_result = result
+    st.session_state.last_agent_result = result
 
 
 def show_overview_tab() -> None:
@@ -761,6 +909,8 @@ def show_agents_prompts_tab() -> None:
             st.caption(f"Import status: {blueprint['import_error']}")
 
     st.markdown("### Agent Workflow")
+    st.caption("Static graph topology. Orange highlighting appears in the Trace tab after a response runs.")
+    render_agent_graph()
     st.markdown(
         " ".join(
             f"<span class='agent-chip'>{node['agent']}</span>"
@@ -841,12 +991,32 @@ def show_rag_tab() -> None:
 def show_trace_tab() -> None:
     st.subheader("Latest Agent Trace")
     st.write("Every chat run saves a trace so you can inspect routing, tools, retrieved chunks, checker feedback, and final answer.")
+    source_label, payload = latest_execution_payload()
+    if payload:
+        execution_path = payload.get("execution_path") or fallback_execution_path_from_trace(payload)
+        st.markdown("### Agent Graph for Latest Response")
+        st.caption(f"Source: `{source_label}`")
+        render_agent_graph(execution_path)
+
+        st.markdown("### Agents/Tools That Ran Before Delivery")
+        render_execution_path(execution_path)
+
+        decision = payload.get("router_decision", {})
+        metric_cols = st.columns(4)
+        metric_cols[0].metric("Route", decision.get("retrieval_mode", "unknown"))
+        metric_cols[1].metric("Intent", str(decision.get("intent", "unknown"))[:24])
+        metric_cols[2].metric("Retrieved chunks", len(payload.get("retrieved_content", payload.get("retrieved_chunks", []))))
+        metric_cols[3].metric("Tool calls", len(payload.get("tool_calls", [])))
+    else:
+        st.info("No active response yet. Ask a student question or run the backend demo chat first.")
+
     latest = latest_file(TRACE_DIR, "trace_*.json")
     if latest is None:
-        st.info("No traces yet. Ask a question in Chat Tutor first.")
+        st.info("No saved traces yet. Ask a question in Chat Tutor first.")
         return
     st.caption(str(latest))
     try:
+        st.markdown("### Raw Saved Trace")
         st.json(json.loads(latest.read_text(encoding="utf-8")))
     except json.JSONDecodeError:
         st.code(latest.read_text(encoding="utf-8"), language="json")
