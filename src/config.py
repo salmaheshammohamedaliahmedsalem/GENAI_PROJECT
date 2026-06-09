@@ -21,6 +21,7 @@ GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 FINETUNE_BASE_MODEL = os.getenv("FINETUNE_BASE_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
+LOCAL_MODEL_ALLOW_DOWNLOADS = os.getenv("LOCAL_MODEL_ALLOW_DOWNLOADS", "false").lower() == "true"
 
 USE_LOCAL_LLM = os.getenv("USE_LOCAL_LLM", "false").lower() == "true"
 ENABLE_ONLINE_RAG = os.getenv("ENABLE_ONLINE_RAG", "true").lower() == "true"

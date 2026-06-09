@@ -73,7 +73,7 @@ The app uses Streamlit, LangGraph, BM25 retrieval, optional hosted LLM APIs, and
 pip install -r requirements.txt
 ```
 
-For Streamlit Community Cloud, use the default `requirements.txt`. It intentionally excludes ChromaDB and fine-tuning libraries so the deployed app can start reliably with BM25 retrieval, online retrieval, tools, agents, evaluation displays, and fine-tuning artifacts. For local semantic retrieval, install `requirements_semantic.txt`. For local LoRA training, install `requirements_finetune.txt`.
+For Streamlit Community Cloud, use the default `requirements.txt`. It intentionally excludes ChromaDB and fine-tuning libraries so the deployed app can start reliably with BM25 retrieval, online retrieval, tools, agents, evaluation displays, and fine-tuning artifacts. For local semantic retrieval, install `requirements_semantic.txt`. For local LoRA training/inference, install `requirements_finetune.txt`. A LoRA adapter is not a standalone model: it also needs its base model weights, such as `Qwen/Qwen2.5-0.5B-Instruct`, cached locally or allowed to download with `LOCAL_MODEL_ALLOW_DOWNLOADS=true`.
 
 ---
 
@@ -87,6 +87,9 @@ OPENAI_API_KEY=your_openai_api_key_here
 GROQ_API_KEY=your_groq_api_key_here
 GROQ_MODEL=llama-3.1-8b-instant
 GROQ_BASE_URL=https://api.groq.com/openai/v1
+
+# Local fine-tuned model inference
+LOCAL_MODEL_ALLOW_DOWNLOADS=false
 
 # Online retrieval
 TAVILY_API_KEY=your_tavily_api_key_here
@@ -148,5 +151,5 @@ The end-to-end system is implemented:
 2. **Offline/Online RAG Integration**: BM25 retrieval is built from `data/chunks/lecture_chunks.jsonl`; approved online retrieval uses Tavily when configured and the maintained `ddgs` package as a no-key fallback.
 3. **Multi-Agent Orchestration**: Safety, planning, student adaptation, retrieval, tutoring, quiz, grading, checking, and trace-writing nodes are connected through `src/agents/graph.py` using LangGraph when installed.
 4. **Prompt Template Layer**: `src/llm/prompts.py` documents the base, router, tutor, quiz, grading, checker, and safety prompts with required inputs.
-5. **Model Selection**: The Student GUI shows canonical Salma, Fatma, and Khadija fine-tuned models, plus base Qwen, Groq-hosted chat, OpenAI-hosted chat, or deterministic fallback depending on installed packages and configured keys. Backend Tracking lists every saved adapter/experiment.
+5. **Model Selection**: The Student GUI shows canonical Salma, Fatma, and Khadija fine-tuned models, plus base Qwen, Groq-hosted chat, OpenAI-hosted chat, or deterministic fallback depending on installed packages, configured keys, and local base-model cache/download availability. Backend Tracking lists every saved adapter/experiment.
 6. **GUI Showcase**: `app.py` is split into two primary modes: **Student** for level-adaptive chat plus retrieved-content review, and **Backend Tracking** for architecture, agents/prompts, RAG diagnostics, traces, fine-tuning, evaluation, safety, and run checks.

@@ -69,7 +69,7 @@ The Streamlit app is split into two top-level buttons:
 ## Runtime Model Behavior
 
 - The selected model receives the final tutor prompt, including the student profile and retrieved RAG context assembled by `TutorAgent`.
-- The recommended local option is the trained `Qwen/Qwen2.5-0.5B-Instruct` LoRA adapter when local fine-tuning dependencies are installed.
+- The recommended local option is the trained `Qwen/Qwen2.5-0.5B-Instruct` LoRA adapter when local fine-tuning dependencies are installed and the required base model is cached or `LOCAL_MODEL_ALLOW_DOWNLOADS=true`.
 - Groq is supported as a fast hosted base chatbot through `GROQ_API_KEY` and `GROQ_MODEL`, using the OpenAI-compatible endpoint.
 - OpenAI is supported through `OPENAI_API_KEY` and `CHAT_MODEL`.
 - If no hosted API or local neural model is available, the app falls back to `LocalRuleBasedLLM` so demos still run without secrets.

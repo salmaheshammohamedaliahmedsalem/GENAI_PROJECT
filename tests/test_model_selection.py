@@ -64,6 +64,21 @@ def test_model_registry_lists_groq_when_key_is_configured(monkeypatch):
     assert groq_options[0].available is True
 
 
+def test_lora_adapter_is_unavailable_when_base_model_cache_is_missing(monkeypatch):
+    monkeypatch.setattr(model_registry, "_lora_dependency_status", lambda: (True, "LoRA deps ready"))
+    monkeypatch.setattr(
+        model_registry,
+        "_base_model_cache_status",
+        lambda base_model, require_tokenizer=True: (False, f"Base model {base_model} is not cached locally"),
+    )
+
+    options = model_registry.list_chat_model_options(include_unavailable=True)
+    khadija = next(option for option in options if option.id.endswith("_khadija"))
+
+    assert khadija.available is False
+    assert "not cached locally" in khadija.status
+
+
 def test_chat_client_routes_to_groq_model(monkeypatch):
     captured = {}
 

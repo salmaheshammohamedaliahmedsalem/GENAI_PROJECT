@@ -727,14 +727,14 @@ def show_student_view() -> None:
                 if selected_model.available:
                     st.success("Using a runnable fine-tuned LoRA tutor model.")
                 else:
-                    st.warning("Saved adapter is present, but this environment cannot run local LoRA until `requirements_finetune.txt` dependencies and the base model are available.")
+                    st.warning("Saved adapter is present, but this environment cannot run it until `requirements_finetune.txt` dependencies and the required base model cache/download setting are available.")
             else:
                 unavailable_finetuned = [
                     option for option in list_chat_model_options(include_unavailable=True)
                     if option.is_finetuned and not option.available
                 ]
                 if unavailable_finetuned:
-                    st.warning("Fine-tuned adapters exist, but local model dependencies are missing. Install `requirements_finetune.txt` to enable them.")
+                    st.warning("Fine-tuned adapters exist, but this environment cannot run at least one of them yet. Check package dependencies, local base-model cache, or `LOCAL_MODEL_ALLOW_DOWNLOADS`.")
             if st.button("New chat", key="clear_student_chat", width="stretch"):
                 st.session_state.student_messages = []
                 st.session_state.last_student_result = None

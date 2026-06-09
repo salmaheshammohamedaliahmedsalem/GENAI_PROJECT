@@ -3,7 +3,16 @@ import importlib.util
 import json
 from pathlib import Path
 
-from src.config import CHAT_MODEL, FINETUNE_BASE_MODEL, GROQ_API_KEY, GROQ_MODEL, OPENAI_API_KEY, OUTPUTS_DIR, ROOT_DIR
+from src.config import (
+    CHAT_MODEL,
+    FINETUNE_BASE_MODEL,
+    GROQ_API_KEY,
+    GROQ_MODEL,
+    LOCAL_MODEL_ALLOW_DOWNLOADS,
+    OPENAI_API_KEY,
+    OUTPUTS_DIR,
+    ROOT_DIR,
+)
 
 
 @dataclass(frozen=True)
@@ -42,6 +51,74 @@ def _lora_dependency_status() -> tuple[bool, str]:
     return True, "Ready for local PEFT/LoRA inference"
 
 
+def _cached_model_file_status(model_id: str, filenames: tuple[str, ...]) -> tuple[bool, str]:
+    try:
+        from transformers.utils import cached_file
+    except Exception as exc:
+        return False, f"Cannot inspect Hugging Face cache: {type(exc).__name__}: {exc}"
+
+    for filename in filenames:
+        try:
+            cached_file(model_id, filename, local_files_only=True)
+            return True, f"Cached {filename}"
+        except Exception:
+            continue
+    return False, f"Missing cached files: {', '.join(filenames)}"
+
+
+def _base_model_cache_status(base_model_id: str, require_tokenizer: bool = True) -> tuple[bool, str]:
+    if LOCAL_MODEL_ALLOW_DOWNLOADS:
+        return True, f"Base model {base_model_id} can be downloaded on first use"
+
+    required_groups = [
+        ("config", ("config.json",)),
+        (
+            "weights",
+            (
+                "model.safetensors",
+                "model.safetensors.index.json",
+                "pytorch_model.bin",
+                "pytorch_model.bin.index.json",
+            ),
+        ),
+    ]
+    if require_tokenizer:
+        required_groups.append(("tokenizer", ("tokenizer_config.json", "tokenizer.json")))
+
+    missing = []
+    for label, filenames in required_groups:
+        ok, status = _cached_model_file_status(base_model_id, filenames)
+        if not ok:
+            missing.append(f"{label} ({status})")
+
+    if missing:
+        return (
+            False,
+            f"Base model {base_model_id} is not fully cached locally: " + "; ".join(missing),
+        )
+    return True, f"Base model {base_model_id} is cached locally"
+
+
+def _local_base_model_status(base_model_id: str) -> tuple[bool, str]:
+    deps_ok, deps_status = _base_model_dependency_status()
+    if not deps_ok:
+        return deps_ok, deps_status
+    cache_ok, cache_status = _base_model_cache_status(base_model_id)
+    return cache_ok, f"{deps_status}; {cache_status}"
+
+
+def _local_lora_status(adapter_dir: Path, base_model_id: str) -> tuple[bool, str]:
+    deps_ok, deps_status = _lora_dependency_status()
+    if not deps_ok:
+        return deps_ok, deps_status
+    if not (adapter_dir / "adapter_model.safetensors").exists():
+        return False, f"Missing LoRA adapter weights at {adapter_dir / 'adapter_model.safetensors'}"
+
+    adapter_has_tokenizer = (adapter_dir / "tokenizer_config.json").exists() or (adapter_dir / "tokenizer.json").exists()
+    cache_ok, cache_status = _base_model_cache_status(base_model_id, require_tokenizer=not adapter_has_tokenizer)
+    return cache_ok, f"{deps_status}; {cache_status}; base model: {base_model_id}"
+
+
 def _adapter_base_model(adapter_dir: Path) -> str:
     config_path = adapter_dir / "adapter_config.json"
     if not config_path.exists():
@@ -75,12 +152,12 @@ def discover_finetuned_adapters() -> list[Path]:
 
 def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelOption]:
     options: list[ChatModelOption] = []
-    lora_ok, lora_status = _lora_dependency_status()
-    base_ok, base_status = _base_model_dependency_status()
+    base_ok, base_status = _local_base_model_status(FINETUNE_BASE_MODEL)
 
     for adapter_dir in discover_finetuned_adapters():
         rel_path = adapter_dir.relative_to(ROOT_DIR).as_posix()
         base_model = _adapter_base_model(adapter_dir)
+        lora_ok, lora_status = _local_lora_status(adapter_dir, base_model)
         label_prefix = "Recommended fine-tuned model" if adapter_dir.name == "qwen_0_5b_lora_adapter_salma" else "Fine-tuned LoRA adapter"
         options.append(
             ChatModelOption(
@@ -88,7 +165,7 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
                 label=f"{label_prefix}: {adapter_dir.name}",
                 kind="lora_adapter",
                 available=lora_ok,
-                status=f"{lora_status}; base model: {base_model}",
+                status=lora_status,
                 is_finetuned=True,
                 path=str(adapter_dir),
                 base_model=base_model,
@@ -174,26 +251,27 @@ def resolve_chat_model_option(model_id: str | None = None, prefer_finetuned: boo
     if target_id.startswith("lora::"):
         rel_path = target_id.removeprefix("lora::")
         adapter_dir = ROOT_DIR / rel_path
-        deps_ok, deps_status = _lora_dependency_status()
+        base_model = _adapter_base_model(adapter_dir)
+        lora_ok, lora_status = _local_lora_status(adapter_dir, base_model)
         return ChatModelOption(
             id=target_id,
             label=f"Fine-tuned LoRA adapter: {adapter_dir.name}",
             kind="lora_adapter",
-            available=deps_ok and (adapter_dir / "adapter_model.safetensors").exists(),
-            status=deps_status,
+            available=lora_ok,
+            status=lora_status,
             is_finetuned=True,
             path=str(adapter_dir),
-            base_model=_adapter_base_model(adapter_dir),
+            base_model=base_model,
         )
     if target_id.startswith("base::"):
         base_model = target_id.removeprefix("base::") or FINETUNE_BASE_MODEL
-        deps_ok, deps_status = _base_model_dependency_status()
+        base_ok, base_status = _local_base_model_status(base_model)
         return ChatModelOption(
             id=target_id,
             label=f"Base model only: {base_model}",
             kind="base_model",
-            available=deps_ok,
-            status=f"{deps_status}; no LoRA adapter applied",
+            available=base_ok,
+            status=f"{base_status}; no LoRA adapter applied",
             base_model=base_model,
         )
     if target_id.startswith("groq::"):

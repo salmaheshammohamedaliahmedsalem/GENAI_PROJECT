@@ -1,7 +1,7 @@
 from pathlib import Path
 from functools import lru_cache
 
-from src.config import FINETUNE_BASE_MODEL, OUTPUTS_DIR
+from src.config import FINETUNE_BASE_MODEL, LOCAL_MODEL_ALLOW_DOWNLOADS, OUTPUTS_DIR
 
 
 def _load_base_dependencies():
@@ -9,6 +9,12 @@ def _load_base_dependencies():
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     return torch, AutoModelForCausalLM, AutoTokenizer
+
+
+def _local_files_only(local_files_only: bool | None) -> bool:
+    if local_files_only is None:
+        return not LOCAL_MODEL_ALLOW_DOWNLOADS
+    return local_files_only
 
 
 def _load_lora_dependencies():
@@ -57,7 +63,7 @@ def _load_lora_components(adapter_dir: str, base_model_id: str, local_files_only
 
     device = _device(torch)
     dtype = torch.float16 if device == "cuda" else torch.float32
-    tokenizer_source = adapter_path if (adapter_path / "tokenizer_config.json").exists() else FINETUNE_BASE_MODEL
+    tokenizer_source = adapter_path if (adapter_path / "tokenizer_config.json").exists() else base_model_id
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_source, local_files_only=local_files_only)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -97,8 +103,9 @@ def generate_with_base_messages(
     messages: list[dict],
     max_new_tokens: int = 384,
     base_model_id: str = FINETUNE_BASE_MODEL,
-    local_files_only: bool = True,
+    local_files_only: bool | None = None,
 ) -> str:
+    local_files_only = _local_files_only(local_files_only)
     tokenizer, model, device, torch = _load_base_components(base_model_id, local_files_only)
     return _generate_from_components(tokenizer, model, device, torch, messages, max_new_tokens)
 
@@ -108,8 +115,9 @@ def generate_with_lora_messages(
     max_new_tokens: int = 384,
     adapter_dir: str | Path | None = None,
     base_model_id: str = FINETUNE_BASE_MODEL,
-    local_files_only: bool = True,
+    local_files_only: bool | None = None,
 ) -> str:
+    local_files_only = _local_files_only(local_files_only)
     adapter_path = Path(adapter_dir) if adapter_dir else OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter_salma"
     tokenizer, model, device, torch = _load_lora_components(str(adapter_path), base_model_id, local_files_only)
     return _generate_from_components(tokenizer, model, device, torch, messages, max_new_tokens)
