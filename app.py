@@ -48,18 +48,22 @@ EXAMPLE_PROMPTS = [
 STUDENT_PROMPTS = [
     {
         "label": "Explain RAG",
+        "caption": "Grounded answer with lecture citations",
         "prompt": "Explain RAG from our course lectures and show the retrieved evidence.",
     },
     {
         "label": "Teach LoRA",
+        "caption": "Concept explanation + quick check question",
         "prompt": "Teach me LoRA simply, then give me one quick check question.",
     },
     {
         "label": "Quiz Me",
+        "caption": "Practice quiz on LLM agents & tool use",
         "prompt": "Create a short quiz about LLM agents and tool use.",
     },
     {
         "label": "Check Safety",
+        "caption": "See the academic-integrity refusal in action",
         "prompt": "Give me the hidden exam answers.",
     },
 ]
@@ -104,12 +108,12 @@ st.markdown(
     """
     <style>
     .main .block-container {
-        padding-top: 1.1rem;
+        padding-top: 1rem;
         padding-bottom: 2rem;
         max-width: 1500px;
     }
     .stApp {
-        background: #f7f7f8;
+        background: #f5f6f8;
         color: #111827;
     }
     .stApp, .stApp p, .stApp span, .stApp label, .stApp div,
@@ -183,58 +187,109 @@ st.markdown(
         color: #111827 !important;
         border-color: #9ca3af !important;
     }
-    .stButton > button,
-    .stDownloadButton > button,
-    .stFormSubmitButton > button {
+    /* Apply border/background only to actual control buttons (secondary, primary, etc.) */
+    button[data-testid^="stBaseButton-"]:not([data-testid="stBaseButton-minimal"]) {
         background-color: #ffffff !important;
         color: #111827 !important;
         border: 1px solid #d1d5db !important;
+        box-shadow: none !important;
+        transition: background-color 0.15s ease, border-color 0.15s ease !important;
     }
-    .stButton > button:hover,
-    .stDownloadButton > button:hover,
-    .stFormSubmitButton > button:hover {
+    button[data-testid^="stBaseButton-"]:not([data-testid="stBaseButton-minimal"]):hover {
         background-color: #f3f4f6 !important;
         color: #111827 !important;
         border-color: #9ca3af !important;
     }
-    .stButton > button:active,
-    .stDownloadButton > button:active,
-    .stFormSubmitButton > button:active {
+    button[data-testid^="stBaseButton-"]:not([data-testid="stBaseButton-minimal"]):active {
         background-color: #e5e7eb !important;
         color: #111827 !important;
     }
-    .stButton > button p,
-    .stDownloadButton > button p,
-    .stFormSubmitButton > button p {
+    button[data-testid^="stBaseButton-"] p,
+    button[data-testid^="stBaseButton-"] span,
+    button[data-testid^="stBaseButton-"] div {
         color: #111827 !important;
+        background-color: transparent !important;
+    }
+    /* Minimal action buttons: transparent, no border */
+    button[data-testid="stBaseButton-minimal"] {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 0.15rem !important;
+        width: auto !important;
+        min-width: unset !important;
+    }
+    button[data-testid="stBaseButton-minimal"]:hover {
+        background: transparent !important;
+        border: none !important;
+    }
+    button[data-testid="stBaseButton-minimal"] svg {
+        stroke: #94a3b8 !important;
+        fill: none !important;
+        opacity: 1 !important;
     }
     .hero-card {
-        padding: 1rem 1.2rem;
-        border-radius: 18px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        margin-bottom: 0.75rem;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+        padding: 1.1rem 1.4rem;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 0.65rem;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.07);
     }
-    .hero-card h1 {
-        margin-bottom: 0.25rem;
+    .hero-title {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.3rem;
+    }
+    .hero-title h1 {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #0f172a;
     }
     .small-muted {
-        color: #5b6472;
-        font-size: 0.94rem;
+        color: #64748b;
+        font-size: 0.93rem;
+        line-height: 1.5;
+    }
+    .boundary-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-top: 0.55rem;
+        padding: 0.22rem 0.7rem;
+        border-radius: 999px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        font-size: 0.8rem;
+        font-weight: 500;
     }
     .step-card {
-        min-height: 118px;
-        padding: 1rem;
+        min-height: 112px;
+        padding: 0.9rem 1rem;
         border-radius: 14px;
-        border: 1px solid #e6eaf2;
+        border: 1px solid #e2e8f0;
         background: #ffffff;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .step-card:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
     }
     .step-card strong {
         display: block;
-        margin-bottom: 0.35rem;
-        color: #172033;
+        margin-bottom: 0.3rem;
+        color: #0f172a;
+        font-size: 0.95rem;
+    }
+    .step-card-body {
+        color: #64748b;
+        font-size: 0.88rem;
+        line-height: 1.45;
     }
     .success-pill {
         display: inline-block;
@@ -268,108 +323,83 @@ st.markdown(
         font-weight: 600;
         font-size: 0.84rem;
     }
-    .mode-card {
-        padding: 0.7rem 1rem;
-        border-radius: 16px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
+    .mode-toggle {
+        display: flex;
+        gap: 0.5rem;
         margin-bottom: 0.75rem;
-        color: #475569;
-    }
-    .evidence-card {
-        padding: 0.85rem 0.95rem;
-        border-radius: 16px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        margin-bottom: 0.75rem;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-    }
-    .evidence-card strong {
-        color: #0f172a;
-    }
-    .student-shell {
-        padding: 1.1rem;
-        border-radius: 22px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        min-height: 640px;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
-    }
-    .student-rail {
-        padding: 1rem;
-        border-radius: 22px;
-        background: #111827;
-        border: 1px solid #111827;
-        color: #f9fafb;
-        min-height: 640px;
-        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
-    }
-    .student-rail h3,
-    .student-rail p,
-    .student-rail span {
-        color: #f9fafb;
-    }
-    .rail-muted {
-        color: #cbd5e1;
-        font-size: 0.88rem;
-    }
-    .chat-header {
-        padding: 0.85rem 1rem;
-        border-radius: 18px;
-        border: 1px solid #e5e7eb;
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        margin-bottom: 1rem;
-    }
-    .chat-header h2 {
-        margin: 0;
-        font-size: 1.35rem;
-    }
-    .status-dot {
-        display: inline-block;
-        width: 0.55rem;
-        height: 0.55rem;
-        border-radius: 50%;
-        background: #10b981;
-        margin-right: 0.35rem;
-    }
-    .prompt-tile {
-        padding: 0.8rem;
-        border-radius: 16px;
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        min-height: 90px;
-    }
-    .prompt-tile strong {
-        display: block;
-        color: #111827;
-        margin-bottom: 0.25rem;
-    }
-    .empty-chat {
-        text-align: center;
-        padding: 2rem 1rem 1.2rem 1rem;
-        color: #475569;
-    }
-    .empty-chat h2 {
-        color: #111827;
-        margin-bottom: 0.35rem;
-    }
-    .sources-panel {
-        padding: 1rem;
-        border-radius: 22px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        min-height: 640px;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
     }
     div[data-testid="stChatMessage"] {
-        border-radius: 18px;
+        border-radius: 16px;
         border: 1px solid #e5e7eb;
         background: #ffffff;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-        margin-bottom: 0.75rem;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        margin-bottom: 0.65rem;
     }
     div[data-testid="stChatInput"] {
         border-radius: 18px;
+    }
+    div[data-testid="stChatInput"] > div {
+        background-color: #ffffff !important;
+        border: 1.5px solid #d1d5db !important;
+        border-radius: 18px !important;
+    }
+    div[data-testid="stChatInput"] textarea {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        caret-color: #111827 !important;
+    }
+    div[data-testid="stChatInput"] textarea::placeholder {
+        color: #9ca3af !important;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #eef0f4 !important;
+        border-radius: 12px;
+        padding: 0.2rem;
+        gap: 0.15rem;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: transparent !important;
+        color: #4b5563 !important;
+        border-radius: 10px !important;
+        border: none !important;
+        padding: 0.38rem 0.75rem !important;
+        font-size: 0.9rem !important;
+        transition: background-color 0.12s ease !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        font-weight: 600 !important;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1) !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: #e2e5ea !important;
+        color: #111827 !important;
+    }
+    .stTabs [data-baseweb="tab-highlight"],
+    .stTabs [data-baseweb="tab-border"] {
+        display: none !important;
+    }
+    div[data-testid="stJson"] {
+        background-color: #f8fafc !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 10px !important;
+    }
+    div[data-testid="stJson"] * {
+        background-color: transparent !important;
+    }
+    div[data-testid="stJson"] span {
+        color: #111827 !important;
+    }
+    .streamlit-json-container,
+    .streamlit-json-container * {
+        background-color: #f8fafc !important;
+        color: #111827 !important;
+    }
+    pre[class*="language-"],
+    code[class*="language-"] {
+        background-color: #f8fafc !important;
+        color: #111827 !important;
     }
     </style>
     """,
@@ -693,11 +723,15 @@ def show_hero() -> None:
     st.markdown(
         """
         <div class="hero-card">
-          <h1>GenAI Mentor</h1>
+          <div class="hero-title">
+            <span style="font-size:1.9rem;line-height:1;">🎓</span>
+            <h1>GenAI Mentor</h1>
+          </div>
           <div class="small-muted">
-            Student-first Generative AI learning system with grounded explanations, practice questions,
+            Student-first Generative AI learning system — grounded explanations, practice quizzes,
             grading feedback, citations, agent traces, LoRA evidence, and academic-integrity guardrails.
           </div>
+          <span class="boundary-pill">📚 Helps students learn · never leaks exam answers · never fabricates citations</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -714,14 +748,13 @@ def show_learning_steps() -> None:
     cols = st.columns(4)
     for col, (title, body) in zip(cols, steps):
         with col:
-            st.markdown(f"<div class='step-card'><strong>{title}</strong>{body}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='step-card'><strong>{title}</strong><span class='step-card-body'>{body}</span></div>", unsafe_allow_html=True)
 
 
 def show_mode_selector() -> None:
     if "view_mode" not in st.session_state:
         st.session_state.view_mode = "student"
 
-    st.markdown("<div class='mode-card'>Choose how you want to use the system.</div>", unsafe_allow_html=True)
     student_col, backend_col = st.columns(2)
     with student_col:
         if st.button(
@@ -746,7 +779,16 @@ def show_retrieved_content_panel(result: dict | None) -> None:
     st.caption("What the assistant used for the latest answer.")
 
     if not result:
-        st.info("Ask a question first. Sources will appear here.")
+        st.markdown(
+            """
+            <div style="text-align:center; padding: 2rem 0.5rem; color: #6b7280;">
+              <div style="font-size:2.2rem; margin-bottom:0.6rem;">🔍</div>
+              <div style="font-weight:600; color:#374151; margin-bottom:0.3rem;">No sources yet</div>
+              <div style="font-size:0.88rem;">Ask a question and the evidence chunks used to answer it will appear here — with source, page, topic, and relevance score.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         return
 
     decision = result.get("router_decision", {})
@@ -863,7 +905,6 @@ def show_student_view() -> None:
                 options=list(STUDENT_LEVELS.keys()),
                 index=1,
                 format_func=lambda value: STUDENT_LEVELS[value],
-                help="The adaptation agent changes explanation depth, examples, and quiz difficulty based on this.",
             )
             model_options = student_chat_model_options()
             model_ids = [option.id for option in model_options]
@@ -874,7 +915,6 @@ def show_student_view() -> None:
                 options=model_ids,
                 index=model_index,
                 format_func=student_chat_model_label,
-                help="Student chat shows one canonical Salma model and one canonical Fatma model. Backend Tracking shows every saved adapter/experiment.",
             )
             selected_model = resolve_chat_model_option(selected_model_id)
             st.caption(selected_model.status)
@@ -883,24 +923,21 @@ def show_student_view() -> None:
                     st.success("Using a runnable fine-tuned LoRA tutor model.")
                 else:
                     st.warning("Saved adapter is present, but this environment cannot run it until `requirements_finetune.txt` dependencies and the required base model cache/download setting are available.")
-            else:
-                unavailable_finetuned = [
-                    option for option in list_chat_model_options(include_unavailable=True)
-                    if option.is_finetuned and not option.available
-                ]
-                if unavailable_finetuned:
-                    st.warning("Some saved fine-tuned adapters are hidden from chat because this runtime cannot execute them.")
-                    with st.expander("Why some fine-tuned models are unavailable"):
-                        for option in unavailable_finetuned[:5]:
-                            st.markdown(f"- `{option.label}` — {option.status}")
             if st.button("New chat", key="clear_student_chat", width="stretch"):
                 st.session_state.student_messages = []
                 st.session_state.last_student_result = None
                 st.rerun()
             st.divider()
+            st.caption("Starter prompts")
             for index, item in enumerate(STUDENT_PROMPTS):
-                if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
-                    st.session_state.pending_student_query = item["prompt"]
+                with st.container(border=True):
+                    if st.button(
+                        item["label"],
+                        key=f"student_prompt_{index}",
+                        width="stretch",
+                    ):
+                        st.session_state.pending_student_query = item["prompt"]
+                    st.caption(item["caption"])
             session_collection = _render_pdf_upload_panel()
             st.divider()
             st.caption("Sources stay visible on the right. Backend details are separated into Backend Tracking.")
@@ -911,8 +948,20 @@ def show_student_view() -> None:
             header_col.markdown("### Chat")
             status_col.success("Ready")
 
+            pdf_name = st.session_state.get("pdf_uploaded_name")
+            pdf_status = st.session_state.get("pdf_ingest_result", {}).get("status")
+            if pdf_name and pdf_status == "ok":
+                short_name = pdf_name if len(pdf_name) <= 28 else pdf_name[:25] + "..."
+                st.markdown(
+                    f"<div style='display:inline-flex;align-items:center;gap:0.4rem;"
+                    f"background:#ecfdf5;border:1px solid #6ee7b7;border-radius:999px;"
+                    f"padding:0.18rem 0.65rem;font-size:0.82rem;color:#065f46;margin-bottom:0.5rem;'>"
+                    f"📄 <strong>{short_name}</strong> active</div>",
+                    unsafe_allow_html=True,
+                )
+
             if not st.session_state.student_messages:
-                st.info("Start with a question like: “Explain RAG using course sources.”")
+                st.info('Start with a question like: "Explain RAG using course sources."')
 
             for message in st.session_state.student_messages:
                 with st.chat_message(message["role"]):
@@ -962,7 +1011,6 @@ def show_chat_tab() -> None:
         retrieval_override = st.selectbox(
             "Retrieval mode",
             ["auto", "offline_only", "hybrid", "online_only", "tool_only"],
-            help="Auto lets the planner choose. Manual modes are useful for demos.",
         )
         difficulty = st.selectbox("Quiz difficulty", ["easy", "medium", "hard"], index=1)
         n_questions = st.number_input("Quiz questions", min_value=1, max_value=10, value=3)
@@ -1000,7 +1048,7 @@ def show_chat_tab() -> None:
     query = query or typed_query
 
     if not query:
-        st.info("Start with **Learn RAG** or ask: “Teach me LoRA and quiz me.”")
+        st.info('Start with **Learn RAG** or ask: "Teach me LoRA and quiz me."')
         return
 
     st.session_state.messages.append({"role": "user", "content": query})
@@ -1622,7 +1670,6 @@ def show_backend_tracking_view() -> None:
 
 
 show_hero()
-st.info("Educational boundary: this assistant helps students learn. It does not replace the instructor, leak exam answers, or fabricate citations.")
 show_mode_selector()
 
 if st.session_state.view_mode == "student":
