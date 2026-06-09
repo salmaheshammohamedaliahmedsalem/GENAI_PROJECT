@@ -1,7 +1,7 @@
 # GenAI Mentor - Current Project Status
 
 **Last updated:** June 7, 2026  
-**Status:** Working demo with completed Qwen LoRA adapter training evidence
+**Status:** Working deployed demo with completed Qwen LoRA adapter training evidence
 
 ## Executive Summary
 
@@ -13,7 +13,7 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | --- | --- |
 | Unit tests | `16 passed, 1 warning` with `python3 -m pytest tests/ -q` |
 | Syntax check | Passed for app, scripts, fine-tuning, and retrieval modules |
-| Streamlit GUI | Running at `http://localhost:8501` |
+| Streamlit GUI | Local: `http://localhost:8501`; deployed: `https://studybuddygenai.streamlit.app/` |
 | RAG index | BM25 index built from `data/chunks/lecture_chunks.jsonl` |
 | Evaluation outputs | Generated in `outputs/evaluation/` |
 | Fine-tuning splits | Generated in `data/finetune/` |
@@ -69,7 +69,11 @@ Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapt
 
 ## Final GUI
 
-Run:
+Deployed app:
+
+[StudyBuddy GenAI](https://studybuddygenai.streamlit.app/)
+
+Local run:
 
 ```bash
 streamlit run app.py

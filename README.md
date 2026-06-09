@@ -6,6 +6,12 @@ This system is designed to ingest academic lecture PDFs and synthesize them into
 
 ---
 
+## 🌐 Live Demo
+
+Open the deployed Streamlit app: [StudyBuddy GenAI](https://studybuddygenai.streamlit.app/)
+
+---
+
 ## 🎯 Fine-Tuning Philosophy
 
 Unlike naive QA generation, our dataset preparation is structured around a core project thesis:
