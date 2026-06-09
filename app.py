@@ -437,6 +437,54 @@ def show_retrieved_content_panel(result: dict | None) -> None:
                 st.write(item.get("text", ""))
 
 
+def _render_pdf_upload_panel() -> None:
+    """Render the PDF upload widget in the student sidebar rail."""
+    st.caption("Upload your study material (PDF)")
+
+    try:
+        from src.rag.pdf_ingestor import ingest_pdf, is_available
+        pdf_ingestor_ready = is_available()
+    except Exception:
+        pdf_ingestor_ready = False
+
+    if not pdf_ingestor_ready:
+        st.info(
+            "PDF upload requires extra packages. "
+            "Run: `pip install pymupdf sentence-transformers langchain-text-splitters chromadb`"
+        )
+        return
+
+    uploaded = st.file_uploader("Choose a PDF", type=["pdf"], key="pdf_upload")
+    if uploaded is not None:
+        if st.session_state.get("last_pdf_name") != uploaded.name:
+            import tempfile, os
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                tmp.write(uploaded.read())
+                tmp_path = tmp.name
+            with st.spinner(f"Indexing {uploaded.name}…"):
+                result = ingest_pdf(tmp_path, collection_name="session_pdf")
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+            if result["status"] == "ok":
+                st.session_state.last_pdf_name = uploaded.name
+                st.session_state.session_collection = "session_pdf"
+                st.success(f"Ready — {result['num_chunks']} chunks indexed")
+            else:
+                st.error(result.get("message", "Failed to index PDF."))
+
+    if st.session_state.get("session_collection"):
+        st.markdown(
+            f"<span class='success-pill'>Active: {st.session_state.get('last_pdf_name', 'Uploaded PDF')}</span>",
+            unsafe_allow_html=True,
+        )
+        if st.button("Remove PDF", key="clear_pdf", width="stretch"):
+            st.session_state.session_collection = None
+            st.session_state.last_pdf_name = None
+            st.rerun()
+
+
 def show_student_view() -> None:
     if "student_messages" not in st.session_state:
         st.session_state.student_messages = []
@@ -488,6 +536,8 @@ def show_student_view() -> None:
                 if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
                     st.session_state.pending_student_query = item["prompt"]
             st.divider()
+            _render_pdf_upload_panel()
+            st.divider()
             st.caption("Sources stay visible on the right. Backend details are separated into Backend Tracking.")
 
     with chat_col:
@@ -522,6 +572,7 @@ def show_student_view() -> None:
                                 "student_level": selected_level,
                                 "chat_model_id": selected_model_id,
                                 "n_questions": 3,
+                                "session_collection": st.session_state.get("session_collection"),
                             },
                         )
                     st.markdown(result["answer"])

@@ -3,7 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-from src.config import CHAT_MODEL, FINETUNE_BASE_MODEL, OPENAI_API_KEY, OUTPUTS_DIR, ROOT_DIR
+from src.config import CHAT_MODEL, FINETUNE_BASE_MODEL, GROQ_API_KEY, OPENAI_API_KEY, OUTPUTS_DIR, ROOT_DIR
 
 
 @dataclass(frozen=True)
@@ -83,6 +83,18 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
             )
         )
 
+    if GROQ_API_KEY:
+        options.append(
+            ChatModelOption(
+                id=f"groq::{CHAT_MODEL}",
+                label=f"Groq hosted model: {CHAT_MODEL}",
+                kind="groq",
+                available=True,
+                status="Uses GROQ_API_KEY from the environment",
+                base_model=CHAT_MODEL,
+            )
+        )
+
     if OPENAI_API_KEY:
         options.append(
             ChatModelOption(
@@ -112,6 +124,9 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
 
 def get_recommended_chat_model_id() -> str:
     available = list_chat_model_options(include_unavailable=False)
+    groq = [option for option in available if option.kind == "groq"]
+    if groq:
+        return groq[0].id
     finetuned = [option for option in available if option.is_finetuned]
     if finetuned:
         return finetuned[0].id
@@ -122,6 +137,8 @@ def get_recommended_chat_model_id() -> str:
 
 
 def runtime_default_chat_model_id() -> str:
+    if GROQ_API_KEY:
+        return f"groq::{CHAT_MODEL}"
     if OPENAI_API_KEY:
         return f"openai::{CHAT_MODEL}"
     return "local::rule_based"

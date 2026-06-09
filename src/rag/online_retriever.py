@@ -1,10 +1,24 @@
 from __future__ import annotations
 
+import re
 from urllib.parse import urlparse
 
 from src.config import APPROVED_DOMAINS, ENABLE_ONLINE_RAG, TAVILY_API_KEY
 from src.rag.reranker import rerank
 from src.schemas import DocumentChunk, RetrievedChunk
+
+# Strip document-self-reference phrases before sending a query to the web.
+# Phrases like "from this lecture" are meaningless to a search engine.
+_DOC_REF_PATTERNS = re.compile(
+    r"\b(of this document|in this document|from this document|"
+    r"based on this material|in this (lecture|material|text|slides?)|"
+    r"from this (lecture|material|text|slides?))\b",
+    re.IGNORECASE,
+)
+
+
+def _web_query(question: str) -> str:
+    return _DOC_REF_PATTERNS.sub("", question).strip()
 
 
 class OnlineRetriever:
@@ -154,10 +168,11 @@ class OnlineRetriever:
             self.last_status["message"] = "Online retrieval is disabled by ENABLE_ONLINE_RAG=false."
             return []
 
+        clean_query = _web_query(query)
         results: list[RetrievedChunk] = []
-        self._retrieve_tavily(query, results, max_results=max(top_k, 5))
+        self._retrieve_tavily(clean_query, results, max_results=max(top_k, 5))
         if len(results) < top_k:
-            self._retrieve_ddgs(query, results, max_results=max(top_k, 5))
+            self._retrieve_ddgs(clean_query, results, max_results=max(top_k, 5))
 
         if not results:
             if self.last_status["errors"]:
