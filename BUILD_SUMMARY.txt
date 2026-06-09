@@ -11,7 +11,7 @@ The project is a working educational GenAI system with:
 - LangGraph-compatible multi-agent orchestration
 - Prompt templates, safety checks, tools, evaluation outputs, and trace logging
 - Qwen/Qwen2.5-0.5B-Instruct LoRA fine-tuning artifacts
-- Runtime model selection for Qwen LoRA, base Qwen, Groq-hosted chat, OpenAI-hosted chat, and deterministic fallback
+- Runtime model selection for Salma `_salma` adapters, Fatma `_fatma` adapters, base Qwen, Groq-hosted chat, OpenAI-hosted chat, and deterministic fallback
 
 Runtime Flow
 ------------
@@ -30,7 +30,8 @@ Implemented Components
 - Prompt design: src/llm/prompts.py
 - LLM provider routing: src/llm/client.py and src/llm/model_registry.py
 - RAG: src/rag/ with BM25 offline retrieval, optional semantic retrieval, Tavily/ddgs online retrieval, and hybrid merging
-- Fine-tuning/PEFT: src/finetuning/, scripts/04_train_lora.py, notebooks/03_finetuning_complete.ipynb, outputs/finetune/qwen_0_5b_lora_adapter/
+- Fine-tuning/PEFT: src/finetuning/, scripts/04_train_lora.py, notebooks/03_finetuning_complete.ipynb, outputs/finetune/qwen_0_5b_lora_adapter_salma/
+- Imported Fatma adapters: outputs/finetune/final_model_fatma/, mistral_lora_adapter_fatma/, phi3_lora_model_fatma/, qlora_model_fatma/, qwen_lora_model_fatma/
 - Tools/function calling: src/tools/
 - Multi-agent setup: src/agents/graph.py plus specialized agents in src/agents/
 - Evaluation: src/evaluation/ and outputs/evaluation/

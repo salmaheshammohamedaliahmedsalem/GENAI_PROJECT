@@ -9,10 +9,14 @@ from src.schemas import DocumentChunk, RetrievedChunk
 
 def test_model_registry_discovers_finetuned_adapters():
     options = list_chat_model_options(include_unavailable=True)
+    adapter_ids = [option.id for option in options if option.kind == "lora_adapter"]
 
     assert any(option.is_finetuned for option in options)
     assert any(option.kind == "base_model" and not option.is_finetuned for option in options)
-    assert any("qwen_0_5b_lora_adapter" in option.id for option in options)
+    assert any("qwen_0_5b_lora_adapter_salma" in option_id for option_id in adapter_ids)
+    assert any(option_id.endswith("_fatma") for option_id in adapter_ids)
+    assert any(option_id.endswith("_salma") for option_id in adapter_ids)
+    assert not any("checkpoint" in option_id for option_id in adapter_ids)
     assert get_recommended_chat_model_id() in {option.id for option in list_chat_model_options(include_unavailable=False)}
 
 
@@ -134,7 +138,7 @@ def test_tutor_prompt_sends_retrieved_context_to_selected_llm(monkeypatch):
         retrieved,
         "offline_only",
         student_profile=StudentAdaptationAgent().run("advanced"),
-        model_selection="lora::outputs/finetune/qwen_0_5b_lora_adapter",
+        model_selection="lora::outputs/finetune/qwen_0_5b_lora_adapter_salma",
     )
 
     assert answer.startswith("grounded answer")
@@ -144,7 +148,7 @@ def test_tutor_prompt_sends_retrieved_context_to_selected_llm(monkeypatch):
     assert "Retrieved RAG context sent to the model" in prompt
     assert "RAG passes retrieved lecture evidence into the model prompt." in prompt
     assert "[Source: lecture.pdf, page 7, chunk rag-1]" in prompt
-    assert captured["model_selection"] == "lora::outputs/finetune/qwen_0_5b_lora_adapter"
+    assert captured["model_selection"] == "lora::outputs/finetune/qwen_0_5b_lora_adapter_salma"
 
 
 def test_rag_explanation_retrieval_prioritizes_architecture_context():

@@ -110,7 +110,7 @@ def generate_with_lora_messages(
     base_model_id: str = FINETUNE_BASE_MODEL,
     local_files_only: bool = True,
 ) -> str:
-    adapter_path = Path(adapter_dir) if adapter_dir else OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter"
+    adapter_path = Path(adapter_dir) if adapter_dir else OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter_salma"
     tokenizer, model, device, torch = _load_lora_components(str(adapter_path), base_model_id, local_files_only)
     return _generate_from_components(tokenizer, model, device, torch, messages, max_new_tokens)
 

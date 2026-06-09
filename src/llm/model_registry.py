@@ -60,12 +60,14 @@ def discover_finetuned_adapters() -> list[Path]:
     adapters = []
     for adapter_model in root.rglob("adapter_model.safetensors"):
         adapter_dir = adapter_model.parent
+        if any(part.endswith("checkpoints") or part == "checkpoints" for part in adapter_dir.parts):
+            continue
         if (adapter_dir / "adapter_config.json").exists():
             adapters.append(adapter_dir)
 
     def sort_key(path: Path) -> tuple[int, str]:
         name = path.name.lower()
-        priority = 0 if name == "qwen_0_5b_lora_adapter" else 1
+        priority = 0 if name == "qwen_0_5b_lora_adapter_salma" else 1
         return priority, str(path.relative_to(ROOT_DIR))
 
     return sorted(set(adapters), key=sort_key)
@@ -79,7 +81,7 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
     for adapter_dir in discover_finetuned_adapters():
         rel_path = adapter_dir.relative_to(ROOT_DIR).as_posix()
         base_model = _adapter_base_model(adapter_dir)
-        label_prefix = "Recommended fine-tuned model" if adapter_dir.name == "qwen_0_5b_lora_adapter" else "Fine-tuned LoRA adapter"
+        label_prefix = "Recommended fine-tuned model" if adapter_dir.name == "qwen_0_5b_lora_adapter_salma" else "Fine-tuned LoRA adapter"
         options.append(
             ChatModelOption(
                 id=f"lora::{rel_path}",

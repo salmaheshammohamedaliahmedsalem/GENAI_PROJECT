@@ -19,7 +19,7 @@ st.set_page_config(page_title="GenAI Mentor", layout="wide")
 
 
 FINETUNE_DIRS = [DATA_DIR / "finetune", DATA_DIR / "finetuning"]
-FINAL_ADAPTER_DIR = OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter"
+FINAL_ADAPTER_DIR = OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter_salma"
 ROOT_DIR = Path(__file__).resolve().parent
 
 EXAMPLE_PROMPTS = [
@@ -288,7 +288,7 @@ def component_status() -> list[dict]:
     return [
         {"component": "Prompt Design", "evidence": "src/llm/prompts.py", "status": "Implemented"},
         {"component": "Offline/Hybrid RAG", "evidence": "src/rag/ + data/processed/bm25_index.pkl", "status": "Implemented with BM25; semantic Chroma is optional"},
-        {"component": "Fine-tuning/PEFT", "evidence": "src/finetuning/ + outputs/finetune/qwen_0_5b_lora_adapter", "status": "Qwen LoRA adapter trained on MPS"},
+        {"component": "Fine-tuning/PEFT", "evidence": "src/finetuning/ + outputs/finetune/qwen_0_5b_lora_adapter_salma", "status": "Qwen LoRA adapter trained on MPS"},
         {"component": "Tools/Function Calling", "evidence": "src/tools/", "status": "Implemented"},
         {
             "component": "LangGraph Multi-Agent System",
@@ -1060,10 +1060,28 @@ def show_finetuning_tab() -> None:
             - **Base model:** `Qwen/Qwen2.5-0.5B-Instruct`
             - **Device:** Apple MPS
             - **Split:** 800 train / 100 validation / 100 test
-            - **Final adapter:** `outputs/finetune/qwen_0_5b_lora_adapter/`
+            - **Final adapter:** `outputs/finetune/qwen_0_5b_lora_adapter_salma/`
             - **Evaluation:** `outputs/finetune/results/evaluation_summary.json`
             """
         )
+
+    adapter_options = [option for option in list_chat_model_options(include_unavailable=True) if option.kind == "lora_adapter"]
+    if adapter_options:
+        with st.expander("Saved adapter inventory", expanded=True):
+            st.dataframe(
+                [
+                    {
+                        "Model name": option.label.split(": ", 1)[-1],
+                        "Owner suffix": "Fatma" if option.label.endswith("_fatma") else "Salma" if option.label.endswith("_salma") else "Other",
+                        "Base model": option.base_model,
+                        "Path": option.path,
+                        "Load status": option.status,
+                    }
+                    for option in adapter_options
+                ],
+                width="stretch",
+                hide_index=True,
+            )
 
     with st.expander("Implementation files"):
         st.code(

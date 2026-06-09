@@ -18,6 +18,7 @@ The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning da
 | Evaluation outputs | Generated in `outputs/evaluation/` |
 | Fine-tuning splits | Generated in `data/finetune/` |
 | LoRA adapter | Completed on Apple MPS |
+| Saved model adapters | Salma adapters use `_salma`; imported Fatma adapters use `_fatma` |
 | Hosted LLM routing | Groq and OpenAI supported through the app model selector when API keys are configured |
 
 ## Required Components
@@ -27,7 +28,7 @@ The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning da
 | Prompt Design | `src/llm/prompts.py` | Implemented |
 | LLM Provider Routing | `src/llm/client.py`, `src/llm/model_registry.py`, `.env.example` | Implemented for Qwen LoRA, base Qwen, Groq, OpenAI, and deterministic fallback |
 | RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback; Chroma semantic retrieval is optional via `requirements_semantic.txt` |
-| Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
+| Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter_salma/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
 | Multi-Agent Setup | `src/agents/graph.py`, `src/agents/adaptation_agent.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` with safety, planner, student adaptation, retrieval, response, checker, and trace nodes |
 | Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
@@ -67,7 +68,7 @@ Current local result:
 }
 ```
 
-Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter/`. The smaller `outputs/finetune/lora_adapter/` artifact is retained only as a script-level TinyLlama smoke-test.
+Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter_salma/`. The smaller `outputs/finetune/lora_adapter_salma/` artifact is retained only as a script-level TinyLlama smoke-test. Imported Fatma adapters are saved as `final_model_fatma/`, `mistral_lora_adapter_fatma/`, `phi3_lora_model_fatma/`, `qlora_model_fatma/`, and `qwen_lora_model_fatma/`.
 
 ## Final GUI
 
