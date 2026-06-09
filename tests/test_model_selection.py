@@ -79,6 +79,20 @@ def test_lora_adapter_is_unavailable_when_base_model_cache_is_missing(monkeypatc
     assert "not cached locally" in khadija.status
 
 
+def test_base_model_downloads_are_limited_to_allowlist(monkeypatch):
+    monkeypatch.setattr(model_registry, "LOCAL_MODEL_ALLOW_DOWNLOADS", True)
+    monkeypatch.setattr(model_registry, "LOCAL_MODEL_DOWNLOAD_ALLOWLIST", {"Qwen/Qwen2.5-0.5B-Instruct"})
+    monkeypatch.setattr(model_registry, "_cached_model_file_status", lambda model_id, filenames: (False, "missing"))
+
+    qwen_ok, qwen_status = model_registry._base_model_cache_status("Qwen/Qwen2.5-0.5B-Instruct")
+    mistral_ok, mistral_status = model_registry._base_model_cache_status("mistralai/Mistral-7B-Instruct-v0.3")
+
+    assert qwen_ok is True
+    assert "downloaded on first use" in qwen_status
+    assert mistral_ok is False
+    assert "not in LOCAL_MODEL_DOWNLOAD_ALLOWLIST" in mistral_status
+
+
 def test_chat_client_routes_to_groq_model(monkeypatch):
     captured = {}
 

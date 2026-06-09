@@ -73,7 +73,7 @@ The app uses Streamlit, LangGraph, BM25 retrieval, optional hosted LLM APIs, and
 pip install -r requirements.txt
 ```
 
-For Streamlit Community Cloud, use the default `requirements.txt`. It intentionally excludes ChromaDB and fine-tuning libraries so the deployed app can start reliably with BM25 retrieval, online retrieval, tools, agents, evaluation displays, and fine-tuning artifacts. For local semantic retrieval, install `requirements_semantic.txt`. For local LoRA training/inference, install `requirements_finetune.txt`. A LoRA adapter is not a standalone model: it also needs its base model weights, such as `Qwen/Qwen2.5-0.5B-Instruct`, cached locally or allowed to download with `LOCAL_MODEL_ALLOW_DOWNLOADS=true`.
+For Streamlit Community Cloud, use the default `requirements.txt`. It includes the lightweight LoRA inference stack so the deployed app can run the small Qwen fine-tuned adapters. It still excludes ChromaDB so the deployed app starts reliably with BM25 retrieval, online retrieval, tools, agents, evaluation displays, and fine-tuning artifacts. For local semantic retrieval, install `requirements_semantic.txt`. For local training, install `requirements_finetune.txt`. A LoRA adapter is not a standalone model: it also needs its base model weights, such as `Qwen/Qwen2.5-0.5B-Instruct`, cached locally or allowed to download with `LOCAL_MODEL_ALLOW_DOWNLOADS=true`.
 
 ---
 
@@ -89,7 +89,8 @@ GROQ_MODEL=llama-3.1-8b-instant
 GROQ_BASE_URL=https://api.groq.com/openai/v1
 
 # Local fine-tuned model inference
-LOCAL_MODEL_ALLOW_DOWNLOADS=false
+LOCAL_MODEL_ALLOW_DOWNLOADS=true
+LOCAL_MODEL_DOWNLOAD_ALLOWLIST=Qwen/Qwen2.5-0.5B-Instruct
 
 # Online retrieval
 TAVILY_API_KEY=your_tavily_api_key_here

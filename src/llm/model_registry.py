@@ -9,6 +9,7 @@ from src.config import (
     GROQ_API_KEY,
     GROQ_MODEL,
     LOCAL_MODEL_ALLOW_DOWNLOADS,
+    LOCAL_MODEL_DOWNLOAD_ALLOWLIST,
     OPENAI_API_KEY,
     OUTPUTS_DIR,
     ROOT_DIR,
@@ -67,9 +68,6 @@ def _cached_model_file_status(model_id: str, filenames: tuple[str, ...]) -> tupl
 
 
 def _base_model_cache_status(base_model_id: str, require_tokenizer: bool = True) -> tuple[bool, str]:
-    if LOCAL_MODEL_ALLOW_DOWNLOADS:
-        return True, f"Base model {base_model_id} can be downloaded on first use"
-
     required_groups = [
         ("config", ("config.json",)),
         (
@@ -92,6 +90,13 @@ def _base_model_cache_status(base_model_id: str, require_tokenizer: bool = True)
             missing.append(f"{label} ({status})")
 
     if missing:
+        if LOCAL_MODEL_ALLOW_DOWNLOADS and base_model_id in LOCAL_MODEL_DOWNLOAD_ALLOWLIST:
+            return True, f"Base model {base_model_id} can be downloaded on first use"
+        if LOCAL_MODEL_ALLOW_DOWNLOADS:
+            return (
+                False,
+                f"Base model {base_model_id} is not cached locally and is not in LOCAL_MODEL_DOWNLOAD_ALLOWLIST",
+            )
         return (
             False,
             f"Base model {base_model_id} is not fully cached locally: " + "; ".join(missing),

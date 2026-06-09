@@ -39,7 +39,7 @@ def _load_base_model(AutoModelForCausalLM, base_model_id: str, dtype, local_file
         return AutoModelForCausalLM.from_pretrained(base_model_id, torch_dtype=dtype, local_files_only=local_files_only)
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=1)
 def _load_base_components(base_model_id: str, local_files_only: bool):
     torch, AutoModelForCausalLM, AutoTokenizer = _load_base_dependencies()
     device = _device(torch)
@@ -54,7 +54,7 @@ def _load_base_components(base_model_id: str, local_files_only: bool):
     return tokenizer, model, device, torch
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=1)
 def _load_lora_components(adapter_dir: str, base_model_id: str, local_files_only: bool):
     torch, PeftModel, AutoModelForCausalLM, AutoTokenizer = _load_lora_dependencies()
     adapter_path = Path(adapter_dir)

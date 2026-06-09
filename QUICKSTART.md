@@ -224,7 +224,7 @@ pip install -r requirements.txt
 Use `USE_LOCAL_LLM=true` in `.env` to force deterministic local fallback, or configure `GROQ_API_KEY` for fast hosted chat.
 
 ### "Selected fine-tuned model could not be loaded"
-Fine-tuned entries are LoRA adapters, not full standalone models. Install local fine-tuning dependencies and ensure the adapter's base model is cached, or set `LOCAL_MODEL_ALLOW_DOWNLOADS=true` to let Transformers download the base model on first use. For deployed demos, Groq is the safest hosted base-chat option because Streamlit Community Cloud does not persist a Hugging Face model cache by default.
+Fine-tuned entries are LoRA adapters, not full standalone models. The deployed app installs the LoRA inference dependencies and allows first-use download of the small Qwen base model by default. If a model is still unavailable, check that `LOCAL_MODEL_ALLOW_DOWNLOADS=true` and `LOCAL_MODEL_DOWNLOAD_ALLOWLIST` includes the adapter's base model. Large adapters such as Mistral 7B are intentionally not downloaded by default because they are not practical for Streamlit Community Cloud CPU/RAM limits.
 
 ### "ChromaDB/protobuf error on Streamlit Cloud"
 Default deployment does not require ChromaDB. Leave `ENABLE_SEMANTIC_RAG=false` on Streamlit Cloud and use the BM25 retriever. For local semantic retrieval, install optional dependencies with:
