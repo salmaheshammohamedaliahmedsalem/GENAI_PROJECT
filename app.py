@@ -70,6 +70,28 @@ STUDENT_LEVELS = {
     "advanced": "Advanced",
 }
 
+CANONICAL_STUDENT_MODEL_LABELS = {
+    "lora::outputs/finetune/qwen_0_5b_lora_adapter_salma": "Salma fine-tuned model (Qwen 0.5B LoRA)",
+    "lora::outputs/finetune/final_model_fatma": "Fatma fine-tuned model (Mistral 7B LoRA)",
+}
+
+
+def student_chat_model_options():
+    options = list_chat_model_options(include_unavailable=True)
+    canonical_lora = [
+        option
+        for option in options
+        if option.id in CANONICAL_STUDENT_MODEL_LABELS
+    ]
+    non_lora = [option for option in options if option.kind != "lora_adapter"]
+    return canonical_lora + non_lora
+
+
+def student_chat_model_label(model_id: str) -> str:
+    if model_id in CANONICAL_STUDENT_MODEL_LABELS:
+        return CANONICAL_STUDENT_MODEL_LABELS[model_id]
+    return resolve_chat_model_option(model_id).label
+
 
 st.markdown(
     """
@@ -687,7 +709,7 @@ def show_student_view() -> None:
                 format_func=lambda value: STUDENT_LEVELS[value],
                 help="The adaptation agent changes explanation depth, examples, and quiz difficulty based on this.",
             )
-            model_options = list_chat_model_options(include_unavailable=True)
+            model_options = student_chat_model_options()
             model_ids = [option.id for option in model_options]
             recommended_model_id = get_recommended_chat_model_id()
             model_index = model_ids.index(recommended_model_id) if recommended_model_id in model_ids else 0
@@ -695,8 +717,8 @@ def show_student_view() -> None:
                 "Response model",
                 options=model_ids,
                 index=model_index,
-                format_func=lambda value: resolve_chat_model_option(value).label,
-                help="Fine-tuned adapters are discovered from outputs/finetune/**/adapter_model.safetensors.",
+                format_func=student_chat_model_label,
+                help="Student chat shows one canonical Salma model and one canonical Fatma model. Backend Tracking shows every saved adapter/experiment.",
             )
             selected_model = resolve_chat_model_option(selected_model_id)
             st.caption(selected_model.status)

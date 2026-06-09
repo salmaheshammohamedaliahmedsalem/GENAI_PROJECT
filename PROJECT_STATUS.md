@@ -18,7 +18,7 @@ The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning da
 | Evaluation outputs | Generated in `outputs/evaluation/` |
 | Fine-tuning splits | Generated in `data/finetune/` |
 | LoRA adapter | Completed on Apple MPS |
-| Saved model adapters | Salma adapters use `_salma`; imported Fatma adapters use `_fatma` |
+| Saved model adapters | Student mode shows one canonical Salma model and one canonical Fatma model; Backend Tracking lists all `_salma` and `_fatma` adapters |
 | Hosted LLM routing | Groq and OpenAI supported through the app model selector when API keys are configured |
 
 ## Required Components
@@ -86,7 +86,7 @@ The GUI now has two top-level modes:
 
 - **Student:** chat interface with a student-level selector plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
 - **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
-- **Response model menu:** selects the trained Qwen LoRA adapter when locally available, otherwise can use Groq/OpenAI hosted models when keys are configured, or the deterministic fallback.
+- **Response model menu:** shows one canonical Salma model, one canonical Fatma model, hosted Groq/OpenAI options when configured, base Qwen, and deterministic fallback. Full adapter inventory remains visible in Backend Tracking.
 
 ## Recommended Submission Order
 
