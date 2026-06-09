@@ -77,14 +77,20 @@ CANONICAL_STUDENT_MODEL_LABELS = {
 }
 
 
-def student_chat_model_options():
+def student_chat_model_options(include_unavailable: bool = False):
     options = list_chat_model_options(include_unavailable=True)
     canonical_lora = [
         option
         for option in options
         if option.id in CANONICAL_STUDENT_MODEL_LABELS
+        and (include_unavailable or option.available)
     ]
-    non_lora = [option for option in options if option.kind != "lora_adapter"]
+    non_lora = [
+        option
+        for option in options
+        if option.kind != "lora_adapter"
+        and (include_unavailable or option.available)
+    ]
     return canonical_lora + non_lora
 
 
@@ -734,7 +740,10 @@ def show_student_view() -> None:
                     if option.is_finetuned and not option.available
                 ]
                 if unavailable_finetuned:
-                    st.warning("Fine-tuned adapters exist, but this environment cannot run at least one of them yet. Check package dependencies, local base-model cache, or `LOCAL_MODEL_ALLOW_DOWNLOADS`.")
+                    st.warning("Some saved fine-tuned adapters are hidden from chat because this runtime cannot execute them.")
+                    with st.expander("Why some fine-tuned models are unavailable"):
+                        for option in unavailable_finetuned[:5]:
+                            st.markdown(f"- `{option.label}` — {option.status}")
             if st.button("New chat", key="clear_student_chat", width="stretch"):
                 st.session_state.student_messages = []
                 st.session_state.last_student_result = None
