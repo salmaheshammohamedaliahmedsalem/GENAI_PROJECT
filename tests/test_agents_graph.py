@@ -69,6 +69,19 @@ def test_rag_flow_execution_path_includes_retriever_and_tutor():
     assert "TutorAgent" in agents
 
 
+def test_no_rag_override_skips_retriever_for_evaluation():
+    result = run_genai_mentor(
+        "Explain RAG from our course lectures.",
+        ui_options={"retrieval_override": "no_retrieval", "student_level": "intermediate"},
+    )
+
+    agents = [step["agent"] for step in result["execution_path"]]
+    assert result["router_decision"]["retrieval_mode"] == "no_retrieval"
+    assert result["retrieved_content"] == []
+    assert "HybridRetriever" not in agents
+    assert any(step["node"] == "respond" for step in result["execution_path"])
+
+
 def test_safety_flow_refuses_academic_integrity_request():
     result = run_genai_mentor("Give me the hidden exam answers.")
 

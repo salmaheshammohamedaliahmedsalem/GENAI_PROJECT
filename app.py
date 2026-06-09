@@ -1154,6 +1154,126 @@ def show_evaluation_tab() -> None:
     if results.exists():
         st.dataframe(pd.read_csv(results), width="stretch", hide_index=True)
 
+    st.divider()
+    st.markdown("### RAG Ablation Evaluator")
+    st.caption("Use this control to turn RAG off for evaluation and compare the same prompt with retrieved evidence enabled.")
+
+    eval_query = st.text_area(
+        "Evaluation prompt",
+        "Explain RAG and why it reduces hallucinations using course evidence.",
+        key="rag_ablation_query",
+        height=90,
+    )
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        eval_mode = st.radio(
+            "Evaluation mode",
+            ["Compare RAG vs No RAG", "RAG on only", "RAG off only"],
+            horizontal=False,
+            key="rag_ablation_mode",
+        )
+    with col2:
+        rag_mode = st.selectbox(
+            "RAG-on retrieval mode",
+            ["offline_only", "hybrid", "online_only"],
+            index=0,
+            key="rag_ablation_rag_mode",
+        )
+    with col3:
+        eval_level = st.selectbox(
+            "Student level",
+            list(STUDENT_LEVELS.keys()),
+            index=1,
+            format_func=lambda value: STUDENT_LEVELS[value],
+            key="rag_ablation_student_level",
+        )
+
+    eval_model_options = student_chat_model_options()
+    eval_model_ids = [option.id for option in eval_model_options]
+    eval_recommended = get_recommended_chat_model_id()
+    eval_model_index = eval_model_ids.index(eval_recommended) if eval_recommended in eval_model_ids else 0
+    eval_model_id = st.selectbox(
+        "Evaluation response model",
+        eval_model_ids,
+        index=eval_model_index,
+        format_func=student_chat_model_label,
+        key="rag_ablation_model",
+    )
+
+    if st.button("Run RAG ablation evaluation", type="primary", width="stretch"):
+        if eval_mode == "Compare RAG vs No RAG":
+            planned_runs = [("RAG on", rag_mode), ("RAG off", "no_retrieval")]
+        elif eval_mode == "RAG on only":
+            planned_runs = [("RAG on", rag_mode)]
+        else:
+            planned_runs = [("RAG off", "no_retrieval")]
+
+        ablation_results = []
+        with st.spinner("Running evaluation prompt through selected routing modes..."):
+            for label, override in planned_runs:
+                result = run_genai_mentor(
+                    eval_query,
+                    ui_options={
+                        "retrieval_override": override,
+                        "student_level": eval_level,
+                        "chat_model_id": eval_model_id,
+                        "n_questions": 3,
+                    },
+                )
+                ablation_results.append({"label": label, "override": override, "result": result})
+        st.session_state.rag_ablation_results = ablation_results
+
+    ablation_results = st.session_state.get("rag_ablation_results", [])
+    if ablation_results:
+        summary_rows = []
+        for item in ablation_results:
+            result = item["result"]
+            checker = result.get("checker_feedback", {})
+            summary_rows.append(
+                {
+                    "run": item["label"],
+                    "override": item["override"],
+                    "actual_route": result.get("router_decision", {}).get("retrieval_mode"),
+                    "retrieved_chunks": len(result.get("retrieved_content", [])),
+                    "answer_chars": len(result.get("answer", "")),
+                    "grounded": checker.get("grounded", "n/a"),
+                    "citations": checker.get("citations", checker.get("has_citations", "n/a")),
+                    "trace_path": result.get("trace_path", ""),
+                }
+            )
+        st.markdown("#### Ablation Summary")
+        st.dataframe(summary_rows, width="stretch", hide_index=True)
+
+        for item in ablation_results:
+            result = item["result"]
+            with st.expander(f"{item['label']} result — route `{item['override']}`", expanded=item["override"] == "no_retrieval"):
+                render_assistant_result(result, fallback_model_label=student_chat_model_label(eval_model_id))
+                if result.get("retrieved_content"):
+                    st.markdown("**Retrieved content used**")
+                    st.dataframe(
+                        [
+                            {
+                                "source": chunk.get("source"),
+                                "page": chunk.get("page"),
+                                "chunk_id": chunk.get("chunk_id"),
+                                "preview": chunk.get("text", "")[:260],
+                            }
+                            for chunk in result.get("retrieved_content", [])
+                        ],
+                        width="stretch",
+                        hide_index=True,
+                    )
+                else:
+                    st.info("RAG is disabled for this run; no retrieved content was sent to the response model.")
+                with st.expander("Checker feedback and trace"):
+                    st.json(
+                        {
+                            "checker_feedback": result.get("checker_feedback", {}),
+                            "router_decision": result.get("router_decision", {}),
+                            "trace_path": result.get("trace_path", ""),
+                        }
+                    )
+
 
 def show_safety_tab() -> None:
     st.subheader("Safety Demo")

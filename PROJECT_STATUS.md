@@ -31,7 +31,7 @@ The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning da
 | Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter_salma/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
 | Multi-Agent Setup | `src/agents/graph.py`, `src/agents/adaptation_agent.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` with safety, planner, student adaptation, retrieval, response, checker, and trace nodes |
-| Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
+| Evaluation | `src/evaluation/`, `outputs/evaluation/`, Backend Tracking Evaluation tab | Implemented and generated; includes RAG ablation control for comparing RAG-on vs RAG-off responses |
 | Ethics / Safety | `src/agents/safety_agent.py`, `docs/ethics_safety.md` | Implemented |
 | GUI | `app.py` | Implemented with Student mode and Backend Tracking mode |
 
@@ -85,7 +85,7 @@ streamlit run app.py
 The GUI now has two top-level modes:
 
 - **Student:** chat interface with a student-level selector plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
-- **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
+- **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs. The Evaluation tab includes a RAG ablation evaluator that can force `no_retrieval`.
 - **Response model menu:** shows one canonical Salma model, one canonical Fatma model, hosted Groq/OpenAI options when configured, base Qwen, and deterministic fallback. Full adapter inventory remains visible in Backend Tracking.
 
 ## Recommended Submission Order
