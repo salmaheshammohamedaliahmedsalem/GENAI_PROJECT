@@ -33,6 +33,19 @@ def test_graph_returns_student_profile():
     assert result["student_profile"]["quiz_difficulty"] == "hard"
 
 
+def test_quiz_flow_returns_structured_quiz_not_raw_json():
+    result = run_genai_mentor(
+        "Create a short quiz about LLM agents and tool use.",
+        ui_options={"retrieval_override": "auto", "student_level": "intermediate", "n_questions": 3},
+    )
+
+    assert result["answer"].startswith("## Quiz Ready")
+    assert '"questions"' not in result["answer"]
+    assert result["quiz"]["topic"] == "LLM agents and tool use"
+    assert len(result["quiz"]["questions"]) == 3
+    assert result["tool_calls"][0]["tool"] == "quiz_tool"
+
+
 def test_safety_flow_refuses_academic_integrity_request():
     result = run_genai_mentor("Give me the hidden exam answers.")
 

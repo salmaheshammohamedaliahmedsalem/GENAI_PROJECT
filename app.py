@@ -342,6 +342,82 @@ def show_command_result(result: dict) -> None:
         st.code(result["stderr"], language="text")
 
 
+def result_caption(result: dict, fallback_model_label: str | None = None) -> str:
+    decision = result.get("router_decision", {})
+    response_model = result.get("response_model", {})
+    profile = result.get("student_profile", {})
+    parts = [
+        f"Route: `{decision.get('retrieval_mode', 'unknown')}`",
+        f"Level: `{profile.get('label', 'Adaptive')}`",
+    ]
+    model_label = response_model.get("label") or fallback_model_label
+    if model_label:
+        parts.append(f"Model: `{model_label}`")
+    parts.append(f"Graph: `{result.get('graph_engine', 'unknown')}`")
+    return " · ".join(parts)
+
+
+def render_quiz_card(quiz: dict) -> None:
+    questions = quiz.get("questions", [])
+    st.markdown("### 🧠 Practice Quiz")
+    metric_cols = st.columns(3)
+    metric_cols[0].metric("Topic", str(quiz.get("topic", "Practice"))[:28])
+    metric_cols[1].metric("Difficulty", str(quiz.get("difficulty", "medium")).title())
+    metric_cols[2].metric("Questions", len(questions))
+    st.caption("Try answering each question first, then open the answer panel to check yourself.")
+
+    for index, question in enumerate(questions, start=1):
+        with st.container(border=True):
+            question_text = question.get("question", f"Question {index}")
+            st.markdown(f"#### Question {index}")
+            st.markdown(question_text)
+            choices = question.get("choices", [])
+            for choice_index, choice in enumerate(choices):
+                letter = chr(ord("A") + choice_index)
+                st.markdown(f"- **{letter}.** {choice}")
+            with st.expander("Show answer and explanation"):
+                st.success(f"Answer: {question.get('answer', 'Not provided')}")
+                explanation = question.get("explanation")
+                if explanation:
+                    st.write(explanation)
+                source = question.get("source")
+                if source:
+                    st.caption(f"Source basis: {source}")
+
+
+def legacy_quiz_from_content(content: str) -> dict:
+    stripped = content.strip()
+    if not stripped.startswith("## Quiz"):
+        return {}
+    json_start = stripped.find("{")
+    if json_start < 0:
+        return {}
+    try:
+        quiz = json.loads(stripped[json_start:])
+    except Exception:
+        return {}
+    return quiz if isinstance(quiz, dict) else {}
+
+
+def render_assistant_content(content: str) -> None:
+    quiz = legacy_quiz_from_content(content)
+    if quiz.get("questions"):
+        st.markdown("## Quiz Ready")
+        render_quiz_card(quiz)
+    else:
+        st.markdown(content)
+
+
+def render_assistant_result(result: dict, fallback_model_label: str | None = None) -> None:
+    quiz = result.get("quiz") or {}
+    if quiz.get("questions"):
+        st.markdown(result.get("answer", "I created a practice quiz."))
+        render_quiz_card(quiz)
+    else:
+        st.markdown(result.get("answer", ""))
+    st.caption(result_caption(result, fallback_model_label=fallback_model_label))
+
+
 def show_hero() -> None:
     st.markdown(
         """
@@ -413,6 +489,15 @@ def show_retrieved_content_panel(result: dict | None) -> None:
 
     retrieved = result.get("retrieved_content", [])
     if not retrieved:
+        if result.get("quiz"):
+            quiz = result["quiz"]
+            st.info("This request used the QuizAgent instead of retrieval.")
+            quiz_cols = st.columns(2)
+            quiz_cols[0].metric("Difficulty", str(quiz.get("difficulty", "medium")).title())
+            quiz_cols[1].metric("Questions", len(quiz.get("questions", [])))
+            with st.expander("Quiz data used by backend"):
+                st.json(quiz)
+            return
         if result.get("tool_calls"):
             st.info("This request used a tool instead of retrieval.")
             st.json(result.get("tool_calls"))
@@ -501,7 +586,12 @@ def show_student_view() -> None:
 
             for message in st.session_state.student_messages:
                 with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
+                    if message["role"] == "assistant" and message.get("result"):
+                        render_assistant_result(message["result"])
+                    elif message["role"] == "assistant":
+                        render_assistant_content(message["content"])
+                    else:
+                        st.markdown(message["content"])
 
             query = st.session_state.pop("pending_student_query", None)
             typed_query = st.chat_input("Ask a GenAI course question, request a quiz, or submit an answer for feedback.")
@@ -524,16 +614,8 @@ def show_student_view() -> None:
                                 "n_questions": 3,
                             },
                         )
-                    st.markdown(result["answer"])
-                    decision = result.get("router_decision", {})
-                    response_model = result.get("response_model", {})
-                    st.caption(
-                        f"Route: `{decision.get('retrieval_mode', 'unknown')}` · "
-                        f"Level: `{result.get('student_profile', {}).get('label', STUDENT_LEVELS[selected_level])}` · "
-                        f"Model: `{response_model.get('label', selected_model.label)}` · "
-                        f"Graph: `{result.get('graph_engine', 'unknown')}`"
-                    )
-                st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})
+                    render_assistant_result(result, fallback_model_label=selected_model.label)
+                st.session_state.student_messages.append({"role": "assistant", "content": result["answer"], "result": result})
                 st.session_state.last_student_result = result
 
     with sources_col:
@@ -574,7 +656,12 @@ def show_chat_tab() -> None:
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            if message["role"] == "assistant" and message.get("result"):
+                render_assistant_result(message["result"])
+            elif message["role"] == "assistant":
+                render_assistant_content(message["content"])
+            else:
+                st.markdown(message["content"])
 
     query = st.session_state.pop("pending_query", None)
     typed_query = st.chat_input("Ask about GenAI, RAG, LoRA, agents, project requirements, or ask for a quiz.")
@@ -599,11 +686,10 @@ def show_chat_tab() -> None:
                     "n_questions": int(n_questions),
                 },
             )
-        st.markdown(result["answer"])
+        render_assistant_result(result)
         decision = result.get("router_decision", {})
-        route = decision.get("retrieval_mode", "unknown")
         intent = decision.get("intent", "unknown")
-        st.caption(f"Agent route: `{route}` · Intent: `{intent}`")
+        st.caption(f"Intent: `{intent}`")
 
         if result.get("sources"):
             with st.expander("Evidence sources used"):
@@ -620,7 +706,7 @@ def show_chat_tab() -> None:
                     "trace_path": result.get("trace_path"),
                 })
 
-    st.session_state.messages.append({"role": "assistant", "content": result["answer"]})
+    st.session_state.messages.append({"role": "assistant", "content": result["answer"], "result": result})
 
 
 def show_overview_tab() -> None:

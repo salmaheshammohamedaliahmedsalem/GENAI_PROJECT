@@ -39,6 +39,7 @@ class MentorGraphState(TypedDict, total=False):
     retrieved_chunks: list[RetrievedChunk]
     tool_calls: list[dict[str, Any]]
     answer: str
+    quiz: dict[str, Any]
     response_model: dict[str, Any]
     checker_feedback: dict[str, Any]
     trace_path: str
@@ -186,7 +187,13 @@ def _response_node(state: MentorGraphState) -> dict[str, Any]:
             context,
         )
         tool_calls.append({"tool": "quiz_tool", "args": {"topic": user_query, "student_profile": student_profile}, "result": quiz})
-        return {"answer": "## Quiz\n\n" + json.dumps(quiz, indent=2, ensure_ascii=False), "tool_calls": tool_calls}
+        question_count = len(quiz.get("questions", []))
+        answer = (
+            f"## Quiz Ready\n\n"
+            f"I created a **{quiz.get('difficulty', 'medium')}** quiz on **{quiz.get('topic', user_query)}** "
+            f"with **{question_count}** question{'s' if question_count != 1 else ''}."
+        )
+        return {"answer": answer, "quiz": quiz, "tool_calls": tool_calls}
 
     if decision.needs_grading or "grade" in user_query.lower():
         result = GraderAgent().run("User-provided question", user_query)
@@ -313,6 +320,7 @@ def _format_response(state: MentorGraphState, graph_engine: str) -> dict[str, An
             for item in retrieved_chunks
         ],
         "tool_calls": state.get("tool_calls", []),
+        "quiz": state.get("quiz", {}),
         "checker_feedback": state.get("checker_feedback", {}),
         "response_model": state.get("response_model", {}),
         "trace_path": state.get("trace_path", ""),
