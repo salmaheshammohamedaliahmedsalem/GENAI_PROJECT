@@ -19,7 +19,7 @@ st.set_page_config(page_title="GenAI Mentor", layout="wide")
 
 
 FINETUNE_DIRS = [DATA_DIR / "finetune", DATA_DIR / "finetuning"]
-FINAL_ADAPTER_DIR = OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter"
+FINAL_ADAPTER_DIR = OUTPUTS_DIR / "finetune" / "qwen_0_5b_lora_adapter_salma"
 ROOT_DIR = Path(__file__).resolve().parent
 
 EXAMPLE_PROMPTS = [
@@ -288,7 +288,7 @@ def component_status() -> list[dict]:
     return [
         {"component": "Prompt Design", "evidence": "src/llm/prompts.py", "status": "Implemented"},
         {"component": "Offline/Hybrid RAG", "evidence": "src/rag/ + data/processed/bm25_index.pkl", "status": "Implemented with BM25; semantic Chroma is optional"},
-        {"component": "Fine-tuning/PEFT", "evidence": "src/finetuning/ + outputs/finetune/qwen_0_5b_lora_adapter", "status": "Qwen LoRA adapter trained on MPS"},
+        {"component": "Fine-tuning/PEFT", "evidence": "src/finetuning/ + outputs/finetune/qwen_0_5b_lora_adapter_salma", "status": "Qwen LoRA adapter trained on MPS"},
         {"component": "Tools/Function Calling", "evidence": "src/tools/", "status": "Implemented"},
         {
             "component": "LangGraph Multi-Agent System",
@@ -340,6 +340,227 @@ def show_command_result(result: dict) -> None:
         st.code(result["stdout"], language="text")
     if result["stderr"]:
         st.code(result["stderr"], language="text")
+
+
+def dot_escape(value: object) -> str:
+    return str(value).replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
+
+
+def fallback_execution_path_from_trace(trace: dict) -> list[dict]:
+    if trace.get("execution_path"):
+        return trace["execution_path"]
+    decision = trace.get("router_decision", {})
+    tool_calls = trace.get("tool_calls", [])
+    retrieved = trace.get("retrieved_chunks", [])
+    response_agent = "TutorAgent"
+    tool_names = [call.get("tool", "") for call in tool_calls]
+    if any(name == "quiz_tool" for name in tool_names):
+        response_agent = "QuizAgent"
+    elif any(name == "grading_tool" for name in tool_names):
+        response_agent = "GraderAgent"
+    elif any(name == "calculator_tool" for name in tool_names):
+        response_agent = "CalculatorTool"
+    elif decision.get("retrieval_mode") == "no_retrieval":
+        response_agent = "SafetyAgent"
+
+    steps = [
+        {"order": 1, "node": "safety", "agent": "SafetyAgent", "status": "completed", "detail": "request checked"},
+        {
+            "order": 2,
+            "node": "planner",
+            "agent": "PlannerAgent",
+            "status": decision.get("retrieval_mode", "unknown"),
+            "detail": f"intent={decision.get('intent', 'unknown')}",
+        },
+        {"order": 3, "node": "adapt", "agent": "StudentAdaptationAgent", "status": "completed", "detail": "student profile selected"},
+    ]
+    if retrieved and decision.get("retrieval_mode") not in {"tool_only", "no_retrieval"}:
+        steps.append(
+            {
+                "order": len(steps) + 1,
+                "node": "retrieve",
+                "agent": "HybridRetriever",
+                "status": f"{len(retrieved)} chunks",
+                "detail": "retrieved evidence before response",
+            }
+        )
+    for node, agent, status, detail in [
+        ("respond", response_agent, "generated", "response produced"),
+        ("check", "CheckerAgent", "completed", "final answer checked"),
+        ("finalize", "TraceWriter", "saved", "trace saved"),
+    ]:
+        steps.append({"order": len(steps) + 1, "node": node, "agent": agent, "status": status, "detail": detail})
+    return steps
+
+
+def latest_trace_payload() -> tuple[Path | None, dict]:
+    latest = latest_file(TRACE_DIR, "trace_*.json")
+    if latest is None:
+        return None, {}
+    try:
+        return latest, json.loads(latest.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return latest, {}
+
+
+def latest_execution_payload() -> tuple[str, dict]:
+    live_result = st.session_state.get("last_agent_result")
+    if live_result:
+        return "Latest live app response", live_result
+    latest, trace = latest_trace_payload()
+    if trace:
+        return str(latest), trace
+    return "", {}
+
+
+def agent_graph_dot(execution_path: list[dict] | None = None) -> str:
+    blueprint = get_graph_blueprint()
+    active_nodes = {step.get("node") for step in execution_path or []}
+    active_agents = {step.get("node"): step.get("agent") for step in execution_path or []}
+    path_nodes = [step.get("node") for step in (execution_path or []) if step.get("node")]
+    active_edges = set(zip(path_nodes, path_nodes[1:]))
+    lines = [
+        "digraph GenAIMentor {",
+        "  rankdir=LR;",
+        '  graph [bgcolor="transparent", pad="0.2", nodesep="0.45", ranksep="0.65"];',
+        '  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, margin="0.12,0.08"];',
+        '  edge [fontname="Helvetica", fontsize=9, color="#94a3b8", arrowsize=0.8];',
+    ]
+    for node in blueprint["nodes"]:
+        node_id = node["node"]
+        active = node_id in active_nodes
+        agent = active_agents.get(node_id) or node["agent"]
+        label = f"{node_id}\\n{agent}"
+        fill = "#fff7ed" if active else "#f8fafc"
+        color = "#f97316" if active else "#cbd5e1"
+        penwidth = "2.6" if active else "1.2"
+        lines.append(
+            f'  "{dot_escape(node_id)}" [label="{dot_escape(label)}", fillcolor="{fill}", color="{color}", penwidth={penwidth}];'
+        )
+    for edge in blueprint["edges"]:
+        source, target = edge[0], edge[1]
+        condition = edge[2] if len(edge) > 2 else ""
+        active = (source, target) in active_edges
+        color = "#f97316" if active else "#94a3b8"
+        penwidth = "2.8" if active else "1.2"
+        label = f' [label="{dot_escape(condition)}", color="{color}", fontcolor="{color}", penwidth={penwidth}]' if condition else f' [color="{color}", penwidth={penwidth}]'
+        lines.append(f'  "{dot_escape(source)}" -> "{dot_escape(target)}"{label};')
+    lines.append("}")
+    return "\n".join(lines)
+
+
+def render_agent_graph(execution_path: list[dict] | None = None) -> None:
+    dot = agent_graph_dot(execution_path)
+    try:
+        st.graphviz_chart(dot)
+    except Exception:
+        st.code(dot, language="dot")
+
+
+def render_execution_path(execution_path: list[dict]) -> None:
+    if not execution_path:
+        st.info("No execution path is available yet. Run a student chat or backend demo request first.")
+        return
+    st.markdown(
+        " → ".join(
+            f"<span class='agent-chip'>{step.get('order', index)}. {step.get('agent', step.get('node', 'agent'))}</span>"
+            for index, step in enumerate(execution_path, start=1)
+        ),
+        unsafe_allow_html=True,
+    )
+    for index, step in enumerate(execution_path, start=1):
+        with st.container(border=True):
+            st.markdown(f"**Step {step.get('order', index)} — {step.get('agent', 'Agent')}**")
+            st.caption(f"Graph node: `{step.get('node', '')}` · Status: `{step.get('status', '')}`")
+            st.write(step.get("detail", ""))
+    rows = [
+        {
+            "step": step.get("order", index),
+            "node": step.get("node", ""),
+            "agent/tool": step.get("agent", ""),
+            "status": step.get("status", ""),
+            "what happened": step.get("detail", ""),
+        }
+        for index, step in enumerate(execution_path, start=1)
+    ]
+    with st.expander("Compact execution table"):
+        st.table(rows)
+
+
+def result_caption(result: dict, fallback_model_label: str | None = None) -> str:
+    decision = result.get("router_decision", {})
+    response_model = result.get("response_model", {})
+    profile = result.get("student_profile", {})
+    parts = [
+        f"Route: `{decision.get('retrieval_mode', 'unknown')}`",
+        f"Level: `{profile.get('label', 'Adaptive')}`",
+    ]
+    model_label = response_model.get("label") or fallback_model_label
+    if model_label:
+        parts.append(f"Model: `{model_label}`")
+    parts.append(f"Graph: `{result.get('graph_engine', 'unknown')}`")
+    return " · ".join(parts)
+
+
+def render_quiz_card(quiz: dict) -> None:
+    questions = quiz.get("questions", [])
+    st.markdown("### 🧠 Practice Quiz")
+    metric_cols = st.columns(3)
+    metric_cols[0].metric("Topic", str(quiz.get("topic", "Practice"))[:28])
+    metric_cols[1].metric("Difficulty", str(quiz.get("difficulty", "medium")).title())
+    metric_cols[2].metric("Questions", len(questions))
+    st.caption("Try answering each question first, then open the answer panel to check yourself.")
+
+    for index, question in enumerate(questions, start=1):
+        with st.container(border=True):
+            question_text = question.get("question", f"Question {index}")
+            st.markdown(f"#### Question {index}")
+            st.markdown(question_text)
+            choices = question.get("choices", [])
+            for choice_index, choice in enumerate(choices):
+                letter = chr(ord("A") + choice_index)
+                st.markdown(f"- **{letter}.** {choice}")
+            with st.expander("Show answer and explanation"):
+                st.success(f"Answer: {question.get('answer', 'Not provided')}")
+                explanation = question.get("explanation")
+                if explanation:
+                    st.write(explanation)
+                source = question.get("source")
+                if source:
+                    st.caption(f"Source basis: {source}")
+
+
+def legacy_quiz_from_content(content: str) -> dict:
+    stripped = content.strip()
+    if not stripped.startswith("## Quiz"):
+        return {}
+    json_start = stripped.find("{")
+    if json_start < 0:
+        return {}
+    try:
+        quiz = json.loads(stripped[json_start:])
+    except Exception:
+        return {}
+    return quiz if isinstance(quiz, dict) else {}
+
+
+def render_assistant_content(content: str) -> None:
+    quiz = legacy_quiz_from_content(content)
+    if quiz.get("questions"):
+        st.markdown("## Quiz Ready")
+        render_quiz_card(quiz)
+    else:
+        st.markdown(content)
+
+
+def render_assistant_result(result: dict, fallback_model_label: str | None = None) -> None:
+    quiz = result.get("quiz") or {}
+    if quiz.get("questions"):
+        st.markdown(result.get("answer", "I created a practice quiz."))
+        render_quiz_card(quiz)
+    else:
+        st.markdown(result.get("answer", ""))
+    st.caption(result_caption(result, fallback_model_label=fallback_model_label))
 
 
 def show_hero() -> None:
@@ -413,6 +634,15 @@ def show_retrieved_content_panel(result: dict | None) -> None:
 
     retrieved = result.get("retrieved_content", [])
     if not retrieved:
+        if result.get("quiz"):
+            quiz = result["quiz"]
+            st.info("This request used the QuizAgent instead of retrieval.")
+            quiz_cols = st.columns(2)
+            quiz_cols[0].metric("Difficulty", str(quiz.get("difficulty", "medium")).title())
+            quiz_cols[1].metric("Questions", len(quiz.get("questions", [])))
+            with st.expander("Quiz data used by backend"):
+                st.json(quiz)
+            return
         if result.get("tool_calls"):
             st.info("This request used a tool instead of retrieval.")
             st.json(result.get("tool_calls"))
@@ -505,7 +735,7 @@ def show_student_view() -> None:
                 format_func=lambda value: STUDENT_LEVELS[value],
                 help="The adaptation agent changes explanation depth, examples, and quiz difficulty based on this.",
             )
-            model_options = list_chat_model_options(include_unavailable=False)
+            model_options = list_chat_model_options(include_unavailable=True)
             model_ids = [option.id for option in model_options]
             recommended_model_id = get_recommended_chat_model_id()
             model_index = model_ids.index(recommended_model_id) if recommended_model_id in model_ids else 0
@@ -519,7 +749,10 @@ def show_student_view() -> None:
             selected_model = resolve_chat_model_option(selected_model_id)
             st.caption(selected_model.status)
             if selected_model.is_finetuned:
-                st.success("Using the fine-tuned Qwen LoRA tutor model.")
+                if selected_model.available:
+                    st.success("Using a runnable fine-tuned LoRA tutor model.")
+                else:
+                    st.warning("Saved adapter is present, but this environment cannot run local LoRA until `requirements_finetune.txt` dependencies and the base model are available.")
             else:
                 unavailable_finetuned = [
                     option for option in list_chat_model_options(include_unavailable=True)
@@ -551,7 +784,12 @@ def show_student_view() -> None:
 
             for message in st.session_state.student_messages:
                 with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
+                    if message["role"] == "assistant" and message.get("result"):
+                        render_assistant_result(message["result"])
+                    elif message["role"] == "assistant":
+                        render_assistant_content(message["content"])
+                    else:
+                        st.markdown(message["content"])
 
             query = st.session_state.pop("pending_student_query", None)
             typed_query = st.chat_input("Ask a GenAI course question, request a quiz, or submit an answer for feedback.")
@@ -575,17 +813,10 @@ def show_student_view() -> None:
                                 "session_collection": st.session_state.get("session_collection"),
                             },
                         )
-                    st.markdown(result["answer"])
-                    decision = result.get("router_decision", {})
-                    response_model = result.get("response_model", {})
-                    st.caption(
-                        f"Route: `{decision.get('retrieval_mode', 'unknown')}` · "
-                        f"Level: `{result.get('student_profile', {}).get('label', STUDENT_LEVELS[selected_level])}` · "
-                        f"Model: `{response_model.get('label', selected_model.label)}` · "
-                        f"Graph: `{result.get('graph_engine', 'unknown')}`"
-                    )
-                st.session_state.student_messages.append({"role": "assistant", "content": result["answer"]})
+                    render_assistant_result(result, fallback_model_label=selected_model.label)
+                st.session_state.student_messages.append({"role": "assistant", "content": result["answer"], "result": result})
                 st.session_state.last_student_result = result
+                st.session_state.last_agent_result = result
 
     with sources_col:
         with st.container(border=True):
@@ -625,7 +856,12 @@ def show_chat_tab() -> None:
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            if message["role"] == "assistant" and message.get("result"):
+                render_assistant_result(message["result"])
+            elif message["role"] == "assistant":
+                render_assistant_content(message["content"])
+            else:
+                st.markdown(message["content"])
 
     query = st.session_state.pop("pending_query", None)
     typed_query = st.chat_input("Ask about GenAI, RAG, LoRA, agents, project requirements, or ask for a quiz.")
@@ -650,11 +886,10 @@ def show_chat_tab() -> None:
                     "n_questions": int(n_questions),
                 },
             )
-        st.markdown(result["answer"])
+        render_assistant_result(result)
         decision = result.get("router_decision", {})
-        route = decision.get("retrieval_mode", "unknown")
         intent = decision.get("intent", "unknown")
-        st.caption(f"Agent route: `{route}` · Intent: `{intent}`")
+        st.caption(f"Intent: `{intent}`")
 
         if result.get("sources"):
             with st.expander("Evidence sources used"):
@@ -671,7 +906,9 @@ def show_chat_tab() -> None:
                     "trace_path": result.get("trace_path"),
                 })
 
-    st.session_state.messages.append({"role": "assistant", "content": result["answer"]})
+    st.session_state.messages.append({"role": "assistant", "content": result["answer"], "result": result})
+    st.session_state.last_backend_result = result
+    st.session_state.last_agent_result = result
 
 
 def show_overview_tab() -> None:
@@ -726,6 +963,8 @@ def show_agents_prompts_tab() -> None:
             st.caption(f"Import status: {blueprint['import_error']}")
 
     st.markdown("### Agent Workflow")
+    st.caption("Static graph topology. Orange highlighting appears in the Trace tab after a response runs.")
+    render_agent_graph()
     st.markdown(
         " ".join(
             f"<span class='agent-chip'>{node['agent']}</span>"
@@ -806,12 +1045,32 @@ def show_rag_tab() -> None:
 def show_trace_tab() -> None:
     st.subheader("Latest Agent Trace")
     st.write("Every chat run saves a trace so you can inspect routing, tools, retrieved chunks, checker feedback, and final answer.")
+    source_label, payload = latest_execution_payload()
+    if payload:
+        execution_path = payload.get("execution_path") or fallback_execution_path_from_trace(payload)
+        st.markdown("### Agent Graph for Latest Response")
+        st.caption(f"Source: `{source_label}`")
+        render_agent_graph(execution_path)
+
+        st.markdown("### Agents/Tools That Ran Before Delivery")
+        render_execution_path(execution_path)
+
+        decision = payload.get("router_decision", {})
+        metric_cols = st.columns(4)
+        metric_cols[0].metric("Route", decision.get("retrieval_mode", "unknown"))
+        metric_cols[1].metric("Intent", str(decision.get("intent", "unknown"))[:24])
+        metric_cols[2].metric("Retrieved chunks", len(payload.get("retrieved_content", payload.get("retrieved_chunks", []))))
+        metric_cols[3].metric("Tool calls", len(payload.get("tool_calls", [])))
+    else:
+        st.info("No active response yet. Ask a student question or run the backend demo chat first.")
+
     latest = latest_file(TRACE_DIR, "trace_*.json")
     if latest is None:
-        st.info("No traces yet. Ask a question in Chat Tutor first.")
+        st.info("No saved traces yet. Ask a question in Chat Tutor first.")
         return
     st.caption(str(latest))
     try:
+        st.markdown("### Raw Saved Trace")
         st.json(json.loads(latest.read_text(encoding="utf-8")))
     except json.JSONDecodeError:
         st.code(latest.read_text(encoding="utf-8"), language="json")
@@ -855,10 +1114,28 @@ def show_finetuning_tab() -> None:
             - **Base model:** `Qwen/Qwen2.5-0.5B-Instruct`
             - **Device:** Apple MPS
             - **Split:** 800 train / 100 validation / 100 test
-            - **Final adapter:** `outputs/finetune/qwen_0_5b_lora_adapter/`
+            - **Final adapter:** `outputs/finetune/qwen_0_5b_lora_adapter_salma/`
             - **Evaluation:** `outputs/finetune/results/evaluation_summary.json`
             """
         )
+
+    adapter_options = [option for option in list_chat_model_options(include_unavailable=True) if option.kind == "lora_adapter"]
+    if adapter_options:
+        with st.expander("Saved adapter inventory", expanded=True):
+            st.dataframe(
+                [
+                    {
+                        "Model name": option.label.split(": ", 1)[-1],
+                        "Owner suffix": "Fatma" if option.label.endswith("_fatma") else "Salma" if option.label.endswith("_salma") else "Other",
+                        "Base model": option.base_model,
+                        "Path": option.path,
+                        "Load status": option.status,
+                    }
+                    for option in adapter_options
+                ],
+                width="stretch",
+                hide_index=True,
+            )
 
     with st.expander("Implementation files"):
         st.code(

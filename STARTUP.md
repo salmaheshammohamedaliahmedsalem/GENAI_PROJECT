@@ -19,6 +19,7 @@ This is a production-ready **Adaptive Multi-Agent GenAI Learning System with Hyb
 | **Ethics & Safety** | ✅ | Safety agent + validation rules |
 | **Course Data** | ✅ | 9 LLM lecture PDFs (50MB) |
 | **Training Data** | ✅ | 5,976 chat-format SFT examples |
+| **Hosted LLM Routing** | ✅ | Groq/OpenAI through `src/llm/client.py` and `src/llm/model_registry.py` |
 
 ---
 
@@ -29,6 +30,9 @@ This is a production-ready **Adaptive Multi-Agent GenAI Learning System with Hyb
 cd /Users/salmaheshamsalem/Desktop/genai_project
 cp .env.example .env
 # Edit .env to add your API keys (optional - system has local fallback)
+# GROQ_API_KEY enables fast hosted chat with llama-3.1-8b-instant.
+# OPENAI_API_KEY enables OpenAI-hosted chat.
+# TAVILY_API_KEY improves online retrieval reliability.
 ```
 
 ### 2. Launch Streamlit UI
@@ -36,11 +40,12 @@ cp .env.example .env
 streamlit run app.py
 ```
 The UI opens at `http://localhost:8501` with:
-- Live chat interface
-- Agent trace visualization
-- Source citations
-- Quiz generation
-- Multi-mode controls
+- Student chat interface
+- Student-level adaptation
+- Response model selector
+- Retrieved source panel
+- Quiz generation and display
+- Backend Tracking dashboard with agent graph, traces, prompts, RAG, fine-tuning, evaluation, and safety evidence
 
 ### 3. Or Run Demo Examples
 ```bash
@@ -113,6 +118,7 @@ python3 scripts/06_run_demo_examples.py
 | **Multi-Agent Setup** | ✅ | `src/agents/graph.py` - 7 agents in LangGraph workflow |
 | **Evaluation** | ✅ | `src/evaluation/` - Baselines, retrieval, answer, safety metrics |
 | **Ethics/Safety** | ✅ | Safety agent, validation, refusal logic, documentation |
+| **Hosted Model Routing** | ✅ | Groq/OpenAI model options plus local Qwen/fallback options |
 
 ---
 
@@ -163,6 +169,7 @@ genai_project/
 │   │
 │   ├── llm/                   # LLM client & prompts
 │   │   ├── client.py
+│   │   ├── model_registry.py
 │   │   ├── local_llm.py
 │   │   └── prompts.py
 │   │
@@ -259,6 +266,8 @@ Optional - system has smart fallbacks:
 ```bash
 # .env file (copy from .env.example)
 OPENAI_API_KEY=sk-...          # For GPT-4o-mini (optional)
+GROQ_API_KEY=gsk-...           # For Groq-hosted chat (optional)
+GROQ_MODEL=llama-3.1-8b-instant
 TAVILY_API_KEY=tvly-...        # For online search (optional)
 USE_LOCAL_LLM=false            # Set to true to use deterministic local fallback
 ENABLE_ONLINE_RAG=true         # Set to false to use offline only
@@ -266,7 +275,7 @@ ENABLE_ONLINE_RAG=true         # Set to false to use offline only
 
 If no keys provided:
 - LLM uses a **deterministic local fallback** (tests don't need API keys)
-- RAG works **offline-only** using course PDFs
+- RAG works with local course PDFs and may use `ddgs` online retrieval if available
 - All features remain functional
 
 ---
@@ -289,14 +298,19 @@ pytest tests/test_tools.py -v
 ## 🚀 Deployment
 
 ### Streamlit Cloud
-```bash
-streamlit run app.py --server.maxUploadSize=200
+Deploy the GitHub repository on Streamlit Community Cloud using `app.py` as the entry file. Add optional secrets in the Streamlit app settings:
+
+```toml
+GROQ_API_KEY = "your_groq_key"
+GROQ_MODEL = "llama-3.1-8b-instant"
+OPENAI_API_KEY = "your_openai_key"
+TAVILY_API_KEY = "your_tavily_key"
 ```
 
 ### Docker
 ```bash
 docker build -t genai-mentor .
-docker run -p 8501:8501 -e OPENAI_API_KEY=$OPENAI_API_KEY genai-mentor
+docker run -p 8501:8501 -e GROQ_API_KEY=$GROQ_API_KEY -e TAVILY_API_KEY=$TAVILY_API_KEY genai-mentor
 ```
 
 ---
@@ -309,8 +323,8 @@ docker run -p 8501:8501 -e OPENAI_API_KEY=$OPENAI_API_KEY genai-mentor
 - Critic: Reflects on answer quality
 
 🧠 **Intelligent Retrieval**
-- Semantic search (ChromaDB)
-- Keyword matching (BM25)
+- BM25 course retrieval
+- Optional semantic search (ChromaDB)
 - Hybrid fusion with reranking
 - Course grounding + optional online sources
 
@@ -352,11 +366,13 @@ docker run -p 8501:8501 -e OPENAI_API_KEY=$OPENAI_API_KEY genai-mentor
 
 ## ✅ Verification Checklist
 
-- ✅ All 72 project files created
-- ✅ All imports working (22/22 modules tested)
+- ✅ Core project modules implemented
+- ✅ Imports and syntax verified through tests
 - ✅ 9 course lecture PDFs loaded
 - ✅ 5,976 SFT examples ready
+- ✅ Qwen LoRA adapter artifacts available
 - ✅ Streamlit UI functional
+- ✅ Groq/OpenAI hosted model routing available when keys are configured
 - ✅ Deterministic local LLM fallback working
 - ✅ RAG system ready
 - ✅ Evaluation framework ready

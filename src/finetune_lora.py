@@ -13,7 +13,7 @@ from trl import SFTTrainer
 # Configuration
 MAX_TRAIN_EXAMPLES = 300  # Set to None for full training
 MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
-OUTPUT_DIR = "outputs/finetune/qwen_0_5b_lora_adapter"
+OUTPUT_DIR = "outputs/finetune/qwen_0_5b_lora_adapter_salma"
 
 def print_trainable_parameters(model):
     """

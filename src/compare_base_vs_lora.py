@@ -16,7 +16,7 @@ def main():
     print("Initializing environment for Base vs LoRA comparative analysis...")
     
     base_model_id = "Qwen/Qwen2.5-0.5B-Instruct"
-    lora_dir = "outputs/finetune/qwen_0_5b_lora_adapter"
+    lora_dir = "outputs/finetune/qwen_0_5b_lora_adapter_salma"
     output_file = "results/base_vs_lora_comparison.md"
     
     # 1. Device Selection

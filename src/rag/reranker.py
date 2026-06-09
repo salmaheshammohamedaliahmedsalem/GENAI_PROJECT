@@ -9,13 +9,23 @@ def _norm(value: float | None, max_value: float = 1.0) -> float:
 
 def metadata_score(query: str, chunk) -> float:
     q = query.lower()
+    text = (chunk.text or "").lower()
+    topic = (chunk.topic or "").lower()
     score = 0.0
     if "project" in q and chunk.source_type == "project_doc":
         score += 0.5
     if chunk.lecture_number and f"lecture {chunk.lecture_number}" in q:
         score += 0.4
-    if chunk.topic and any(word in q for word in chunk.topic.lower().split()):
+    if chunk.topic and any(word in q for word in topic.split()):
         score += 0.3
+    if "rag" in q and "retrieval-augmented generation" in topic:
+        score += 0.4
+        if "retrieval augmented generation" in text or "retrieval-augmented generation" in text:
+            score += 0.35
+        if any(phrase in text for phrase in ["architecture overview", "relevant context", "grounds", "advantages of rag", "retriever", "knowledge base"]):
+            score += 0.4
+        if "api call" in text and "return label" in text:
+            score -= 0.45
     return min(score, 1.0)
 
 def authority_score(chunk) -> float:

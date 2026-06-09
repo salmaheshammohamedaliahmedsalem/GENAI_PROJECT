@@ -1,11 +1,11 @@
 # GenAI Mentor - Current Project Status
 
 **Last updated:** June 7, 2026  
-**Status:** Working demo with completed Qwen LoRA adapter training evidence
+**Status:** Working deployed demo with completed Qwen LoRA adapter training evidence
 
 ## Executive Summary
 
-The project has a working Streamlit GUI, passing tests, prepared fine-tuning data, generated evaluation outputs, local offline retrieval from lecture chunks, safety routing, tool use, multi-agent orchestration, and a completed Qwen LoRA adapter training run on Apple MPS.
+The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning data, generated evaluation outputs, local offline retrieval from lecture chunks, approved online retrieval, safety routing, tool use, multi-agent orchestration, hosted-model routing through Groq/OpenAI when keys are configured, and a completed Qwen LoRA adapter training run on Apple MPS.
 
 ## Current Verification
 
@@ -13,19 +13,22 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | --- | --- |
 | Unit tests | `16 passed, 1 warning` with `python3 -m pytest tests/ -q` |
 | Syntax check | Passed for app, scripts, fine-tuning, and retrieval modules |
-| Streamlit GUI | Running at `http://localhost:8501` |
+| Streamlit GUI | Local: `http://localhost:8501`; deployed: `https://studybuddygenai.streamlit.app/` |
 | RAG index | BM25 index built from `data/chunks/lecture_chunks.jsonl` |
 | Evaluation outputs | Generated in `outputs/evaluation/` |
 | Fine-tuning splits | Generated in `data/finetune/` |
 | LoRA adapter | Completed on Apple MPS |
+| Saved model adapters | Salma adapters use `_salma`; imported Fatma adapters use `_fatma` |
+| Hosted LLM routing | Groq and OpenAI supported through the app model selector when API keys are configured |
 
 ## Required Components
 
 | Requirement | Evidence | Status |
 | --- | --- | --- |
 | Prompt Design | `src/llm/prompts.py` | Implemented |
+| LLM Provider Routing | `src/llm/client.py`, `src/llm/model_registry.py`, `.env.example` | Implemented for Qwen LoRA, base Qwen, Groq, OpenAI, and deterministic fallback |
 | RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback; Chroma semantic retrieval is optional via `requirements_semantic.txt` |
-| Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
+| Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter_salma/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
 | Multi-Agent Setup | `src/agents/graph.py`, `src/agents/adaptation_agent.py`, `requirements.txt` | Implemented as a LangGraph `StateGraph` with safety, planner, student adaptation, retrieval, response, checker, and trace nodes |
 | Evaluation | `src/evaluation/`, `outputs/evaluation/` | Implemented and generated |
@@ -65,11 +68,15 @@ Current local result:
 }
 ```
 
-Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter/`. The smaller `outputs/finetune/lora_adapter/` artifact is retained only as a script-level TinyLlama smoke-test.
+Final Qwen adapter artifacts are saved in `outputs/finetune/qwen_0_5b_lora_adapter_salma/`. The smaller `outputs/finetune/lora_adapter_salma/` artifact is retained only as a script-level TinyLlama smoke-test. Imported Fatma adapters are saved as `final_model_fatma/`, `mistral_lora_adapter_fatma/`, `phi3_lora_model_fatma/`, `qlora_model_fatma/`, and `qwen_lora_model_fatma/`.
 
 ## Final GUI
 
-Run:
+Deployed app:
+
+[StudyBuddy GenAI](https://studybuddygenai.streamlit.app/)
+
+Local run:
 
 ```bash
 streamlit run app.py
@@ -79,6 +86,7 @@ The GUI now has two top-level modes:
 
 - **Student:** chat interface with a student-level selector plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
 - **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
+- **Response model menu:** selects the trained Qwen LoRA adapter when locally available, otherwise can use Groq/OpenAI hosted models when keys are configured, or the deterministic fallback.
 
 ## Recommended Submission Order
 

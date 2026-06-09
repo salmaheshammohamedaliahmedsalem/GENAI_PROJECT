@@ -34,5 +34,6 @@ class AgentTrace(BaseModel):
     router_decision: RouterDecision
     retrieved_chunks: list[RetrievedChunk] = Field(default_factory=list)
     tool_calls: list[dict[str, Any]] = Field(default_factory=list)
+    execution_path: list[dict[str, Any]] = Field(default_factory=list)
     checker_feedback: dict[str, Any] = Field(default_factory=dict)
     final_answer: str = ""

@@ -1,8 +1,14 @@
 # 🚀 Adaptive Multi-Agent GenAI Tutor with Hybrid RAG
 
-Welcome to the dataset preparation and processing pipeline for the **Adaptive Multi-Agent GenAI Tutor with Hybrid Online/Offline RAG**. 
+Welcome to the working **Adaptive Multi-Agent GenAI Tutor with Hybrid Online/Offline RAG**.
 
-This system is designed to ingest academic lecture PDFs and synthesize them into structured instruction-tuning datasets. These datasets teach a foundation LLM the distinct cognitive behavioral formats required to act as an educational **Tutor**, an academic **Examiner**, and a reflective **Critic**.
+This system ingests academic lecture PDFs, builds course-grounded retrieval indexes, fine-tunes a Qwen LoRA adapter for educational behavior, and exposes a Streamlit student tutor with backend trace visibility. The fine-tuning data teaches the distinct behavioral formats required to act as an educational **Tutor**, an academic **Examiner**, and a reflective **Critic**.
+
+---
+
+## 🌐 Live Demo
+
+Open the deployed Streamlit app: [StudyBuddy GenAI](https://studybuddygenai.streamlit.app/)
 
 ---
 
@@ -37,13 +43,23 @@ genai_project/
 │   ├── processed/             # BM25 index and processed retrieval artifacts
 │   └── vector_db/             # Optional semantic vector store
 ├── notebooks/
-│   └── 01_dataset_generation_pipeline.ipynb  # Interactive walkthrough notebook
+│   ├── 01_dataset_generation_pipeline.ipynb  # Dataset generation walkthrough
+│   └── 03_finetuning_complete.ipynb          # Qwen LoRA train/evaluate/test workflow
 ├── src/
-│   ├── utils.py               # Shared pathing, logging, and keyword classifiers
-│   ├── extract_pdf_text.py    # PyMuPDF text extractor
-│   ├── chunk_lectures.py      # Slide/page partitioner
-│   ├── generate_synthetic_dataset.py # Hybrid API & Procedural dataset synthesizer
+│   ├── agents/                # Safety, planner, adaptation, tutor, quiz, grader, checker, graph
+│   ├── evaluation/            # Retrieval, answer, safety, and baseline evaluation
+│   ├── finetuning/            # LoRA training, inference, and base-vs-tuned comparison
+│   ├── ingestion/             # PDF/document loading, chunking, and index building
+│   ├── llm/                   # OpenAI/Groq/local/Qwen model selection and prompts
+│   ├── rag/                   # Offline BM25, optional semantic, online, hybrid retrieval
+│   ├── tools/                 # Calculator, quiz, grading, citation, progress tools
+│   ├── extract_pdf_text.py    # Lecture PDF text extractor
+│   ├── chunk_lectures.py      # Lecture chunk generator
+│   ├── generate_synthetic_dataset.py # API/procedural SFT dataset synthesizer
 │   └── validate_dataset.py    # Formatting, schema, and deduplication validator
+├── app.py                     # Streamlit Student + Backend Tracking GUI
+├── docs/                      # Architecture, demo, evaluation, ethics, report outline
+├── outputs/                   # Fine-tuning, evaluation, and agent trace artifacts
 └── README.md                  # Project overview & running instructions
 ```
 
@@ -51,7 +67,7 @@ genai_project/
 
 ## 🛠️ Required Packages & Installation
 
-The pipeline relies on `PyMuPDF` for PDF reading, `tqdm` for interactive command line progress, and `openai` / `python-dotenv` for API generation.
+The app uses Streamlit, LangGraph, BM25 retrieval, optional hosted LLM APIs, and a deterministic local fallback. The dataset pipeline also uses PDF extraction utilities and can generate examples with OpenAI/Groq APIs or procedural templates.
 
 ```bash
 pip install -r requirements.txt
@@ -63,14 +79,17 @@ For Streamlit Community Cloud, use the default `requirements.txt`. It intentiona
 
 ## 🔑 Environment Variables Setup
 
-Create a `.env` file at the root of the project to set up LLM generation API keys:
+Create a `.env` file at the root of the project to set up hosted LLMs and retrieval APIs. The app still runs without keys using the deterministic local fallback.
 
 ```ini
-# To use OpenAI models (GPT-4o-mini) for synthetic generation
+# Hosted answer generation and optional dataset generation
 OPENAI_API_KEY=your_openai_api_key_here
-
-# To use Groq models (Llama-3.1-8b-instant) for synthetic generation
 GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama-3.1-8b-instant
+GROQ_BASE_URL=https://api.groq.com/openai/v1
+
+# Online retrieval
+TAVILY_API_KEY=your_tavily_api_key_here
 ```
 
 > [!TIP]
@@ -125,8 +144,9 @@ Our pipeline successfully synthesizes and cleans the following target datasets:
 
 The end-to-end system is implemented:
 
-1. **LoRA SFT Alignment**: `Qwen/Qwen2.5-0.5B-Instruct` has been fine-tuned with PEFT/LoRA on Apple MPS. Final adapter artifacts are in `outputs/finetune/qwen_0_5b_lora_adapter/`.
+1. **LoRA SFT Alignment**: `Qwen/Qwen2.5-0.5B-Instruct` has been fine-tuned with PEFT/LoRA on Apple MPS. Final adapter artifacts are in `outputs/finetune/qwen_0_5b_lora_adapter_salma/`.
 2. **Offline/Online RAG Integration**: BM25 retrieval is built from `data/chunks/lecture_chunks.jsonl`; approved online retrieval uses Tavily when configured and the maintained `ddgs` package as a no-key fallback.
 3. **Multi-Agent Orchestration**: Safety, planning, student adaptation, retrieval, tutoring, quiz, grading, checking, and trace-writing nodes are connected through `src/agents/graph.py` using LangGraph when installed.
 4. **Prompt Template Layer**: `src/llm/prompts.py` documents the base, router, tutor, quiz, grading, checker, and safety prompts with required inputs.
-5. **GUI Showcase**: `app.py` is split into two primary modes: **Student** for level-adaptive chat plus retrieved-content review, and **Backend Tracking** for architecture, agents/prompts, RAG diagnostics, traces, fine-tuning, evaluation, safety, and run checks.
+5. **Model Selection**: The Student GUI can use Salma adapters ending in `_salma`, imported Fatma adapters ending in `_fatma`, the base Qwen model, Groq-hosted chat, OpenAI-hosted chat, or the deterministic local fallback depending on installed packages and configured keys.
+6. **GUI Showcase**: `app.py` is split into two primary modes: **Student** for level-adaptive chat plus retrieved-content review, and **Backend Tracking** for architecture, agents/prompts, RAG diagnostics, traces, fine-tuning, evaluation, safety, and run checks.
