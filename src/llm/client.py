@@ -3,6 +3,7 @@ from src.config import CHAT_MODEL, GROQ_API_KEY, GROQ_BASE_URL, GROQ_MODEL, OPEN
 from src.llm.local_llm import LocalRuleBasedLLM
 from src.llm.model_registry import resolve_chat_model_option
 
+
 class ChatClient:
     def __init__(self):
         self.local_llm = LocalRuleBasedLLM()
@@ -47,7 +48,6 @@ class ChatClient:
                 raise RuntimeError(f"Selected model is unavailable: {option.status}")
             if option.kind == "lora_adapter":
                 from src.finetuning.inference_lora import generate_with_lora_messages
-
                 return generate_with_lora_messages(
                     messages,
                     max_new_tokens=max_new_tokens,
@@ -110,7 +110,7 @@ class ChatClient:
             end = raw.rfind("}")
             if start >= 0 and end > start:
                 try:
-                    return json.loads(raw[start:end+1])
+                    return json.loads(raw[start:end + 1])
                 except Exception:
                     pass
             return {"text": raw}

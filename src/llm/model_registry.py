@@ -148,6 +148,9 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
 
 def get_recommended_chat_model_id() -> str:
     available = list_chat_model_options(include_unavailable=False)
+    groq = [option for option in available if option.kind == "groq"]
+    if groq:
+        return groq[0].id
     finetuned = [option for option in available if option.is_finetuned]
     if finetuned:
         return finetuned[0].id

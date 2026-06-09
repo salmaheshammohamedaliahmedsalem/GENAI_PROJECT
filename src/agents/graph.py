@@ -170,7 +170,12 @@ def _requires_retrieval(state: MentorGraphState) -> str:
 
 def _retrieval_node(state: MentorGraphState) -> dict[str, Any]:
     decision = state["router_decision"]
-    retrieved = HybridRetriever().retrieve(state["user_query"], mode=decision.retrieval_mode)
+    session_collection = state.get("ui_options", {}).get("session_collection")
+    retrieved = HybridRetriever().retrieve(
+        state["user_query"],
+        mode=decision.retrieval_mode,
+        session_collection=session_collection,
+    )
     return {"retrieved_chunks": retrieved}
 
 

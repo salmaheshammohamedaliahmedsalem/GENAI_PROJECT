@@ -33,6 +33,7 @@ TOP_K_FINAL = int(os.getenv("TOP_K_FINAL", "5"))
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
 APPROVED_DOMAINS = [

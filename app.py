@@ -689,6 +689,54 @@ def show_retrieved_content_panel(result: dict | None) -> None:
                 st.write(item.get("text", ""))
 
 
+def _render_pdf_upload_panel() -> None:
+    """Render the PDF upload widget in the student sidebar rail."""
+    st.caption("Upload your study material (PDF)")
+
+    try:
+        from src.rag.pdf_ingestor import ingest_pdf, is_available
+        pdf_ingestor_ready = is_available()
+    except Exception:
+        pdf_ingestor_ready = False
+
+    if not pdf_ingestor_ready:
+        st.info(
+            "PDF upload requires extra packages. "
+            "Run: `pip install pymupdf sentence-transformers langchain-text-splitters chromadb`"
+        )
+        return
+
+    uploaded = st.file_uploader("Choose a PDF", type=["pdf"], key="pdf_upload")
+    if uploaded is not None:
+        if st.session_state.get("last_pdf_name") != uploaded.name:
+            import tempfile, os
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                tmp.write(uploaded.read())
+                tmp_path = tmp.name
+            with st.spinner(f"Indexing {uploaded.name}…"):
+                result = ingest_pdf(tmp_path, collection_name="session_pdf")
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+            if result["status"] == "ok":
+                st.session_state.last_pdf_name = uploaded.name
+                st.session_state.session_collection = "session_pdf"
+                st.success(f"Ready — {result['num_chunks']} chunks indexed")
+            else:
+                st.error(result.get("message", "Failed to index PDF."))
+
+    if st.session_state.get("session_collection"):
+        st.markdown(
+            f"<span class='success-pill'>Active: {st.session_state.get('last_pdf_name', 'Uploaded PDF')}</span>",
+            unsafe_allow_html=True,
+        )
+        if st.button("Remove PDF", key="clear_pdf", width="stretch"):
+            st.session_state.session_collection = None
+            st.session_state.last_pdf_name = None
+            st.rerun()
+
+
 def show_student_view() -> None:
     if "student_messages" not in st.session_state:
         st.session_state.student_messages = []
@@ -743,6 +791,8 @@ def show_student_view() -> None:
                 if st.button(item["label"], key=f"student_prompt_{index}", width="stretch"):
                     st.session_state.pending_student_query = item["prompt"]
             st.divider()
+            _render_pdf_upload_panel()
+            st.divider()
             st.caption("Sources stay visible on the right. Backend details are separated into Backend Tracking.")
 
     with chat_col:
@@ -782,6 +832,7 @@ def show_student_view() -> None:
                                 "student_level": selected_level,
                                 "chat_model_id": selected_model_id,
                                 "n_questions": 3,
+                                "session_collection": st.session_state.get("session_collection"),
                             },
                         )
                     render_assistant_result(result, fallback_model_label=selected_model.label)
@@ -1145,14 +1196,37 @@ def show_finetuning_tab() -> None:
 def show_evaluation_tab() -> None:
     st.subheader("Evaluation Dashboard")
     st.write("This tab summarizes whether the system retrieves evidence, answers clearly, and blocks unsafe requests.")
+
     summary = OUTPUTS_DIR / "evaluation/evaluation_summary.md"
-    results = OUTPUTS_DIR / "evaluation/evaluation_results.csv"
-    if summary.exists():
-        st.markdown(summary.read_text(encoding="utf-8"))
-    else:
+    comparison_csv = OUTPUTS_DIR / "evaluation/baseline_comparison.csv"
+    results_csv = OUTPUTS_DIR / "evaluation/evaluation_results.csv"
+
+    if not summary.exists():
         st.warning("Evaluation report not generated yet. Run `python3 scripts/05_run_evaluation.py` before submission.")
-    if results.exists():
-        st.dataframe(pd.read_csv(results), width="stretch", hide_index=True)
+    else:
+        st.markdown(summary.read_text(encoding="utf-8"))
+
+    if comparison_csv.exists():
+        st.markdown("### Baseline Comparison Detail")
+        st.caption("Full per-question comparison across No RAG, Offline RAG, and Full System configurations.")
+        df_cmp = pd.read_csv(comparison_csv)
+
+        score_cols = [c for c in df_cmp.columns if c in ("no_rag_score", "rag_score")]
+        if score_cols:
+            chart_df = df_cmp[["question"] + score_cols].copy()
+            chart_df["question"] = chart_df["question"].str[:40] + "…"
+            chart_df = chart_df.rename(columns={
+                "no_rag_score": "No RAG (Groq only)",
+                "rag_score": "Groq + Offline RAG",
+            }).set_index("question")
+            st.bar_chart(chart_df)
+
+        with st.expander("Full comparison table"):
+            st.dataframe(df_cmp, width="stretch", hide_index=True)
+
+    if results_csv.exists():
+        with st.expander("Raw evaluation results"):
+            st.dataframe(pd.read_csv(results_csv), width="stretch", hide_index=True)
 
     st.divider()
     st.markdown("### RAG Ablation Evaluator")

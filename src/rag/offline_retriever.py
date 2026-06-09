@@ -1,8 +1,13 @@
 import os
+from collections import OrderedDict
+
 from src.config import VECTOR_DB_DIR, PROCESSED_DIR, EMBEDDING_MODEL, TOP_K_SEMANTIC, TOP_K_KEYWORD, TOP_K_FINAL
 from src.schemas import DocumentChunk, RetrievedChunk
 from src.utils.file_utils import read_pickle
 from src.rag.reranker import rerank
+
+_CACHE_SIZE = 10
+_retrieve_cache: OrderedDict[str, list[RetrievedChunk]] = OrderedDict()
 
 
 def _load_chroma_dependencies():
@@ -32,6 +37,9 @@ class OfflineRetriever:
                 self.collection = None
 
     def retrieve(self, query: str, top_k: int = TOP_K_FINAL) -> list[RetrievedChunk]:
+        if query in _retrieve_cache:
+            _retrieve_cache.move_to_end(query)
+            return _retrieve_cache[query]
         merged: dict[str, RetrievedChunk] = {}
 
         try:
@@ -69,4 +77,8 @@ class OfflineRetriever:
                     merged[chunk.chunk_id] = RetrievedChunk(chunk=chunk)
                 merged[chunk.chunk_id].keyword_score = float(scores[i])
 
-        return rerank(query, list(merged.values()), top_k=top_k)
+        result = rerank(query, list(merged.values()), top_k=top_k)
+        if len(_retrieve_cache) >= _CACHE_SIZE:
+            _retrieve_cache.popitem(last=False)
+        _retrieve_cache[query] = result
+        return result

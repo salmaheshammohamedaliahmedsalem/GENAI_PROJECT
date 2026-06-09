@@ -1,12 +1,51 @@
 question,system,answer,has_sources,has_tool_calls
-What is RAG and why does it reduce hallucinations?,final_system,"RAG means Retrieval-Augmented Generation: retrieve relevant chunks, add them to the prompt, then generate a grounded answer. [Source: LLM Lecture 7 (1).pdf, page 7, chunk lecture_7_p7_c1] [Source: LLM Lecture 4.pdf, page 55, chunk lecture_4_p55_c1]
+What is RAG and why does it reduce hallucinations?,final_system,"**Direct Answer:**
+RAG (Retrieval-Augmented Generation) is a system that reduces hallucinations by leveraging a retriever to fetch relevant documents from a knowledge base and then using a generator to produce a response based on the retrieved information. This approach helps to improve the accuracy and reliability of the generated output.
 
-Next step: ask for a quiz on this topic.",True,False
-Explain LoRA from the course perspective.,final_system,"RAG means Retrieval-Augmented Generation: retrieve relevant chunks, add them to the prompt, then generate a grounded answer. [Source: LLM Lecture 8 (1).pdf, page 75, chunk lecture_8_p75_c1] [Source: LLM Lecture 9 (1).pdf, page 67, chunk lecture_9_p67_c1]
+**Concise Explanation:**
+RAG combines the strengths of retrieval and generation to produce more accurate responses. The retriever module searches for relevant documents in the knowledge base, and the generator module uses these documents to produce a response. This process reduces the likelihood of hallucinations, which occur when the model generates information that is not supported by the input or context.
 
-Next step: ask for a quiz on this topic.",True,False
+**Key Technical Details:**
+The RAG system consists of two main components: the retriever and the generator. The retriever uses a similarity metric to search for relevant documents in the knowledge base, while the generator uses these documents to produce a response. This approach is particularly useful for tasks that require a high degree of accuracy and reliability, such as question answering and text summarization.
+
+**Course Example:**
+In the context of the provided example (Source 4), the RAG system is used to answer a user prompt about hotels in Vancouver. However, the system is also provided with additional context about Taylor Swift's Eras Tour, which is relevant to the user's question. This additional context helps the system to produce a more accurate response.
+
+**Next Step:**
+To further understand how RAG reduces hallucinations, you can explore the concept of LoRA (Low-Rank Adaptation) and its application in RAG systems. LoRA is a technique used to adapt the weights of a pre-trained language model to a specific task, which can help to improve the accuracy and reliability of the generated output.
+
+**Sources:**
+
+* RAG Architecture Overview: [Source: LLM Lecture 7 (1).pdf, page 10, chunk lecture_7_p10_c1]
+* Encoding and Decoding Context: [Source: LLM Lecture 2.pdf, page 10, chunk lecture_2_p10_c1]
+* RAG System Overview: [Source: LLM Lecture 7 (1).pdf, page 11, chunk lecture_7_p11_c1]
+* LLM Augmented Prompt Response: [Source: LLM Lecture 7 (1).pdf, page 7, chunk lecture_7_p7_c1]
+* LLM Evaluation - Metrics - ROUGE-2: [Source: LLM Lecture 4",True,True
+Explain LoRA from the course perspective.,final_system,"**Direct Answer:**
+
+LoRA stands for Low-Rank Adaptation, a technique used in large language models to adapt a pre-trained model to a new task with minimal computational overhead. This is achieved by introducing a low-rank matrix to the model's weights, allowing for efficient fine-tuning.
+
+**Key Technical Details:**
+
+LoRA works by adding a low-rank matrix to the model's weights, which can be learned during fine-tuning. This low-rank matrix is typically a product of two smaller matrices, which can be efficiently computed. By doing so, LoRA reduces the number of parameters that need to be updated during fine-tuning, making it a parameter-efficient technique.
+
+**Course Example:**
+
+In the context of the Retrieval-Augmented Generation (RAG) course, LoRA can be used to adapt a pre-trained language model to a specific task, such as question-answering or text classification. By applying LoRA, the model can learn to focus on the most relevant features for the task at hand, while still leveraging the knowledge encoded in the pre-trained model.
+
+**Next Step:**
+
+To further explore LoRA, I recommend reviewing the lecture notes on PEFT (Parameter-Efficient Fine-Tuning), which provides more details on how LoRA can be used in conjunction with other techniques to achieve efficient fine-tuning of large language models.
+
+**Sources:**
+
+* Lecture 8 (1).pdf, page 75, chunk lecture_8_p75_c1 [Source: LLM Lecture 8 (1).pdf, page 75, chunk lecture_8_p75_c1]
+* Lecture 9 (1).pdf, page 67, chunk lecture_9_p67_c1 [Source: LLM Lecture 9 (1).pdf, page 67, chunk lecture_9_p67_c1]
+* Lecture 4.pdf, page 102, chunk lecture_4_p102_c1 [Source: LLM Lecture 4.pdf, page 102, chunk lecture_4_p102_c1]
+* Lecture 7 (1).pdf, page 89, chunk lecture_7_p89_c1 [Source: LLM Lecture 7 (1).pdf, page 89, chunk lecture_7_p89_c1]
+* Lecture 6 (1).pdf, page 75, chunk lecture_6_p75_c1 [Source: LLM Lecture 6 (1).pdf, page 75, chunk lecture_6_p75_c1]",True,True
 "If 8 chunks are relevant out of 10 retrieved, calculate precision.",final_system,"The calculation is `8 / 10`.
 
 Result: **0.8**
 
-Precision = relevant retrieved / total retrieved = **0.80** or **80%**.",False,True
+Precision = relevant retrieved / total retrieved = **0.80** or **80%**.",True,True
