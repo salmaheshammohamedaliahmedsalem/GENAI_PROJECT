@@ -3,7 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-from src.config import CHAT_MODEL, FINETUNE_BASE_MODEL, OPENAI_API_KEY, OUTPUTS_DIR, ROOT_DIR
+from src.config import CHAT_MODEL, FINETUNE_BASE_MODEL, GROQ_API_KEY, GROQ_MODEL, OPENAI_API_KEY, OUTPUTS_DIR, ROOT_DIR
 
 
 @dataclass(frozen=True)
@@ -105,6 +105,18 @@ def list_chat_model_options(include_unavailable: bool = True) -> list[ChatModelO
         )
     )
 
+    if GROQ_API_KEY:
+        options.append(
+            ChatModelOption(
+                id=f"groq::{GROQ_MODEL}",
+                label=f"Groq hosted model: {GROQ_MODEL}",
+                kind="groq",
+                available=True,
+                status="Uses GROQ_API_KEY through Groq's OpenAI-compatible endpoint",
+                base_model=GROQ_MODEL,
+            )
+        )
+
     if OPENAI_API_KEY:
         options.append(
             ChatModelOption(
@@ -137,13 +149,15 @@ def get_recommended_chat_model_id() -> str:
     finetuned = [option for option in available if option.is_finetuned]
     if finetuned:
         return finetuned[0].id
-    hosted = [option for option in available if option.kind == "openai"]
+    hosted = [option for option in available if option.kind in {"groq", "openai"}]
     if hosted:
         return hosted[0].id
     return "local::rule_based"
 
 
 def runtime_default_chat_model_id() -> str:
+    if GROQ_API_KEY:
+        return f"groq::{GROQ_MODEL}"
     if OPENAI_API_KEY:
         return f"openai::{CHAT_MODEL}"
     return "local::rule_based"
@@ -179,5 +193,15 @@ def resolve_chat_model_option(model_id: str | None = None, prefer_finetuned: boo
             available=deps_ok,
             status=f"{deps_status}; no LoRA adapter applied",
             base_model=base_model,
+        )
+    if target_id.startswith("groq::"):
+        groq_model = target_id.removeprefix("groq::") or GROQ_MODEL
+        return ChatModelOption(
+            id=target_id,
+            label=f"Groq hosted model: {groq_model}",
+            kind="groq",
+            available=bool(GROQ_API_KEY),
+            status="Uses GROQ_API_KEY through Groq's OpenAI-compatible endpoint" if GROQ_API_KEY else "Missing GROQ_API_KEY",
+            base_model=groq_model,
         )
     return next(option for option in options if option.id == "local::rule_based")

@@ -26,6 +26,12 @@ Response node
   ├─ QuizAgent
   ├─ GraderAgent
   └─ tool node
+  └─ model selector
+      ├─ Qwen LoRA adapter
+      ├─ base Qwen model
+      ├─ Groq-hosted chat
+      ├─ OpenAI-hosted chat
+      └─ deterministic fallback
   ↓
 Checker node
   ↓
@@ -43,6 +49,7 @@ Student-facing answer + sources + trace
 | Safety agent | `src/agents/safety_agent.py` | Blocks cheating, plagiarism, hidden exam answer requests, and policy bypass attempts. |
 | Planner agent | `src/agents/planner_agent.py` | Selects retrieval mode and whether tools, quizzes, or grading are needed. |
 | Student adaptation agent | `src/agents/adaptation_agent.py` | Adapts answer depth, terminology, examples, and quiz difficulty to beginner, intermediate, or advanced students. |
+| LLM/model selector | `src/llm/model_registry.py`, `src/llm/client.py` | Selects the fine-tuned Qwen LoRA adapter, base Qwen model, Groq-hosted chat, OpenAI-hosted chat, or deterministic fallback based on available dependencies and API keys. |
 | RAG layer | `src/rag/` | Retrieves course chunks locally with BM25 and approved online results with Tavily or `ddgs` fallback. |
 | Tutor agent | `src/agents/tutor_agent.py` | Produces student-friendly grounded explanations. |
 | Quiz agent | `src/agents/quiz_agent.py` | Generates practice questions with answers and explanations. |
@@ -58,3 +65,11 @@ The Streamlit app is split into two top-level buttons:
 
 1. **Student:** Main student chat with a level selector. The left side contains study controls, the center is the conversation, and the right side shows retrieved chunks/sources used for the latest answer.
 2. **Backend Tracking:** Reviewer/developer dashboard with Overview, Agents & Prompts, Evidence/RAG, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
+
+## Runtime Model Behavior
+
+- The selected model receives the final tutor prompt, including the student profile and retrieved RAG context assembled by `TutorAgent`.
+- The recommended local option is the trained `Qwen/Qwen2.5-0.5B-Instruct` LoRA adapter when local fine-tuning dependencies are installed.
+- Groq is supported as a fast hosted base chatbot through `GROQ_API_KEY` and `GROQ_MODEL`, using the OpenAI-compatible endpoint.
+- OpenAI is supported through `OPENAI_API_KEY` and `CHAT_MODEL`.
+- If no hosted API or local neural model is available, the app falls back to `LocalRuleBasedLLM` so demos still run without secrets.

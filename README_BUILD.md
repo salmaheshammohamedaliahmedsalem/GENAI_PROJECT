@@ -1,7 +1,7 @@
 # GenAI Mentor - Project Build Complete
 
 ## ✓ Build Status
-All 72 required files have been created and the system is ready for use.
+The implemented system is ready for local use and Streamlit deployment.
 
 ## Project Structure
 
@@ -13,7 +13,8 @@ The complete GenAI Mentor project includes:
 - **schemas.py**: Pydantic data models for chunks, retrieval, routing
 
 ### LLM Module (src/llm/)
-- **client.py**: OpenAI API client wrapper
+- **client.py**: OpenAI-compatible client wrapper for OpenAI and Groq, plus local model/fallback routing
+- **model_registry.py**: Discovers available chat options including Qwen LoRA, base Qwen, Groq, OpenAI, and deterministic fallback
 - **local_llm.py**: Deterministic local LLM fallback for no-key runs
 - **prompts.py**: Prompt templates for all agents
 
@@ -24,8 +25,8 @@ The complete GenAI Mentor project includes:
 - **build_metadata.py**: Extract metadata
 
 ### RAG Module (src/rag/)
-- **offline_retriever.py**: Semantic + BM25 retrieval from course PDFs
-- **online_retriever.py**: Online search using DuckDuckGo/Tavily
+- **offline_retriever.py**: BM25 retrieval from course PDFs with optional semantic Chroma retrieval
+- **online_retriever.py**: Approved online search using Tavily or the maintained `ddgs` fallback
 - **hybrid_retriever.py**: Combine offline and online results
 - **reranker.py**: Rerank results
 - **citations.py**: Extract and validate citations
@@ -81,11 +82,7 @@ The complete GenAI Mentor project includes:
 - **06_run_demo_examples.py**: Demo queries
 
 ### Tests (tests/)
-- **test_chunking.py**: Test document chunking
-- **test_offline_retriever.py**: Test retrieval
-- **test_router.py**: Test query routing
-- **test_tools.py**: Test tool functions
-- **test_citations.py**: Test citation extraction
+- Test coverage includes chunking, retrieval, routing, tools, citations, prompts, LangGraph agent flow, model selection, online retrieval, and student adaptation.
 
 ### Documentation (docs/)
 - **architecture.md**: System architecture
@@ -138,7 +135,8 @@ python scripts/04_train_lora.py
 ✓ **Comprehensive Evaluation**: Retrieval, answer quality, safety metrics
 ✓ **Safety Guardrails**: Refuse cheating, plagiarism, harmful requests
 ✓ **Educational Focus**: Citations, progress tracking, adaptive difficulty
-✓ **Streamlit UI**: Interactive web interface for demos
+✓ **Streamlit UI**: Student chat plus Backend Tracking dashboard
+✓ **Hosted LLMs**: Groq and OpenAI supported when keys are configured
 
 ## Data
 - 9 LLM lecture PDFs (50MB total)
@@ -146,11 +144,11 @@ python scripts/04_train_lora.py
 - Pre-processed evaluation questions
 
 ## Project Status
-- ✓ All 72 files created
 - ✓ All imports working
 - ✓ Configuration complete
 - ✓ Data structure verified
-- ✓ Ready for submission
+- ✓ Deployed Streamlit link documented
+- ✓ Ready for project review
 
 ## Requirements Met
 - ✓ Prompt design (multiple prompts in src/llm/prompts.py)
@@ -161,3 +159,4 @@ python scripts/04_train_lora.py
 - ✓ Evaluation with baselines (in src/evaluation/)
 - ✓ Ethics/safety/limitations (safety_agent.py, docs/ethics_safety.md)
 - ✓ Streamlit UI (app.py)
+- ✓ Hosted model routing (Groq/OpenAI in src/llm/client.py and src/llm/model_registry.py)

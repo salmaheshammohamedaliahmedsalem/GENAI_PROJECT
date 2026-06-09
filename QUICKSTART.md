@@ -3,16 +3,17 @@
 ## Project Status
 ✅ **COMPLETE AND READY TO USE**
 
-All 72 required files have been created and verified. The system is fully functional.
+The implemented system is functional locally and on Streamlit Community Cloud. It includes the student chat, backend trace dashboard, hybrid retrieval, LangGraph-compatible agent flow, fine-tuning artifacts, and evaluation outputs.
 
 ## What's Included
 
 ### 1. Core System (src/)
-- **9 modules** with specialized functionality
+- Specialized modules for ingestion, retrieval, agents, tools, LLM routing, fine-tuning, and evaluation
 - **Multi-agent workflow** using LangGraph when installed, with the same local graph node sequence available for offline demos
 - **Hybrid RAG** combining offline + online retrieval
 - **LoRA fine-tuning** with PEFT
 - **Safety guardrails** for educational use
+- **Model selector** for fine-tuned Qwen LoRA, base Qwen, Groq-hosted chat, OpenAI-hosted chat, and deterministic fallback
 
 ### 2. Data
 - **9 LLM lecture PDFs** in `data/raw/course_pdfs/`
@@ -21,8 +22,8 @@ All 72 required files have been created and verified. The system is fully functi
 
 ### 3. Scripts & Tools
 - **6 pipeline scripts** for end-to-end workflows
-- **5 test files** with 86% pass rate
-- **5 documentation files** with architecture and plans
+- **Pytest suite** covering retrieval, agents, prompts, tools, model selection, and safety
+- **Documentation** covering architecture, demo, evaluation, ethics, status, and setup
 
 ## Installation
 
@@ -36,8 +37,10 @@ pip install -r requirements.txt
 # 3. Copy environment template
 cp .env.example .env
 
-# 4. (Optional) Add API keys to .env for more reliable online search
+# 4. (Optional) Add API keys to .env for hosted LLMs and more reliable online search
 # OPENAI_API_KEY=your_key_here
+# GROQ_API_KEY=your_key_here
+# GROQ_MODEL=llama-3.1-8b-instant
 # TAVILY_API_KEY=your_key_here
 # If TAVILY_API_KEY is empty, online retrieval uses the no-key ddgs fallback.
 ```
@@ -141,7 +144,7 @@ pytest tests/
 # Run specific test
 pytest tests/test_chunking.py -v
 
-# Expected: 7 passed, 1 warning
+# Expected: current project tests pass locally with one non-blocking warning
 ```
 
 ## Configuration
@@ -150,6 +153,8 @@ Edit `.env` to customize:
 
 ```env
 OPENAI_API_KEY=your_key          # For GPT-4o-mini
+GROQ_API_KEY=your_key            # For Groq-hosted chat via OpenAI-compatible API
+GROQ_MODEL=llama-3.1-8b-instant # Fast hosted base chatbot option
 TAVILY_API_KEY=your_key          # Optional; improves online search reliability
 USE_LOCAL_LLM=false              # Set to 'true' for deterministic local fallback
 ENABLE_ONLINE_RAG=true           # Enable web search
@@ -216,7 +221,7 @@ pip install -r requirements.txt
 ```
 
 ### "No API key available"
-Use `USE_LOCAL_LLM=true` in `.env` to force deterministic local fallback.
+Use `USE_LOCAL_LLM=true` in `.env` to force deterministic local fallback, or configure `GROQ_API_KEY` for fast hosted chat.
 
 ### "ChromaDB/protobuf error on Streamlit Cloud"
 Default deployment does not require ChromaDB. Leave `ENABLE_SEMANTIC_RAG=false` on Streamlit Cloud and use the BM25 retriever. For local semantic retrieval, install optional dependencies with:
@@ -250,6 +255,7 @@ Default behavior works without any API keys:
 
 To enable full features:
 - Add OPENAI_API_KEY for GPT-4o-mini
+- Add GROQ_API_KEY for fast hosted chat with `llama-3.1-8b-instant`
 - Add TAVILY_API_KEY for the most reliable online search
 - Set corresponding flags in .env
 

@@ -1,6 +1,7 @@
 from src.agents.adaptation_agent import StudentAdaptationAgent
 from src.agents.tutor_agent import TutorAgent
 from src.llm.client import ChatClient
+from src.llm import model_registry
 from src.llm.model_registry import ChatModelOption, get_recommended_chat_model_id, list_chat_model_options
 from src.rag.hybrid_retriever import HybridRetriever
 from src.schemas import DocumentChunk, RetrievedChunk
@@ -44,6 +45,65 @@ def test_chat_client_routes_to_base_model(monkeypatch):
     assert answer == "base model answer"
     assert captured["base_model_id"] == "Qwen/Qwen2.5-0.5B-Instruct"
     assert captured["messages"][0]["content"] == "Use RAG context."
+
+
+def test_model_registry_lists_groq_when_key_is_configured(monkeypatch):
+    monkeypatch.setattr(model_registry, "GROQ_API_KEY", "test-key")
+    monkeypatch.setattr(model_registry, "GROQ_MODEL", "llama-3.1-8b-instant")
+
+    options = model_registry.list_chat_model_options(include_unavailable=True)
+
+    groq_options = [option for option in options if option.kind == "groq"]
+    assert groq_options
+    assert groq_options[0].id == "groq::llama-3.1-8b-instant"
+    assert groq_options[0].available is True
+
+
+def test_chat_client_routes_to_groq_model(monkeypatch):
+    captured = {}
+
+    def fake_resolve(model_selection, prefer_finetuned=False):
+        return ChatModelOption(
+            id="groq::llama-3.1-8b-instant",
+            label="Groq hosted model: llama-3.1-8b-instant",
+            kind="groq",
+            available=True,
+            status="test",
+            base_model="llama-3.1-8b-instant",
+        )
+
+    class FakeMessage:
+        content = "groq answer"
+
+    class FakeChoice:
+        message = FakeMessage()
+
+    class FakeResponse:
+        choices = [FakeChoice()]
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            captured.update(kwargs)
+            return FakeResponse()
+
+    class FakeChat:
+        completions = FakeCompletions()
+
+    class FakeGroqClient:
+        chat = FakeChat()
+
+    monkeypatch.setattr("src.llm.client.resolve_chat_model_option", fake_resolve)
+
+    client = ChatClient()
+    client.groq_client = FakeGroqClient()
+    answer = client.generate(
+        [{"role": "user", "content": "Use RAG context with Groq."}],
+        model_selection="groq::llama-3.1-8b-instant",
+    )
+
+    assert answer == "groq answer"
+    assert captured["model"] == "llama-3.1-8b-instant"
+    assert captured["messages"][0]["content"] == "Use RAG context with Groq."
 
 
 def test_tutor_prompt_sends_retrieved_context_to_selected_llm(monkeypatch):

@@ -5,7 +5,7 @@
 
 ## Executive Summary
 
-The project has a working Streamlit GUI, passing tests, prepared fine-tuning data, generated evaluation outputs, local offline retrieval from lecture chunks, safety routing, tool use, multi-agent orchestration, and a completed Qwen LoRA adapter training run on Apple MPS.
+The project has a deployed Streamlit GUI, passing tests, prepared fine-tuning data, generated evaluation outputs, local offline retrieval from lecture chunks, approved online retrieval, safety routing, tool use, multi-agent orchestration, hosted-model routing through Groq/OpenAI when keys are configured, and a completed Qwen LoRA adapter training run on Apple MPS.
 
 ## Current Verification
 
@@ -18,12 +18,14 @@ The project has a working Streamlit GUI, passing tests, prepared fine-tuning dat
 | Evaluation outputs | Generated in `outputs/evaluation/` |
 | Fine-tuning splits | Generated in `data/finetune/` |
 | LoRA adapter | Completed on Apple MPS |
+| Hosted LLM routing | Groq and OpenAI supported through the app model selector when API keys are configured |
 
 ## Required Components
 
 | Requirement | Evidence | Status |
 | --- | --- | --- |
 | Prompt Design | `src/llm/prompts.py` | Implemented |
+| LLM Provider Routing | `src/llm/client.py`, `src/llm/model_registry.py`, `.env.example` | Implemented for Qwen LoRA, base Qwen, Groq, OpenAI, and deterministic fallback |
 | RAG | `src/rag/`, `data/processed/bm25_index.pkl` | Implemented locally with BM25 and approved online retrieval through Tavily or `ddgs` fallback; Chroma semantic retrieval is optional via `requirements_semantic.txt` |
 | Fine-tuning / PEFT | `src/finetuning/`, `data/finetune/*.jsonl`, `outputs/finetune/qwen_0_5b_lora_adapter/` | Qwen LoRA adapter training completed on MPS |
 | Tools / Function Calling | `src/tools/` | Implemented |
@@ -83,6 +85,7 @@ The GUI now has two top-level modes:
 
 - **Student:** chat interface with a student-level selector plus a retrieved-content panel showing the exact chunks/sources used for the latest answer.
 - **Backend Tracking:** implementation/evidence dashboard with Overview, Agents & Prompts, RAG Inspector, Agent Trace, Fine-Tuning, Evaluation, Safety, and Run & Check tabs.
+- **Response model menu:** selects the trained Qwen LoRA adapter when locally available, otherwise can use Groq/OpenAI hosted models when keys are configured, or the deterministic fallback.
 
 ## Recommended Submission Order
 
