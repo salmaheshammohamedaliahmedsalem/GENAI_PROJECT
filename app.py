@@ -687,7 +687,7 @@ def show_student_view() -> None:
                 format_func=lambda value: STUDENT_LEVELS[value],
                 help="The adaptation agent changes explanation depth, examples, and quiz difficulty based on this.",
             )
-            model_options = list_chat_model_options(include_unavailable=False)
+            model_options = list_chat_model_options(include_unavailable=True)
             model_ids = [option.id for option in model_options]
             recommended_model_id = get_recommended_chat_model_id()
             model_index = model_ids.index(recommended_model_id) if recommended_model_id in model_ids else 0
@@ -701,7 +701,10 @@ def show_student_view() -> None:
             selected_model = resolve_chat_model_option(selected_model_id)
             st.caption(selected_model.status)
             if selected_model.is_finetuned:
-                st.success("Using the fine-tuned Qwen LoRA tutor model.")
+                if selected_model.available:
+                    st.success("Using a runnable fine-tuned LoRA tutor model.")
+                else:
+                    st.warning("Saved adapter is present, but this environment cannot run local LoRA until `requirements_finetune.txt` dependencies and the base model are available.")
             else:
                 unavailable_finetuned = [
                     option for option in list_chat_model_options(include_unavailable=True)
