@@ -11,3 +11,8 @@ openai>=1.30.0
 ddgs>=9.0.0
 langgraph>=0.2.60
 pytest>=8.0.0
+# Mix RAG dependencies
+requests>=2.31.0
+chromadb>=0.5.0
+sentence-transformers>=3.0.0
+PyMuPDF>=1.23.0

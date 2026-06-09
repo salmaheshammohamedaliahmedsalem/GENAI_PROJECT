@@ -969,9 +969,93 @@ def show_agents_prompts_tab() -> None:
             st.code(template.template.strip(), language="text")
 
 
+def rag_pipeline_dot() -> str:
+    return """
+digraph RAGPipeline {
+  rankdir=TB;
+  graph [bgcolor="transparent", pad="0.4", nodesep="0.5", ranksep="0.7", fontname="Helvetica"];
+  node  [fontname="Helvetica", fontsize=10, margin="0.15,0.10"];
+  edge  [fontname="Helvetica", fontsize=9,  color="#94a3b8", arrowsize=0.8];
+
+  query  [label="User Query",          shape=oval,    style="filled", fillcolor="#dbeafe", color="#3b82f6", penwidth=2];
+  expand [label="Query Expansion\\nenriched_query\\n(clean + domain synonyms)", shape=box, style="rounded,filled", fillcolor="#ede9fe", color="#7c3aed", penwidth=1.6];
+  router [label="Mode Router",         shape=diamond, style="filled", fillcolor="#fef9c3", color="#ca8a04", penwidth=1.8];
+
+  subgraph cluster_offline {
+    label="Offline Retrieval";
+    style="rounded";
+    color="#bbf7d0";
+    bgcolor="#f0fdf4";
+    fontsize=10;
+    bm25   [label="BM25\\n(keyword)",   shape=box, style="rounded,filled", fillcolor="#dcfce7", color="#16a34a"];
+    chroma [label="ChromaDB\\n(semantic)", shape=box, style="rounded,filled", fillcolor="#dcfce7", color="#16a34a"];
+  }
+
+  subgraph cluster_online {
+    label="MultiSourceOnlineRetriever  (7 providers)";
+    style="rounded";
+    color="#c7d2fe";
+    bgcolor="#eef2ff";
+    fontsize=10;
+    ddg  [label="DuckDuckGo", shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+    wiki [label="Wikipedia",  shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+    arxv [label="arXiv",      shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+    s2   [label="Semantic Scholar", shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+    gh   [label="GitHub",     shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+    se   [label="StackExchange", shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+    yt   [label="YouTube *",  shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#0284c7"];
+  }
+
+  merge   [label="Merge Candidates",                           shape=box, style="rounded,filled", fillcolor="#fef3c7", color="#d97706", penwidth=1.6];
+  rerank  [label="4-Signal Reranker\\nRelevance · Keyword · Metadata · Authority", shape=box, style="rounded,filled", fillcolor="#ffe4e6", color="#e11d48", penwidth=1.6];
+  ce      [label="Cross-Encoder\\n(sentence-transformers, optional)", shape=box, style="rounded,filled", fillcolor="#fce7f3", color="#db2777"];
+  results [label="RetrievedChunk List\\n(ranked, top-k)",      shape=oval, style="filled", fillcolor="#dcfce7", color="#16a34a", penwidth=2];
+
+  query  -> expand;
+  expand -> router;
+
+  router -> bm25   [label=" offline / hybrid"];
+  router -> chroma [label=" offline / hybrid"];
+  router -> ddg    [label=" online / hybrid"];
+  router -> wiki;
+  router -> arxv;
+  router -> s2;
+  router -> gh;
+  router -> se;
+  router -> yt;
+
+  bm25   -> merge;
+  chroma -> merge;
+  ddg    -> merge;
+  wiki   -> merge;
+  arxv   -> merge;
+  s2     -> merge;
+  gh     -> merge;
+  se     -> merge;
+  yt     -> merge;
+
+  merge  -> rerank;
+  ce     -> rerank [label=" optional", style=dashed, color="#db2777"];
+  rerank -> results;
+}
+"""
+
+
 def show_rag_tab() -> None:
     st.subheader("RAG Inspector")
     st.write("Use this tab to prove where the answer evidence comes from before the tutor writes a response.")
+
+    with st.expander("Pipeline Architecture", expanded=False):
+        st.caption(
+            "Query expansion (mix) enriches the search string with domain synonyms before retrieval. "
+            "Offline uses BM25 + ChromaDB on course chunks; online queries 7 live sources. "
+            "The 4-signal reranker blends relevance, keyword BM25, metadata, and domain authority. "
+            "* YouTube requires YOUTUBE_API_KEY."
+        )
+        try:
+            st.graphviz_chart(rag_pipeline_dot())
+        except Exception:
+            st.code(rag_pipeline_dot(), language="dot")
     query = st.text_input("Retrieval query", "Explain hybrid search in RAG based on our course lectures.")
     mode = st.radio(
         "Retrieval mode to inspect",
